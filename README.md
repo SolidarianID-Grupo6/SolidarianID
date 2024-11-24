@@ -6,12 +6,12 @@ Una plataforma para conectar usuarios con comunidades solidarias y causas social
 
 
 
-###  Descripción 
+##  Descripción 
 
 SolidarianID permite a los usuarios interactuar con comunidades solidarias, ya sea uniéndose, apoyando causas o creando nuevas comunidades. Además, proporciona roles específicos como administradores de comunidades o de la plataforma para mantener el sistema organizado y seguro
 
 
-###  Caracteristicas
+##  Caracteristicas
 
 Gestión de usuarios: Registro, roles y asignación de permisos.
 Interacción con comunidades: Únete, apoya causas o crea tu propia comunidad.
@@ -20,20 +20,28 @@ API de integración: Comunicación con ONGs y otros servicios.
 Validación: Flujo de aprobación para la creación de nuevas comunidades.
 
 
-### Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
-Lenguaje: TypeScript
-Frontend: React.js
-Backend: Node.js con Express.js
-Base de Datos: MongoDB
-Diagramas: Mermaid.js para visualización
-
-
-
-### Instalación 
+* Lenguaje: TypeScript
+* Frontend: React.js
+* Backend: Node.js con Express.js
+* Base de Datos: MongoDB, PostgreSQL, Neo4J, Redis
+* Diagramas: Mermaid.js para visualización
 
 
 
+## Instalación 
+
+`$ npm install `
+
+
+## Autores
+
+* José Ramón Guillén López
+* Eneko Pizarro Liberal
+* Raúl Martínez Garcia
+* Raúl Hernández Martínez
+* Juan José López Olmos
 
 
 
