@@ -13,11 +13,11 @@ SolidarianID permite a los usuarios interactuar con comunidades solidarias, ya s
 
 ##  Caracteristicas
 
-Gestión de usuarios: Registro, roles y asignación de permisos.
-Interacción con comunidades: Únete, apoya causas o crea tu propia comunidad.
-Roles dinámicos: Usuario registrado, administrador de comunidad y administrador de plataforma.
-API de integración: Comunicación con ONGs y otros servicios.
-Validación: Flujo de aprobación para la creación de nuevas comunidades.
+* Gestión de usuarios: Registro, roles y asignación de permisos.
+* Interacción con comunidades: Únete, apoya causas o crea tu propia comunidad.
+* Roles dinámicos: Usuario registrado, administrador de comunidad y administrador de plataforma.
+* API de integración: Comunicación con ONGs y otros servicios.
+* Validación: Flujo de aprobación para la creación de nuevas comunidades.
 
 
 ## Tecnologías Utilizadas
