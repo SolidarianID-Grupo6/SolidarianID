@@ -1,0 +1,10 @@
+// Docker
+Dockerfile
+.dockerignore
+
+// NestJS
+node_modules
+dist
+*.log
+*.md
+.git
