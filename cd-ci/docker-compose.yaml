@@ -1,12 +1,14 @@
+name: solidarianid
+
 services:
-  db:
-    image: postgres
+  postgres:
+    image: postgres:17
     restart: always
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_DB=sonar
-    container_name: postgres
+    container_name: solidarianid-postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
     ports:
@@ -14,17 +16,17 @@ services:
     networks:
       - solidarianetwork
 
-  app:
+  nestjs:
     build:
       context: ..
       dockerfile: cd-ci/Dockerfile
-    container_name: nest-docker-postgres
+    container_name: solidarianid-nestjs
     environment:
       - PORT=3000
     ports:
       - '3000:3000'
     depends_on:
-      - db
+      - postgres
     volumes:
       - ../src:/app/src
     networks:
@@ -33,23 +35,24 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     restart: always
-    container_name: nest-pgadmin4
+    container_name: solidarianid-pgadmin4
     environment:
       - PGADMIN_DEFAULT_EMAIL=admin@admin.com
       - PGADMIN_DEFAULT_PASSWORD=pgadmin4
     ports:
       - '5050:80'
     depends_on:
-      - db
+      - postgres
     networks:
       - solidarianetwork
 
   sonarqube:
-    image: sonarqube:community
+    image: sonarqube:10-community
+    container_name: solidarianid-sonarqube
     depends_on:
-      - db
+      - postgres
     environment:
-      SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/sonar
       SONAR_JDBC_USERNAME: postgres
       SONAR_JDBC_PASSWORD: postgres
     ports:

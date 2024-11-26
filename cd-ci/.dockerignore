@@ -1,5 +1,10 @@
+// Docker
 Dockerfile
 .dockerignore
+
+// NestJS
 node_modules
-npm-debug.log
 dist
+*.log
+*.md
+.git
