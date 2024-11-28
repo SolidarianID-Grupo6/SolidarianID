@@ -1,10 +1,10 @@
-# Upload everything:
-!/cd-ci
-
 # compiled output
 /dist
 /node_modules
 /build
+
+# database
+/cd-ci/pgdata
 
 # Logs
 logs
