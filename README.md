@@ -27,11 +27,18 @@ SolidarianID permite a los usuarios interactuar con comunidades solidarias, ya s
 
 
 
-## Instalación 
-
-`$ npm install ...`
-
-Pendiente de rellenar.
+## Instalación y Ejecución
+### Mediante `Docker Compose`:
+```bash
+cd ./cd-ci
+docker compose up -d --build
+```
+### Mediante `npm`
+```bash
+npm install
+npm run start
+```
+> Para más opciones de ejecución miresé `package.json` > *"scripts"*.
 
 ## Autores
 
