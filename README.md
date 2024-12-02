@@ -40,13 +40,14 @@ npm run start
 
 # Ramas:
 - División por microservicios:
-```bash
+```mermaid
 flowchart TD
     A[main] --> B[users.gateway]
     A --> C[communities]
     A --> D[admin]
 ```
 # Estructura del repositorio:
+```bash
 .
 ├── docker-compose.yml                # Parent Docker Compose
 ├── gateway-users                     # Main gateway (enter-point) and user management
@@ -64,6 +65,7 @@ flowchart TD
     ├── cd/ci
         ├── Dockerfile
         └── docker-compose.yml
+```
 
 
 ## Autores
