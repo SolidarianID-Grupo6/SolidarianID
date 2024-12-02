@@ -25,8 +25,6 @@ SolidarianID permite a los usuarios interactuar con comunidades solidarias, ya s
 * Base de Datos: MongoDB, PostgreSQL, Neo4J, Redis
 * Diagramas: Mermaid.js para visualización
 
-
-
 ## Instalación y Ejecución
 ### Mediante `Docker Compose`:
 ```bash
@@ -39,6 +37,34 @@ npm install
 npm run start
 ```
 > Para más opciones de ejecución miresé `package.json` > *"scripts"*.
+
+# Ramas:
+- División por microservicios:
+```bash
+flowchart TD
+    A[main] --> B[users.gateway]
+    A --> C[communities]
+    A --> D[admin]
+```
+# Estructura del repositorio:
+.
+├── docker-compose.yml                # Parent Docker Compose
+├── gateway-users                     # Main gateway (enter-point) and user management
+    ├── src
+    ├── cd/ci
+        ├── Dockerfile
+        └── docker-compose.yml
+├── communities                       # Community and solidarian action management
+    ├── src
+    ├── cd/ci
+        ├── Dockerfile
+        └── docker-compose.yml
+└── admin                             # System administration and metric taking/consulting
+    ├── src
+    ├── cd/ci
+        ├── Dockerfile
+        └── docker-compose.yml
+
 
 ## Autores
 
