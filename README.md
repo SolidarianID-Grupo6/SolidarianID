@@ -36,7 +36,7 @@ docker compose up -d --build
 npm install
 npm run start
 ```
-> Para más opciones de ejecución miresé `package.json` > *"scripts"*.
+> Para más opciones de ejecución mírese `package.json` > *"scripts"*.
 
 # Ramas:
 - División por microservicios:
@@ -60,7 +60,7 @@ flowchart TD
     ├── cd/ci
         ├── Dockerfile
         └── docker-compose.yml
-└── admin                             # System administration and metric taking/consulting
+└── platform-admin                    # System administration and metric taking/consulting
     ├── src
     ├── cd/ci
         ├── Dockerfile
