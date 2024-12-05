@@ -1,0 +1,177 @@
+{
+  "main": {
+    "id": "c32dba7da84355fd",
+    "type": "split",
+    "children": [
+      {
+        "id": "914d1810731e8f9a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9c60f3d2a7dfd8bb",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "QA/QA.S02/QA.S02.Analisis_Estatico_Codigo-ESLint_Prettier.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "QA.S02.Analisis_Estatico_Codigo-ESLint_Prettier"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5f9a1c3704f1fac1",
+    "type": "split",
+    "children": [
+      {
+        "id": "9b5dc925824a5b44",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "958c9f9a07e79ae0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "db9166656ba3c189",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "b5093e2ca67d8cd3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "6c89fd5982a5edc1",
+    "type": "split",
+    "children": [
+      {
+        "id": "4989461546262352",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b5cac8e32ed2aea6",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "0a4255d6aac3007c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "76600f86c99fec77",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "2164a4c6345c6d47",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {},
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "958c9f9a07e79ae0",
+  "lastOpenFiles": [
+    "QA/QA.S02",
+    "Calidad/S02.Analisis_Estatico_Codigo-ESLint_Prettier.md",
+    "QA/QA.S02/attachments/Pasted image 20241205111311.png",
+    "QA/QA.S02/attachments/Pasted image 20241205105459.png",
+    "QA/QA.S02/attachments/Pasted image 20241205104433.png",
+    "QA/QA.S02/attachments",
+    "QA/QA.S02/QA.S02.Analisis_Estatico_Codigo-ESLint_Prettier.md",
+    "QA",
+    "Calidad/attachments/Pasted image 20241205111311.png",
+    "Calidad/attachments/Pasted image 20241205105459.png",
+    "Calidad/attachments/Pasted image 20241205104433.png",
+    "Calidad/attachments",
+    "Calidad"
+  ]
+}
