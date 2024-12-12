@@ -1,0 +1,42 @@
+services:
+  mongo:
+    image: mongo:6.0
+    restart: always
+    container_name: solidarianid-mongo
+    env_file: 
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB}
+    volumes:
+      - ./mongodata:/data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - solidarianetwork
+
+  nestjs:
+    build:
+      context: ..
+      dockerfile: cd-ci/Dockerfile
+    container_name: solidarianid-nestjs
+    env_file: 
+      - .env
+    environment:
+      - DATABASE_URL=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongo
+    volumes:
+      - ../src:/app/src
+    networks:
+      - solidarianetwork
+
+volumes:
+  mongodata:
+
+networks:
+  solidarianetwork:
+    driver: bridge
