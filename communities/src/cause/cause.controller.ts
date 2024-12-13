@@ -1,19 +1,20 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { CauseService } from './cause.service';
+import { Cause } from './schemas/cause.schema';
 import { CreateCauseDto } from './dto/create-cause.dto';
 import { UpdateCauseDto } from './dto/update-cause.dto';
 
-@Controller('cause')
+@Controller('causes')
 export class CauseController {
   constructor(private readonly causeService: CauseService) {}
 
   @Post()
-  create(@Body() createCauseDto: CreateCauseDto) {
+  async create(@Body() createCauseDto: CreateCauseDto): Promise<Cause> {
     return this.causeService.create(createCauseDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Cause[]> {
     return this.causeService.findAll();
   }
 

@@ -15,7 +15,7 @@ export class Cause {
   @Prop()
   creationDate: Date;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comunity' }] })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
   community: string;
 
   @Prop()
