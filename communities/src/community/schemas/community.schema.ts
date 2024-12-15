@@ -26,6 +26,10 @@ export class Community {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cause' }] })
   causes: string[];
+
+  @Prop({ type: [Number], default: [] })
+  pendingRequests: number[];
+
 }
 
 export const CommunitySchema = SchemaFactory.createForClass(Community);

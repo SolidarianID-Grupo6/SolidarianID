@@ -56,4 +56,64 @@ export class CommunityService {
     }
   }
 
+  // Solicitar unirse a una comunidad
+  async requestJoin(id: string, userId: number): Promise<Community> {
+    const community = await this.communityModel.findById(id).exec();
+  
+    if (!community) {
+      throw new NotFoundException(`Community with ID "${id}" not found`);
+    }
+  
+    if (community.members.includes(userId)) {
+      throw new BadRequestException(`User with ID "${userId}" is already a member`);
+    }
+  
+    if (community.pendingRequests.includes(userId)) {
+      throw new BadRequestException(`User with ID "${userId}" has already requested to join`);
+    }
+  
+    community.pendingRequests.push(userId);
+    return community.save();
+  }
+  
+  // Aceptar una solicitud de unirse a una comunidad
+  async acceptRequest(id: string, userId: number): Promise<Community> {
+    const community = await this.communityModel.findById(id).exec();
+  
+    if (!community) {
+      throw new NotFoundException(`Community with ID "${id}" not found`);
+    }
+  
+    const requestIndex = community.pendingRequests.indexOf(userId);
+    if (requestIndex === -1) {
+      throw new BadRequestException(`No pending request found for user with ID "${userId}"`);
+    }
+  
+    // Mover de solicitudes pendientes a miembros
+    community.pendingRequests.splice(requestIndex, 1);
+    community.members.push(userId);
+  
+    return community.save();
+  }
+  
+  // Rechazar una solicitud de unirse a una comunidad
+  async rejectRequest(id: string, userId: number): Promise<Community> {
+    const community = await this.communityModel.findById(id).exec();
+  
+    if (!community) {
+      throw new NotFoundException(`Community with ID "${id}" not found`);
+    }
+  
+    const requestIndex = community.pendingRequests.indexOf(userId);
+    if (requestIndex === -1) {
+      throw new BadRequestException(`No pending request found for user with ID "${userId}"`);
+    }
+  
+    // Eliminar de solicitudes pendientes
+    community.pendingRequests.splice(requestIndex, 1);
+  
+    return community.save();
+  }
+  
+
 }

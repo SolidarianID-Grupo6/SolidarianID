@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Body, Param, Delete } from '@nestjs/common';
 import { CauseService } from './cause.service';
 import { Cause } from './schemas/cause.schema';
 import { CreateCauseDto } from './dto/create-cause.dto';
@@ -19,17 +19,20 @@ export class CauseController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.causeService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Cause> {
+    return this.causeService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCauseDto: UpdateCauseDto) {
-    return this.causeService.update(+id, updateCauseDto);
+  @Put(':id')
+  async update(
+    @Param('id') id: string, 
+    @Body() updateCauseDto: UpdateCauseDto,
+  ): Promise<Cause> {
+    return this.causeService.update(id, updateCauseDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.causeService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.causeService.remove(id);
   }
 }

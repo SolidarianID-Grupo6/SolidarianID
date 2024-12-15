@@ -1,34 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { ActionService } from './action.service';
+import { Action } from './schemas/action.schema';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
 
-@Controller('action')
+@Controller('actions')
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
   @Post()
-  create(@Body() createActionDto: CreateActionDto) {
+  async create(@Body() createActionDto: CreateActionDto): Promise<Action> {
     return this.actionService.create(createActionDto);
   }
 
   @Get()
-  findAll() {
+  async findAll(): Promise<Action[]> {
     return this.actionService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.actionService.findOne(+id);
+  async findOne(@Param('id') id: string): Promise<Action> {
+    return this.actionService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateActionDto: UpdateActionDto) {
-    return this.actionService.update(+id, updateActionDto);
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateActionDto: UpdateActionDto): Promise<Action> {
+    return this.actionService.update(id, updateActionDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.actionService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return this.actionService.remove(id);
   }
 }
