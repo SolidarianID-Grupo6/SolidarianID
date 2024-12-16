@@ -47,6 +47,12 @@ flowchart TD
     A --> D[admin]
 ```
 # Estructura del repositorio:
+- Gateway (principal)
+- Comunidades
+- Admin (estadísticas)
+- Usuarios
+- Front-End (NestJS también) 
+
 ```bash
 .
 ├── docker-compose.yml                # Parent Docker Compose
