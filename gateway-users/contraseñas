@@ -1,9 +1,0 @@
-SonarQube: j2zvb*kvvb2zn!z4g4SL
-
-docker run --rm \
-  -e SONAR_HOST_URL="http://sonarqube:9000" \
-  -e SONAR_TOKEN="sqp_3e63e88da937ae67d6322a99b7074693a5538c4d" \
-  --network solidarianid_solidarianetwork \
-  -v "$(pwd):/usr/src" \
-  sonarsource/sonar-scanner-cli \
-  -Dsonar.projectKey="SolidarianID"
