@@ -38,6 +38,16 @@ npm run start
 ```
 > Para más opciones de ejecución mírese `package.json` > *"scripts"*.
 
+### .net
+- Acordarse de crear un fichero .dev en el root (/) del proyecto con las siguientes variables:
+```env
+MONGO_USERNAME=
+MONGO_PASSWORD=
+MONGO_DB=
+MONGO_HOST=mongo
+MONGO_PORT=27017
+```
+
 # Ramas:
 - División por microservicios:
 ```mermaid
