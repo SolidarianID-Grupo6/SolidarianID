@@ -1,0 +1,12 @@
+POST http://localhost:3001/communities
+Content-Type: application/json
+
+{
+  "name": "SaveUs",
+  "description": "We need to pass the master.",
+  "creationDate": "2021-09-01T00:00:00.000Z",
+  "creator": 0,
+  "status": "active",
+  "members": [],
+  "causes": []
+}

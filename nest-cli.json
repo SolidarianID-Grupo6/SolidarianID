@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/gateway/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/solidarian-id/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/solidarian-id",
+  "projects": {
+    "gateway": {
+      "type": "application",
+      "root": "apps/solidarian-id",
+      "entryFile": "main",
+      "sourceRoot": "apps/gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/gateway/tsconfig.app.json"
+      }
+    },
+    "communities": {
+      "type": "application",
+      "root": "apps/communities",
+      "entryFile": "main",
+      "sourceRoot": "apps/communities/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/communities/tsconfig.app.json"
+      }
+    }
+  }
+}

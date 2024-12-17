@@ -1,0 +1,40 @@
+services:
+  communities:
+    build:
+      context: .
+      dockerfile: ./apps/communities/Dockerfile
+    env_file: 
+      - .env
+    environment:
+      - DATABASE_URL=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongo
+    networks:
+      - solidarianetwork
+
+  mongo:
+    image: mongo:6.0
+    restart: always
+    container_name: solidarianid-mongo
+    env_file: 
+      - .env
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB}
+    volumes:
+      - ./volumes/mongodata:/data/db
+    ports:
+      - '27017:27017'
+    networks:
+      - solidarianetwork
+
+volumes:
+  communities_volume:
+  mongodata:
+
+networks:
+  solidarianetwork:
+    driver: bridge
