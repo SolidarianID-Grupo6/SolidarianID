@@ -1,6 +1,5 @@
 # SolidarianID
-
-![[./docs/SolidarianID-Logo-icon.svg]]
+![SolidarianID-Logo-icon](https://github.com/user-attachments/assets/15c2f076-48ab-4767-9cbf-29376f86efcf)
 Una plataforma para conectar usuarios con comunidades solidarias y causas sociales, ofreciendo herramientas para registro, gestión y colaboración dentro de una red de solidaridad.
 
 ## Descripción
