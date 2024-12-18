@@ -173,6 +173,15 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
       - sonarqube_temp:/opt/sonarqube/temp
 
+  nats:
+    image: nats:2.10
+    container_name: solidarianid-nats
+    ports:
+      - "4222:4222"  # Client connections
+      - "8222:8222"  # HTTP management interface (optional)
+    networks:
+      - solidarianetwork
+
 volumes:
   mongodata:
   sonarqube_conf:
