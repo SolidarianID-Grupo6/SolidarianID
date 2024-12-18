@@ -51,6 +51,40 @@ services:
       - "3002:3002"
     volumes:
       - ./apps/users:/app/apps/users
+    depends_on:
+      - postgres
+    networks:
+      - solidarianetwork
+
+  admin:
+    build:
+      context: .
+      dockerfile: ./apps/admin/Dockerfile
+    container_name: solidarianid-admin
+    env_file: 
+      - .env
+    environment:
+      - PORT=3003
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./apps/admin:/app/apps/admin
+    networks:
+      - solidarianetwork
+
+  front-end:
+    build:
+      context: .
+      dockerfile: ./apps/front-end/Dockerfile
+    container_name: solidarianid-front-end
+    env_file: 
+      - .env
+    environment:
+      - PORT=3004
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./apps/front-end:/app/apps/front-end
     networks:
       - solidarianetwork
 

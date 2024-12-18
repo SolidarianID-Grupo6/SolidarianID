@@ -36,6 +36,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json"
       }
+    },
+    "admin": {
+      "type": "application",
+      "root": "apps/admin",
+      "entryFile": "main",
+      "sourceRoot": "apps/admin/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/admin/tsconfig.app.json"
+      }
+    },
+    "front-end": {
+      "type": "application",
+      "root": "apps/front-end",
+      "entryFile": "main",
+      "sourceRoot": "apps/front-end/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/front-end/tsconfig.app.json"
+      }
     }
   }
 }
