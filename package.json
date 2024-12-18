@@ -8,17 +8,20 @@
   "scripts": {
     "build": "nest build",
     "build:communities": "nest build communities",
+    "build:gateway": "nest build gateway",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
+    "start:dev:communities": "nest start communities --watch",
+    "start:dev:users": "nest start users --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/apps/solidarian-id/main",
+    "start:prod": "node dist/apps/gateway/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/solidarian-id/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/gateway/test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

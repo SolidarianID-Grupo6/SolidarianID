@@ -1,19 +1,60 @@
+name: solidarianid
+
 services:
+# Microservices:
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+    container_name: solidarianid-gateway
+    env_file: 
+      - .env
+    environment:
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./apps/gateway:/app/apps/gateway
+      - ./node_modules:/usr/src/app/node_modules
+    networks:
+      - solidarianetwork
+
   communities:
     build:
       context: .
       dockerfile: ./apps/communities/Dockerfile
+    container_name: solidarianid-communities
     env_file: 
       - .env
     environment:
+      - PORT=3001
       - DATABASE_URL=mongodb://${MONGO_USERNAME}:${MONGO_PASSWORD}@${MONGO_HOST}:${MONGO_PORT}/${MONGO_DB}
     ports:
       - "3001:3001"
+    volumes:
+      - ./apps/communities:/app/apps/communities
     depends_on:
       - mongo
     networks:
       - solidarianetwork
 
+  users:
+    build:
+      context: .
+      dockerfile: ./apps/users/Dockerfile
+    container_name: solidarianid-users
+    env_file: 
+      - .env
+    environment:
+      - PORT=3002
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./apps/users:/app/apps/users
+    networks:
+      - solidarianetwork
+
+# Databases:
   mongo:
     image: mongo:6.0
     restart: always
@@ -28,12 +69,101 @@ services:
       - ./volumes/mongodata:/data/db
     ports:
       - '27017:27017'
+    depends_on:
+      - postgres
     networks:
       - solidarianetwork
 
+  postgres:
+    image: postgres:17
+    restart: always
+    env_file: 
+      - .env
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+    container_name: solidarianid-postgres
+    volumes:
+      - ./volumes/pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    networks:
+      - solidarianetwork
+
+# Utils:
+  pgadmin:
+    image: dpage/pgadmin4:8.14
+    restart: always
+    container_name: solidarianid-pgadmin
+    env_file: 
+      - .env
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASSWORD}
+      - PGADMIN_CONFIG_SERVER_MODE=False
+      - PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED=False
+    ports:
+      - '5050:80'
+    depends_on:
+      - postgres
+    entrypoint: /bin/sh -c "chmod 600 /pgpass; /entrypoint.sh;"
+    user: root
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: pgpass
+        target: /pgpass
+    networks:
+      - solidarianetwork
+
+  sonarqube:
+    image: sonarqube:10-community
+    container_name: solidarianid-sonarqube
+    depends_on:
+      - postgres
+    env_file: 
+      - .env
+    environment:
+      - SONAR_JDBC_URL=jdbc:postgresql://postgres:5432/sonar
+      - SONAR_JDBC_USERNAME=${POSTGRES_USER}
+      - SONAR_JDBC_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - '9000:9000'
+    networks:
+      - solidarianetwork
+    volumes:
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+      - sonarqube_temp:/opt/sonarqube/temp
+
 volumes:
-  communities_volume:
   mongodata:
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+  sonarqube_temp:
+  sonar_db:
+  sonar_db_data:
+
+configs:
+  pgpass:
+    content: postgres:5432:*:${POSTGRES_USER}:${POSTGRES_PASSWORD}
+  servers.json:
+    content: |
+      {"Servers": {"1": {
+        "Group": "Servers",
+        "Name": "SolidarianID",
+        "Host": "postgres",
+        "Port": 5432,
+        "MaintenanceDB": "${POSTGRES_DB}",
+        "Username": "${POSTGRES_USER}",
+        "PassFile": "/pgpass",
+        "SSLMode": "prefer"
+      }}}
 
 networks:
   solidarianetwork:

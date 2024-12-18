@@ -8,8 +8,8 @@ COPY package*.json nest-cli.json tsconfig*.json ./
 RUN npm ci
 
 # Copy specific service files
-COPY ./apps/communities ./apps/communities
+COPY ./apps/gateway ./apps/gateway
 
 # Production artifacts
-EXPOSE 3001
-CMD ["npm", "run", "start:dev:communities"]
+EXPOSE 3000
+CMD ["npm", "run", "start:dev"]

@@ -5,14 +5,14 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/solidarian-id/tsconfig.app.json"
+    "tsConfigPath": "apps/gateway/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/solidarian-id",
+  "root": "apps/gateway",
   "projects": {
     "gateway": {
       "type": "application",
-      "root": "apps/solidarian-id",
+      "root": "apps/gateway",
       "entryFile": "main",
       "sourceRoot": "apps/gateway/src",
       "compilerOptions": {
@@ -26,6 +26,15 @@
       "sourceRoot": "apps/communities/src",
       "compilerOptions": {
         "tsConfigPath": "apps/communities/tsconfig.app.json"
+      }
+    },
+    "users": {
+      "type": "application",
+      "root": "apps/users",
+      "entryFile": "main",
+      "sourceRoot": "apps/users/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/users/tsconfig.app.json"
       }
     }
   }
