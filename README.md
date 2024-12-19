@@ -1,4 +1,5 @@
 # SolidarianID
+
 ![SolidarianID-Logo-icon](https://github.com/user-attachments/assets/15c2f076-48ab-4767-9cbf-29376f86efcf)
 Una plataforma para conectar usuarios con comunidades solidarias y causas sociales, ofreciendo herramientas para registro, gestión y colaboración dentro de una red de solidaridad.
 
@@ -59,9 +60,12 @@ MONGO_HOST=mongo
 MONGO_PORT=27017
 
 # PostgreSQL Database:
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
 POSTGRES_USER=
 POSTGRES_PASSWORD=
-POSTGRES_DB=
+POSTGRES_DEFAULT_DB=sonar
+POSTGRES_SOLIDARIANID_USERS_DB=solidarianid_users
 
 # PGAdmin - PostgreSQL Web Interface:
 PGADMIN_EMAIL=
