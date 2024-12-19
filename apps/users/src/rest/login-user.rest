@@ -1,0 +1,26 @@
+### Correct login:
+POST http://localhost:3002/
+Content-Type: application/json
+
+{
+    "email": "john.doe@example.com",
+    "password": "password"
+}
+
+### Missing value:
+POST http://localhost:3002/
+Content-Type: application/json
+
+
+{
+    "email": "john.doe@example.com"
+}
+
+### Incorrect email:
+POST http://localhost:3002/
+Content-Type: application/json
+
+{
+    "email": "john.doe@example@example.com",
+    "password": "password"
+}

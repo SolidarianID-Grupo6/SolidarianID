@@ -1,0 +1,8 @@
+### Bad update: can't add id to update body:
+PATCH http://localhost:3002/2
+Content-Type: application/json
+
+{
+    "id": 1,
+    "description": "Hello, I'm John Doe!"
+}
