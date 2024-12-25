@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsDateString, IsString } from 'class-validator';
 export class CreateCauseDto {
     @IsString()
     title: string;

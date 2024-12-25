@@ -29,6 +29,16 @@ export class Action {
 
   @Prop()
   progress: number; 
+
+  @Prop([{ type: Number }])
+  volunteers: number[];
+
+  @Prop([{
+    userId: { type: Number },
+    amount: { type: Number }
+  }])
+  donors: Array<{ userId: number, amount: number }>;
+
 }
 
 export const ActionSchema = SchemaFactory.createForClass(Action);
