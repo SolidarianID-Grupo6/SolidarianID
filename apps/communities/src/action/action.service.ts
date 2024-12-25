@@ -4,6 +4,8 @@ import { Model, isValidObjectId } from 'mongoose';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
 import { Action, ActionDocument } from './schemas/action.schema';
+import { DonateActionDto } from './dto/donate-action.dto';
+import { VolunteerActionDto } from './dto/volunteer-action.dto';
 
 @Injectable()
 export class ActionService {
@@ -44,7 +46,63 @@ export class ActionService {
         throw new NotFoundException(`Action with ID "${id}" not found`);
       }
 
-      return updatedAction
+      return updatedAction;
+  }
+
+  async donate(id: string, donateActionDto: DonateActionDto) {
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException(`Invalid ID format: "${id}"`);
+    }
+
+    const action = await this.actionModel.findById(id).exec();
+  
+    if (!action) {
+      throw new NotFoundException(`Action with ID "${id}" not found`);
+    }
+
+    const donation = {
+      userId: donateActionDto.user,
+      amount: donateActionDto.donation
+    };
+
+    const newProgress = action.progress + donateActionDto.donation;
+
+    const updatedAction = await this.actionModel.findByIdAndUpdate(
+      id,
+      {
+        $push: { donors: donation },
+        progress: newProgress
+      },
+      { new: true, runValidators: true }
+    ).exec();
+
+    return updatedAction;
+  }
+
+  async volunteer(id: string, volunteerAction: VolunteerActionDto){
+    if (!isValidObjectId(id)) {
+      throw new BadRequestException(`Invalid ID format: "${id}"`);
+    }
+
+    const action = await this.actionModel.findById(id).exec();
+  
+    if (!action) {
+      throw new NotFoundException(`Action with ID "${id}" not found`);
+    }
+
+    if(action.volunteers.includes(volunteerAction.user)){
+      throw new BadRequestException(`User with ID "${volunteerAction.user}" already volunteered`);
+    }
+    
+    const updatedAction = await this.actionModel.findByIdAndUpdate(
+      id,
+      {
+        $push: { volunteers: volunteerAction.user }
+      },
+      { new: true, runValidators: true }
+    ).exec();
+
+    return updatedAction;
   }
 
   // Eliminar una accion por ID
