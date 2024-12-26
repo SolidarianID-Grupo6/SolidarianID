@@ -1,0 +1,12 @@
+POST http://localhost:3001/communities
+Content-Type: application/json
+
+{
+  "name": "Mi comunidad 3",
+  "description": "Descripción de prueba",
+  "creationDate": "2024-01-01T00:00:00.000Z",
+  "creator": 1,
+  "status": "active",
+  "members": [2, 3, 4],
+  "causes": []
+}

@@ -101,6 +101,7 @@ services:
       - MONGO_INITDB_DATABASE=${MONGO_DB}
     volumes:
       - ./volumes/mongodata:/data/db
+      - ./volumes/mongo-init-scripts:/docker-entrypoint-initdb.d
     ports:
       - '27017:27017'
     depends_on:
