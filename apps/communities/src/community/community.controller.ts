@@ -35,30 +35,5 @@ export class CommunityController {
   async remove(@Param('id') id: string): Promise<void> {
     return this.communityService.remove(id);
   }
-  
-  @Post(':id/join')
-  async requestJoin(
-    @Param('id') id: string,
-    @Body('userId') userId: number,
-  ): Promise<Community> {
-    return this.communityService.requestJoin(id, userId);
-  }
-
-  @Post(':id/accept')
-  async acceptRequest(
-    @Param('id') id: string,
-    @Body('userId') userId: number,
-  ): Promise<Community> {
-    return this.communityService.acceptRequest(id, userId);
-  }
-
-  @Post(':id/reject')
-  async rejectRequest(
-    @Param('id') id: string,
-    @Body('userId') userId: number,
-  ): Promise<Community> {
-    return this.communityService.rejectRequest(id, userId);
-  }
-
 
 }
