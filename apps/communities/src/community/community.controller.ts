@@ -4,7 +4,7 @@ import { Community } from './schemas/community.schema';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 
-@Controller('communities')
+@Controller('communities/')
 export class CommunityController {
   constructor(private readonly communityService: CommunityService) {}
 

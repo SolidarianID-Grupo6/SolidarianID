@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  Inject,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
@@ -9,14 +10,16 @@ import { Cause, CauseDocument } from './schemas/cause.schema';
 import { CreateCauseDto } from './dto/create-cause.dto';
 import { UpdateCauseDto } from './dto/update-cause.dto';
 import { CommunityService } from '../community/community.service';
-import { SupportUserAnonymousDto } from './dto/supportUserAnonymous-cause.dto';
 import { SupportUserRegisteredDto } from './dto/supportUserRegistered-cause.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { SupportEventDto } from './dto/support-event.dto';
 
 @Injectable()
 export class CauseService {
   constructor(
     @InjectModel(Cause.name) private readonly causeModel: Model<CauseDocument>,
     private readonly communityService: CommunityService,
+    @Inject('NATS_SERVICE') private readonly client: ClientProxy,
   ) {}
 
   // Crear una nueva causa
@@ -58,31 +61,6 @@ export class CauseService {
     return updatedCause;
   }
 
-  async supportUserAnonymous(id: string, supportUserAnonymousDto: SupportUserAnonymousDto): Promise<Cause> {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException(`Invalid ID format: "${id}"`);
-    }
-
-    const updatedCause = await this.causeModel.findByIdAndUpdate(
-      id,
-      {
-        $push: { 
-          anonymousSupporters: {
-            name: supportUserAnonymousDto.name,
-            email: supportUserAnonymousDto.email
-          }
-        }
-      },
-      { new: true, runValidators: true }
-    ).exec();
-
-    if (!updatedCause) {
-      throw new NotFoundException(`Cause with ID "${id}" not found`);
-    }
-
-    return updatedCause;
-  }
-
   async supportUserRegistered(id: string, supportUserRegisteredDto: SupportUserRegisteredDto): Promise<Cause> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
@@ -102,6 +80,13 @@ export class CauseService {
       throw new NotFoundException(`Cause with ID "${id}" not found`);
     }
 
+    const support_event: SupportEventDto = {
+      userId: supportUserRegisteredDto.userId,
+      causeId: id
+    }
+
+    this.client.emit('support-cause', support_event);
+    
     return updatedCause;
   }
 

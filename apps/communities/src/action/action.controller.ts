@@ -6,7 +6,7 @@ import { UpdateActionDto } from './dto/update-action.dto';
 import { DonateActionDto } from './dto/donate-action.dto';
 import { VolunteerActionDto } from './dto/volunteer-action.dto';
 
-@Controller('actions')
+@Controller('actions/')
 export class ActionController {
   constructor(private readonly actionService: ActionService) {}
 
@@ -30,12 +30,12 @@ export class ActionController {
     return this.actionService.update(id, updateActionDto);
   }
 
-  @Put('/donations/:id')
+  @Put('donations/:id')
   async donate(@Param('id') id: string, @Body() donateActionDto: DonateActionDto): Promise<Action> {
     return this.actionService.donate(id, donateActionDto);
   }
 
-  @Put('/volunteers/:id')
+  @Put('volunteers/:id')
   async volunteer(@Param('id') id: string, @Body() volunteerAction: VolunteerActionDto): Promise<Action> {
     return this.actionService.volunteer(id, volunteerAction);
   }

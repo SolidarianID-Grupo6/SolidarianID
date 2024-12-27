@@ -27,12 +27,6 @@ export class Cause {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }] })
   events: string[];
 
-  @Prop([{
-    name: { type: String },
-    email: { type: String }
-  }])
-  anonymousSupporters: Array<{ name: string, email: string }>;
-
   @Prop([{ type: Number }])
   registeredSupporters: number[];
 }
