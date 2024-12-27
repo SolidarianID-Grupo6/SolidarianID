@@ -46,7 +46,8 @@ export class CommunityRequestsService {
       throw new NotFoundException('Solicitud no encontrada');
     }
 
-    this.client.emit('create-community', request);
+    //Hay que llamar al servicio de comunidades y crear la comunidad
+    //Tambien hacer un evento para notificar a los usuarios que la comunidad fue creada
 
     // Actualizar el estado de la solicitud
     request.status = 'Approved';

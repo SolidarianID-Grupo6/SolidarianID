@@ -41,7 +41,7 @@ npm install
 npm run start:dev // gateway (principal)
 npm run start:communities
 npm run start:users
-npm run start:admin
+npm run start:statistics
 npm run start:front-end
 ```
 
@@ -90,7 +90,7 @@ REDIS_PORT=6379
 - División por microservicios basada en [NestJS Monorepo](https://docs.nestjs.com/cli/monorepo):
   - Gateway (principal)
   - Comunidades
-  - Admin (estadísticas)
+  - statistics (estadísticas)
   - Usuarios
   - Front-End (NestJS también)
 
@@ -98,7 +98,7 @@ REDIS_PORT=6379
 .
 ├── docker-compose.yml                # Parent Docker Compose
 └── apps
-    ├── admin                         # Platform administration microservice
+    ├── statistics                    # Platform administration microservice
         ├── src
         └── Dockerfile
     ├── communities                   # Main platform microservice

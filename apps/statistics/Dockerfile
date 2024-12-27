@@ -8,8 +8,8 @@ COPY package*.json nest-cli.json tsconfig*.json ./
 RUN npm ci
 
 # Copy specific service files
-COPY ./apps/admin ./apps/admin
+COPY ./apps/statistics ./apps/statistics
 
 # Production artifacts
 EXPOSE 3003
-CMD ["npm", "run", "start:dev:admin"]
+CMD ["npm", "run", "start:dev:statistics"]

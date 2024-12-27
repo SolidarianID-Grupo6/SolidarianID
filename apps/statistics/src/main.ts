@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { AdminModule } from './admin.module';
+import { StatisticsModule } from './statistics.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AdminModule);
+  const app = await NestFactory.create(StatisticsModule);
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.NATS,

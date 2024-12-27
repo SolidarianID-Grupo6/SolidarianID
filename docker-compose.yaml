@@ -58,11 +58,11 @@ services:
     networks:
       - solidarianetwork
 
-  admin:
+  statistics:
     build:
       context: .
-      dockerfile: ./apps/admin/Dockerfile
-    container_name: solidarianid-admin
+      dockerfile: ./apps/statistics/Dockerfile
+    container_name: solidarianid-statistics
     env_file: 
       - .env
     environment:
@@ -70,7 +70,7 @@ services:
     ports:
       - "3003:3003"
     volumes:
-      - ./apps/admin:/app/apps/admin
+      - ./apps/statistics:/app/apps/statistics
     networks:
       - solidarianetwork
 

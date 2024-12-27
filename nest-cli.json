@@ -37,13 +37,13 @@
         "tsConfigPath": "apps/users/tsconfig.app.json"
       }
     },
-    "admin": {
+    "statistics": {
       "type": "application",
-      "root": "apps/admin",
+      "root": "apps/statistics",
       "entryFile": "main",
-      "sourceRoot": "apps/admin/src",
+      "sourceRoot": "apps/statistics/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/admin/tsconfig.app.json"
+        "tsConfigPath": "apps/statistics/tsconfig.app.json"
       }
     },
     "front-end": {
