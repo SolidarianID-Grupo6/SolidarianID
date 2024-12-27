@@ -7,5 +7,5 @@ export class CreateHistoryDto {
 
   @IsNotEmpty()
   @IsNumber()
-  userId: number;
+  userId: string;
 }

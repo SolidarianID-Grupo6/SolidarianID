@@ -5,6 +5,7 @@ import {
   IsDateString,
   IsOptional,
   IsNotEmpty,
+  MinLength,
 } from 'class-validator';
 
 export class RegisterUserDto {
@@ -26,6 +27,7 @@ export class RegisterUserDto {
 
   @IsNotEmpty()
   @IsString()
+  @MinLength(8)
   readonly password: string;
 
   @IsNotEmpty()

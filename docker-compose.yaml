@@ -51,6 +51,7 @@ services:
       - "3002:3002"
     volumes:
       - ./apps/users:/app/apps/users
+      - ./libs:/app/libs
     depends_on:
       - postgres
     networks:

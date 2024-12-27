@@ -10,6 +10,10 @@ RUN npm ci
 # Copy specific service files
 COPY ./apps/users ./apps/users
 
+# Install service dependencies
+COPY ./libs ./libs
+RUN npm run build:libs
+
 # Production artifacts
 EXPOSE 3002
 CMD ["npm", "run", "start:dev:users"]

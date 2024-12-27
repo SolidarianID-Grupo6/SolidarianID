@@ -2,24 +2,63 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
-import { In, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { HashingService } from '@app/iam/hashing/hashing.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    private readonly hashingService: HashingService,
   ) {}
 
-  login(userRegistration: LoginUserDto) {
-    return userRegistration;
+  async login(userLogin: LoginUserDto) {
+    const user = await this.usersRepository.findOne({
+      where: { email: userLogin.email },
+    });
+
+    if (!user) {
+      throw new HttpException(
+        `User with email ${userLogin.email} does not exist`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const isPasswordValid = await this.hashingService.compare(
+      userLogin.password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+    }
+
+    return user.id;
   }
 
-  register(userRegistration: RegisterUserDto) {
-    const newUser = this.usersRepository.create(userRegistration);
-    return this.usersRepository.save(newUser);
+  async register(userRegistration: RegisterUserDto) {
+    // Check if user already exists (email is already registered):
+    const user = await this.usersRepository.findOne({
+      where: { email: userRegistration.email },
+    });
+
+    if (user) {
+      throw new HttpException(
+        `User with email ${userRegistration.email} already exists`,
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    const userDto = {
+      ...userRegistration,
+      password: await this.hashingService.hash(userRegistration.password),
+    };
+    const newUser = this.usersRepository.create(userDto);
+    const { password, ...response } = await this.usersRepository.save(newUser);
+    return response;
   }
 
   findAll() {
@@ -28,7 +67,7 @@ export class UsersService {
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const user = await this.usersRepository.findOne({ where: { id } });
 
     if (!user) {
@@ -38,7 +77,7 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.usersRepository.preload({
       id: id,
       ...updateUserDto,
@@ -51,7 +90,7 @@ export class UsersService {
     return this.usersRepository.save(user);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const user = await this.findOne(id);
     return this.usersRepository.remove(user);
   }

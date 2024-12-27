@@ -5,6 +5,7 @@ import { HistoryModule } from './history/history.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { History } from './history/entities/history.entity';
+import { IamModule } from '@app/iam';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { History } from './history/entities/history.entity';
       synchronize: true, // your entities will be synced with the database (careful with that in production - set it to false)
     }),
     TypeOrmModule.forFeature([User, History]),
+    IamModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
