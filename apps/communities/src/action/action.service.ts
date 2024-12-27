@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException  } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject  } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
 import { CreateActionDto } from './dto/create-action.dto';
@@ -6,11 +6,16 @@ import { UpdateActionDto } from './dto/update-action.dto';
 import { Action, ActionDocument } from './schemas/action.schema';
 import { DonateActionDto } from './dto/donate-action.dto';
 import { VolunteerActionDto } from './dto/volunteer-action.dto';
+import { ClientProxy } from '@nestjs/microservices';
+import { VolunteerActionEventDto } from './dto/volunteer-action-event.dto';
+import { DonateActionEventDto } from './dto/donate-action-event.dto copy';
+
 
 @Injectable()
 export class ActionService {
   constructor(
     @InjectModel(Action.name) private readonly actionModel: Model<ActionDocument>,
+    @Inject('NATS_SERVICE') private readonly client: ClientProxy,
   ) {}
   
   // Crear una nueva accion
@@ -76,9 +81,20 @@ export class ActionService {
       { new: true, runValidators: true }
     ).exec();
 
+    if (!updatedAction) {
+      throw new NotFoundException(`Action with ID "${id}" not found`);
+    }
+
+    const donate_event: DonateActionEventDto = {
+      userId: donateActionDto.user,
+      actionId: id,
+      donation: donateActionDto.donation
+    }
+
+    this.client.emit('donate-event', donate_event);
+
     return updatedAction;
   }
-
   async volunteer(id: string, volunteerAction: VolunteerActionDto){
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
@@ -101,6 +117,13 @@ export class ActionService {
       },
       { new: true, runValidators: true }
     ).exec();
+
+    const volunteer_event: VolunteerActionEventDto = {
+      userId: volunteerAction.user,
+      actionId: id
+    }
+
+    this.client.emit('volunteer-event', volunteer_event);
 
     return updatedAction;
   }

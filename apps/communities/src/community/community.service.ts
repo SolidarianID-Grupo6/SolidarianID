@@ -11,6 +11,8 @@ import { Community, CommunityDocument } from './schemas/community.schema';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { CommunityJoinRequestService } from '../community-join-request/community-join-request.service';
+import { ClientProxy } from '@nestjs/microservices';
+import { UserJoinEventDto } from './dto/user-join-community.dto';
 
 @Injectable()
 export class CommunityService {
@@ -19,6 +21,7 @@ export class CommunityService {
     private readonly communityModel: Model<CommunityDocument>,
     @Inject(forwardRef(() => CommunityJoinRequestService))
     private readonly communityJoinRequestService: CommunityJoinRequestService,
+    @Inject('NATS_SERVICE') private readonly client: ClientProxy,
   ) {}
 
   // Crear una nueva comunidad
@@ -90,6 +93,14 @@ export class CommunityService {
       }
 
       community.members.push(idUser);
+
+      const userJoinCommunityEvent: UserJoinEventDto = {
+          userId: idUser,
+          communityId: idCommunity,
+      };
+
+      this.client.emit('user-joined-community', userJoinCommunityEvent);
+
       return community.save();
   }
 
