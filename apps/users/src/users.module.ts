@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { HistoryModule } from './history/history.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { History } from './history/entities/history.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { User } from './entities/user.entity';
       autoLoadEntities: true, // models will be loaded automatically (you don't have to explicitly define the entities: [] array)
       synchronize: true, // your entities will be synced with the database (careful with that in production - set it to false)
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, History]),
   ],
   controllers: [UsersController],
   providers: [UsersService],

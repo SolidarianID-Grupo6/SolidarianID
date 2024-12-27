@@ -1,11 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateHistoryDto } from './dto/create-history.dto';
 import { UpdateHistoryDto } from './dto/update-history.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { History } from './entities/history.entity';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class HistoryService {
-  create(createHistoryDto: CreateHistoryDto) {
-    return 'This action adds a new history';
+  constructor(
+    @InjectRepository(History)
+    private readonly historyRepository: Repository<History>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(createHistoryDto: CreateHistoryDto): Promise<History> {
+    const user = await this.userRepository.findOne({
+      where: { id: createHistoryDto.userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User #${createHistoryDto.userId} not found`);
+    }
+
+    const history = this.historyRepository.create({
+      action: createHistoryDto.action,
+      user: user,
+    });
+
+    return await this.historyRepository.save(history);
   }
 
   findAll() {

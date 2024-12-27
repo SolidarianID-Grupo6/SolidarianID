@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { History } from '../history/entities/history.entity';
 
 @Entity('users')
@@ -30,6 +36,7 @@ export class User {
   @Column({ nullable: true })
   presentation: string;
 
-  @Column('json', { nullable: true })
-  history: History;
+  @JoinTable()
+  @OneToMany((type) => History, (history) => history.user, { cascade: true })
+  history: History[];
 }

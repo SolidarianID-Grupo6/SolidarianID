@@ -12,13 +12,14 @@ import { EventPattern } from '@nestjs/microservices';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { User } from './entities/user.entity';
 
 @Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  findAll(): string {
+  findAll() {
     return this.usersService.findAll();
   }
 
