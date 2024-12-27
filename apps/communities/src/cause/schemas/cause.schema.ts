@@ -6,6 +6,9 @@ export type CauseDocument = Cause & Document;
 
 @Schema()
 export class Cause {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
+  _id: mongoose.Types.ObjectId;
+
   @Prop()
   title: string;
 
@@ -17,9 +20,6 @@ export class Cause {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
   community: string;
-
-  @Prop()
-  status: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Action' }] })
   actions: string[];

@@ -1,6 +1,7 @@
 import { IsArray, IsDateString, IsNumber, IsString } from 'class-validator';
 
 export class CreateCommunityDto {
+
   @IsString()
   name: string;
 
@@ -12,9 +13,6 @@ export class CreateCommunityDto {
 
   @IsNumber()
   creator: number;
-
-  @IsString()
-  status: string;
 
   @IsArray()
   members: number[];

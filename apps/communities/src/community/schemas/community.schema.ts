@@ -12,7 +12,7 @@ export class Community {
   @Prop()
   description: string;
 
-  @Prop()
+  @Prop({ default: new Date() })
   creationDate: Date;
 
   @Prop()

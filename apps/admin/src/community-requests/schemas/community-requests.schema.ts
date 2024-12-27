@@ -19,6 +19,10 @@ export class CommunityRequests {
 
   @Prop({ default: new Date() })
   requestDate: Date;
+
+  @Prop({ required: true})
+  causes: string[];
+
 }
 
 export const CommunityRequestsSchema = SchemaFactory.createForClass(CommunityRequests);

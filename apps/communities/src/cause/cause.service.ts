@@ -3,6 +3,7 @@ import {
   NotFoundException,
   BadRequestException,
   Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, isValidObjectId } from 'mongoose';
@@ -18,6 +19,7 @@ import { SupportEventDto } from './dto/support-event.dto';
 export class CauseService {
   constructor(
     @InjectModel(Cause.name) private readonly causeModel: Model<CauseDocument>,
+    @Inject(forwardRef(() => CommunityService))
     private readonly communityService: CommunityService,
     @Inject('NATS_SERVICE') private readonly client: ClientProxy,
   ) {}

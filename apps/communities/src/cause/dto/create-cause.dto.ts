@@ -1,4 +1,5 @@
-import { IsArray, IsDateString, IsString } from 'class-validator';
+import { IsArray, IsDateString, IsMongoId, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 export class CreateCauseDto {
     @IsString()
     title: string;
