@@ -8,7 +8,9 @@ import {
   Param,
   Patch,
   Post,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { UsersService } from './users.service';
 import { EventPattern } from '@nestjs/microservices';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -32,8 +34,16 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Post()
-  login(@Body() userLogin: LoginUserDto) {
-    return this.usersService.login(userLogin);
+  async login(
+    @Res({ passthrough: true }) response: Response,
+    @Body() userLogin: LoginUserDto,
+  ) {
+    const accessToken = await this.usersService.login(userLogin);
+    response.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
   }
 
   @Post('register')

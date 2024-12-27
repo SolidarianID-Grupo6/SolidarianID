@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "email": "john.doe@example.com",
-    "password": "password"
+    "password": "securePassword123"
 }
 
 ### Missing password:

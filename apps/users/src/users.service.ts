@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -6,6 +6,9 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { HashingService } from '@app/iam/hashing/hashing.service';
+import { JwtService } from '@nestjs/jwt';
+import jwtConfig from '@app/iam/config/jwt.config';
+import { ConfigType } from '@nestjs/config';
 
 @Injectable()
 export class UsersService {
@@ -13,6 +16,9 @@ export class UsersService {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly hashingService: HashingService,
+    private readonly jwtService: JwtService,
+    @Inject(jwtConfig.KEY)
+    private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
   ) {}
 
   async login(userLogin: LoginUserDto) {
@@ -36,7 +42,22 @@ export class UsersService {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
 
-    return user.id;
+    const accessToken = await this.jwtService.signAsync(
+      {
+        sub: user.id,
+        email: user.email,
+      },
+      {
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+        secret: this.jwtConfiguration.secret,
+        expiresIn: this.jwtConfiguration.accessTokenTtl,
+      },
+    );
+
+    return {
+      accessToken: accessToken,
+    };
   }
 
   async register(userRegistration: RegisterUserDto) {

@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { History } from './history/entities/history.entity';
 import { IamModule } from '@app/iam';
+import { ConfigModule } from '@nestjs/config';
+import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from '@app/iam/config/jwt.config';
 
 @Module({
   imports: [
@@ -22,6 +25,8 @@ import { IamModule } from '@app/iam';
     }),
     TypeOrmModule.forFeature([User, History]),
     IamModule,
+    JwtModule.registerAsync(jwtConfig.asProvider()),
+    ConfigModule.forFeature(jwtConfig),
   ],
   controllers: [UsersController],
   providers: [UsersService],
