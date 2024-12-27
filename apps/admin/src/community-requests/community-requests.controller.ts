@@ -22,12 +22,12 @@ export class CommunityRequestsController {
     return this.requestService.findOne(id);
   }
 
-  @Put(':id/approve')
+  @Put('approve/:id')
   async approveRequest(@Param('id') id: string) {
     return this.requestService.approveRequest(id);
   }
 
-  @Put(':id/reject')
+  @Put('reject/:id')
   async rejectRequest(@Param('id') id: string) {
     return this.requestService.rejectRequest(id);
   }

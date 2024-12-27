@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CauseService } from './cause.service';
 import { CauseController } from './cause.controller';
@@ -7,18 +7,19 @@ import { CommunityModule } from '../community/community.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Cause.name, schema: CauseSchema }]), CommunityModule,
-  ClientsModule.register([
-    {
+  imports: [
+    MongooseModule.forFeature([{ name: Cause.name, schema: CauseSchema }]),
+    forwardRef(() => CommunityModule),
+    ClientsModule.register([{
       name: 'NATS_SERVICE',
       transport: Transport.NATS,
       options: {
         servers: ['nats://nats:4222'],
       },
-    },
-  ]),
+    }])
   ],
   controllers: [CauseController],
   providers: [CauseService],
+  exports: [CauseService]
 })
 export class CauseModule {}

@@ -3,11 +3,19 @@ import { CommunityRequestsService } from './community-requests.service';
 import { CommunityRequestsController } from './community-requests.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommunityRequests, CommunityRequestsSchema } from './schemas/community-requests.schema';
-import { Community, CommunitySchema } from '../community/schemas/community.schema';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: CommunityRequests.name, schema: CommunityRequestsSchema }]), 
-  MongooseModule.forFeature([{ name: Community.name, schema: CommunitySchema }])],
+  imports: [MongooseModule.forFeature([{ name: CommunityRequests.name, schema: CommunityRequestsSchema }]),
+  ClientsModule.register([
+    {
+      name: 'NATS_SERVICE',
+      transport: Transport.NATS,
+      options: {
+        servers: ['nats://nats:4222'],
+    },
+  },
+  ])],
   controllers: [CommunityRequestsController],
   providers: [CommunityRequestsService],
 })

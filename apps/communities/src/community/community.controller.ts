@@ -3,13 +3,14 @@ import { CommunityService } from './community.service';
 import { Community } from './schemas/community.schema';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
+import { EventPattern } from '@nestjs/microservices';
 
 @Controller('communities/')
 export class CommunityController {
   constructor(private readonly communityService: CommunityService) {}
 
-  @Post()
-  async create(@Body() createCommunityDto: CreateCommunityDto): Promise<Community> {
+  @EventPattern('create-community')
+  async create(createCommunityDto: CreateCommunityDto): Promise<Community> {
     return this.communityService.create(createCommunityDto);
   }
 
