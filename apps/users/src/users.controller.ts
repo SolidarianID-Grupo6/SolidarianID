@@ -16,6 +16,8 @@ import { EventPattern } from '@nestjs/microservices';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
+import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 
 @Controller()
 export class UsersController {
@@ -32,6 +34,7 @@ export class UsersController {
     console.log(data);
   }
 
+  @Auth(AuthType.None)
   @HttpCode(HttpStatus.OK)
   @Post()
   async login(
@@ -46,6 +49,7 @@ export class UsersController {
     });
   }
 
+  @Auth(AuthType.None)
   @Post('register')
   register(@Body() userRegistration: RegisterUserDto) {
     return this.usersService.register(userRegistration);
