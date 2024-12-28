@@ -1,1 +1,4 @@
-GET http://localhost:3002/1
+GET http://localhost:3002/aa3deb38-d1d2-47e3-8178-7da4bbec5a32
+Cookie: accessToken=j%3A%7B%22accessToken%22%3A%22eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhYTNkZWIzOC1kMWQyLTQ3ZTMtODE3OC03ZGE0YmJlYzVhMzIiLCJlbWFpbCI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzM1Mzc4MzQ1LCJleHAiOjE3MzUzODE5NDUsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.MhfiTDFSuzM8ovBqY_RyM6VEkx2ybrCW9RpK4qDld1U%22%7D; Path=/; HttpOnly; Secure; SameSite=Strict
+
+### Check whether the ID is an UUID:
