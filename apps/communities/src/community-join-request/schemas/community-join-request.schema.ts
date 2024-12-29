@@ -6,11 +6,11 @@ export type CommunityJoinRequestDocument = CommunityJoinRequest & Document;
 @Schema()
 export class CommunityJoinRequest {
 
-  @Prop({ required: true, _id: true })
-  _id: string;
+  @Prop({ type: [String]})
+  idCommunity: string;  
 
-  @Prop({ type: [Number], default: [] })
-  pendingRequests: number[];
+  @Prop({ type: [Number]})
+  userId: number;
 
 }
 

@@ -9,9 +9,9 @@ import { SupportUserRegisteredDto } from './dto/supportUserRegistered-cause.dto'
 export class CauseController {
   constructor(private readonly causeService: CauseService) {}
 
-  @Post()
-  async create(@Body() createCauseDto: CreateCauseDto): Promise<Cause> {
-    return this.causeService.create(createCauseDto);
+  @Post(":idCommunity")
+  async create(@Param('idCommunity') idCommunity: string, @Body() createCauseDto: CreateCauseDto): Promise<Cause> {
+    return this.causeService.create(idCommunity, createCauseDto);
   }
 
   @Get()

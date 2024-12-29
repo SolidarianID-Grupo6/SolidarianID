@@ -15,7 +15,7 @@ export class Cause {
   @Prop()
   description: string;
 
-  @Prop()
+  @Prop({ default: () => new Date() })
   creationDate: Date;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
@@ -30,5 +30,4 @@ export class Cause {
   @Prop([{ type: Number }])
   registeredSupporters: number[];
 }
-
 export const CauseSchema = SchemaFactory.createForClass(Cause);

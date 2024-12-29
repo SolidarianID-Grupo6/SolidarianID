@@ -1,5 +1,6 @@
-import { IsArray, IsDateString, IsMongoId, IsString } from 'class-validator';
-import { Types } from 'mongoose';
+import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+
+
 export class CreateCauseDto {
     @IsString()
     title: string;
@@ -7,18 +8,14 @@ export class CreateCauseDto {
     @IsString()
     description: string;
 
-    @IsDateString()
-    creationDate: Date;
+    @IsNumber()
+    duration: number;
 
-    @IsString()
-    community: string;
-
-    @IsString()
-    status: string;
-
+    @IsOptional()
     @IsArray()
     actions: string[];
 
+    @IsOptional()
     @IsArray()
     events: string[];
 }

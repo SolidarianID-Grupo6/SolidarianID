@@ -25,10 +25,10 @@ export class CauseService {
   ) {}
 
   // Crear una nueva causa
-  async create(createCauseDto: CreateCauseDto): Promise<Cause> {
-    const community = await this.communityService.findOne(createCauseDto.community);
+  async create(idCommunity: string, createCauseDto: CreateCauseDto): Promise<Cause> {
+    const community = await this.communityService.findOne(idCommunity);
     if (!community) {
-      throw new BadRequestException(`Community with ID "${createCauseDto.community}" not found`);
+      throw new BadRequestException(`Community with ID ${idCommunity} not found`);
     }
     const newCause = new this.causeModel(createCauseDto);
     return newCause.save();

@@ -1,4 +1,5 @@
-import { IsArray, IsDateString, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsString } from 'class-validator';
+import { Cause } from '../../cause/schemas/cause.schema';
 
 export class CreateCommunityDto {
 
@@ -8,15 +9,9 @@ export class CreateCommunityDto {
   @IsString()
   description: string;
 
-  @IsDateString()
-  creationDate: string;
-
   @IsNumber()
-  creator: number;
+  admin: number;
 
   @IsArray()
-  members: number[];
-
-  @IsArray()
-  causes: string[];
+  causes: Cause[];
 }

@@ -4,6 +4,7 @@ import { CommunityRequestsController } from './community-requests.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommunityRequests, CommunityRequestsSchema } from './schemas/community-requests.schema';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CommunityModule } from '../community/community.module';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: CommunityRequests.name, schema: CommunityRequestsSchema }]),
@@ -15,7 +16,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         servers: ['nats://nats:4222'],
     },
   },
-  ])],
+  ]), CommunityModule],
   controllers: [CommunityRequestsController],
   providers: [CommunityRequestsService],
 })

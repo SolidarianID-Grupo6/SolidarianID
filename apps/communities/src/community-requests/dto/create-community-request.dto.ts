@@ -1,4 +1,6 @@
-import { IsString, IsNumber, IsArray, ArrayNotEmpty } from 'class-validator';
+import { IsString, IsNumber, IsArray, ArrayNotEmpty, ValidateNested } from 'class-validator';
+import { CreateCauseDto } from '../../cause/dto/create-cause.dto';
+import { Type } from 'class-transformer';
 
 export class CreateCommunityRequestsDto {
   @IsString()
@@ -12,6 +14,7 @@ export class CreateCommunityRequestsDto {
 
   @IsArray()
   @ArrayNotEmpty()
-  @IsString({ each: true })
-  causes: string[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateCauseDto)
+  causes: CreateCauseDto[];
 }

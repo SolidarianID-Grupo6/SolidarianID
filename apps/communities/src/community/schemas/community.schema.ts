@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import * as mongoose from 'mongoose';
 
 export type CommunityDocument = Community & Document;
 
@@ -19,12 +18,12 @@ export class Community {
   creator: number;
 
   @Prop()
-  status: string;
+  admins: number[];
 
   @Prop({ type: [Number] })
   members: number[];
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cause' }] })
+  @Prop()
   causes: string[];
 }
 

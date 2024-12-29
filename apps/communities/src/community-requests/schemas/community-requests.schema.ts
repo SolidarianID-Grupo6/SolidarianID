@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
+import { Cause } from '../../cause/schemas/cause.schema';
+import { CommunityRequestStatus } from '../entities/CommunityRequest-status.enum';
 
 export type CommunityRequestsDocument = CommunityRequests & Document;
 
@@ -14,14 +16,14 @@ export class CommunityRequests {
   @Prop({ required: true })
   creator: number;
 
-  @Prop({ default: 'Pending' })
-  status: string;
+  @Prop({ default: CommunityRequestStatus.Pending })
+  status: CommunityRequestStatus;
 
   @Prop({ default: new Date() })
   requestDate: Date;
 
   @Prop({ required: true})
-  causes: string[];
+  causes: Cause[];
 
 }
 
