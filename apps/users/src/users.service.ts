@@ -9,6 +9,7 @@ import { HashingService } from '@app/iam/hashing/hashing.service';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '@app/iam/config/jwt.config';
 import { ConfigType } from '@nestjs/config';
+import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 
 @Injectable()
 export class UsersService {
@@ -46,7 +47,7 @@ export class UsersService {
       {
         sub: user.id,
         email: user.email,
-      },
+      } as ActiveUserData,
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
@@ -83,9 +84,7 @@ export class UsersService {
   }
 
   findAll() {
-    return this.usersRepository.find({
-      relations: ['history'],
-    });
+    return this.usersRepository.find();
   }
 
   async findOne(id: string) {
@@ -114,5 +113,18 @@ export class UsersService {
   async remove(id: string) {
     const user = await this.findOne(id);
     return this.usersRepository.remove(user);
+  }
+
+  async getFullUserInfo(id: string) {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['history'], // Requests cascading the whole relation objects of the user.
+    });
+
+    if (!user) {
+      throw new HttpException(`User #${id} not found`, HttpStatus.NOT_FOUND);
+    }
+
+    return user;
   }
 }

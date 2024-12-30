@@ -6,6 +6,6 @@ export class CreateHistoryDto {
   action: string;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   userId: string;
 }

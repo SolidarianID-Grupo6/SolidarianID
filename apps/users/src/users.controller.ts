@@ -18,6 +18,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
+import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
+import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 
 @Controller()
 export class UsersController {
@@ -68,5 +70,12 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+
+  // Only for admins
+  @Get('fullUserInfo/:id')
+  getFullUserInfo(@Param('id') id: string, @ActiveUser() user: ActiveUserData) {
+    console.log(user);
+    return this.usersService.getFullUserInfo(id);
   }
 }
