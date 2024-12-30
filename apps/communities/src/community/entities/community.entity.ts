@@ -1,4 +1,6 @@
 export class CommunityEntity {
+      id: string;
+      
       name: string;
 
       description: string;

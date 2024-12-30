@@ -1,7 +1,8 @@
 import { UserJoinStatus } from "./user-request-status.enum";
 
 export class CommunityJoinRequestEntity {
+    id: string;
     idCommunity: string;
-    idUserId: number;
+    idUser: number;
     status: UserJoinStatus;
 }

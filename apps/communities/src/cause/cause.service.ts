@@ -111,6 +111,7 @@ export class CauseService {
 
   private mapToEntity(document: CauseDocument): CauseEntity {
     return {
+      id: String(document._id),
       title: document.title,
       description: document.description,
       creationDate: document.creationDate,

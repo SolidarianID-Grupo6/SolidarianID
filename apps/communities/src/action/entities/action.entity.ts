@@ -2,6 +2,8 @@ import { Donor } from "./donor.entity";
 
 export class ActionEntity {
 
+    id: string;
+    
     title: string;
     
     description: string;

@@ -35,14 +35,14 @@ export class Cause {
   @Prop({ type: String, default: CauseStatus.Active })
   status: CauseStatus;
 
-  @Prop({ type: String, required: true })
-  category: string;
+  @Prop({ type: String })
+  category?: string;
   
   @Prop({ type: [String], default: [] })
-  keywords: string[];
+  keywords?: string[];
   
-  @Prop({ type: String, required: true })
-  location: string;
+  @Prop({ type: String})
+  location?: string;
   
 
 }

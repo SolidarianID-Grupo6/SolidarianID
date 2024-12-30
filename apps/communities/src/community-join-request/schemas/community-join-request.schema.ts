@@ -7,10 +7,10 @@ export type CommunityJoinRequestDocument = CommunityJoinRequest & Document;
 @Schema()
 export class CommunityJoinRequest {
 
-  @Prop({ type: [String]})
+  @Prop({ type: String})
   idCommunity: string;  
 
-  @Prop({ type: [Number]})
+  @Prop({ type: Number})
   userId: number;
 
   @Prop({ type: String, default: UserJoinStatus.Pending })

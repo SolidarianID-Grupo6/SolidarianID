@@ -30,29 +30,29 @@ export class CommunityJoinRequestService {
       throw new NotFoundException(`Community with ID ${userRequest.idCommunity} not found`);
     }
 
-    const userId = userRequest.idUserId;
+    const userId = userRequest.idUser;
 
     if (community.members.includes(userId)) {
       throw new BadRequestException(
-        `User with ID ${userRequest.idUserId} is already a member`,
+        `User with ID ${userRequest.idUser} is already a member`,
       );
     }
 
     const communityJoinRequest = await this.communityJoinRequestModel.findOne({ 
       idCommunity: userRequest.idCommunity,
-      idUserId: userRequest.idUserId 
+      userId: userRequest.idUser 
     }).exec();
 
     
     if (communityJoinRequest) {
-      throw new BadRequestException(`Request already exists for user ID ${userRequest.idUserId}`);
+      throw new BadRequestException(`Request already exists for user ID ${userRequest.idUser}`);
     }
 
     const requestJoinCommunity = this.communityJoinRequestModel.create({ 
       idCommunity: userRequest.idCommunity, 
-      idUserId: userRequest.idUserId });
+      userId: userRequest.idUser });
 
-      return String((await requestJoinCommunity)._id);
+    return String((await requestJoinCommunity)._id);
   }
 
   // Aceptar una solicitud de unirse a una comunidad
@@ -123,10 +123,19 @@ export class CommunityJoinRequestService {
     return this.mapToEntity(request);
   }
 
+  async findPendingRequestsByCommunity(idCommunity: string): Promise<CommunityJoinRequestEntity[]> {
+    const requests = await this.communityJoinRequestModel.find({ 
+      idCommunity,
+      status: UserJoinStatus.Pending 
+    }).exec();
+    return requests.map(request => this.mapToEntity(request));
+  }
+
   private mapToEntity(document: CommunityJoinRequestDocument): CommunityJoinRequestEntity {
     return {
+      id: String(document._id),
       idCommunity: document.idCommunity,
-      idUserId: document.userId,
+      idUser: document.userId,
       status: document.status,
     };
   }
