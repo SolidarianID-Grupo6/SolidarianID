@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { Donor } from '../entities/donor.entity';
 
 export type ActionDocument = Action & Document;
 
@@ -33,11 +34,8 @@ export class Action {
   @Prop([{ type: Number }])
   volunteers: number[];
 
-  @Prop([{
-    userId: { type: Number },
-    amount: { type: Number }
-  }])
-  donors: Array<{ userId: number, amount: number }>;
+  @Prop()
+  donors: Donor[];
 
 }
 

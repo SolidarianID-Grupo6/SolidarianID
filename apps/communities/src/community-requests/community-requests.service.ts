@@ -32,7 +32,7 @@ export class CommunityRequestsService {
 
     const createdRequest = await this.requestModel.create(createRequestDto);
     
-    return createdRequest._id.toString();
+    return String(createdRequest._id);
   }
 
   // Listar todas las solicitudes pendientes

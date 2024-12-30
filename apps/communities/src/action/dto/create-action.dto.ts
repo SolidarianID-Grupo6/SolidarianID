@@ -8,9 +8,6 @@ export class CreateActionDto {
   description: string;
 
   @IsString()
-  cause: string;
-
-  @IsString()
   type: string;
 
   @IsString()

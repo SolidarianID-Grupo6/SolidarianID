@@ -4,6 +4,7 @@ import { ActionService } from './action.service';
 import { ActionController } from './action.controller';
 import { Action, ActionSchema } from './schemas/action.schema';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CommunityModule } from '../community/community.module';
 
 @Module({
   imports: [MongooseModule.forFeature([{ name: Action.name, schema: ActionSchema }]),
@@ -16,7 +17,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       },
     },
   ]),
-  ],
+  CommunityModule],
   controllers: [ActionController],
   providers: [ActionService],
 })

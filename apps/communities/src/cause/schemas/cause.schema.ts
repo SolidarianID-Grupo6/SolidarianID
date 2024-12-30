@@ -1,13 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { CauseStatus } from '../entities/cause-status.enum';
 
 export type CauseDocument = Cause & Document;
 
 @Schema()
 export class Cause {
-  @Prop({ type: mongoose.Schema.Types.ObjectId, auto: true })
-  _id: mongoose.Types.ObjectId;
 
   @Prop()
   title: string;
@@ -17,6 +16,9 @@ export class Cause {
 
   @Prop({ default: () => new Date() })
   creationDate: Date;
+
+  @Prop()
+  endDate: Date;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
   community: string;
@@ -29,5 +31,19 @@ export class Cause {
 
   @Prop([{ type: Number }])
   registeredSupporters: number[];
+
+  @Prop({ type: String, default: CauseStatus.Active })
+  status: CauseStatus;
+
+  @Prop({ type: String, required: true })
+  category: string;
+  
+  @Prop({ type: [String], default: [] })
+  keywords: string[];
+  
+  @Prop({ type: String, required: true })
+  location: string;
+  
+
 }
 export const CauseSchema = SchemaFactory.createForClass(Cause);
