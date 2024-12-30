@@ -9,6 +9,7 @@ import { VolunteerActionDto } from './dto/volunteer-action.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { VolunteerActionEventDto } from './dto/volunteer-action-event.dto';
 import { DonateActionEventDto } from './dto/donate-action-event.dto copy';
+import { ActionEntity } from './entities/action.entity';
 
 
 @Injectable()
@@ -19,23 +20,25 @@ export class ActionService {
   ) {}
   
   // Crear una nueva accion
-  async create(createActionDto: CreateActionDto): Promise<Action> {
+  async create(createActionDto: CreateActionDto): Promise<string> {
     const newAction = new this.actionModel(createActionDto);
-    return newAction.save();
+    const savedAction = await newAction.save();
+    return String(savedAction._id);
   }
 
   // Obtener todas las acciones
-  async findAll(): Promise<Action[]> {
-    return this.actionModel.find().exec(); 
+  async findAll(): Promise<ActionEntity[]> {
+    const actions = await this.actionModel.find().exec();
+    return actions.map(action => this.mapToEntity(action));
   }
 
   // Obtener una accion por ID
-  async findOne(id: string): Promise<Action> {
-    const action = this.actionModel.findById(id).exec();
+  async findOne(id: string): Promise<ActionEntity> {
+    const action = await this.actionModel.findById(id).exec();
     if (!action) {
       throw new NotFoundException(`Action with ID "${id}" not found`);
     }
-    return action;
+    return this.mapToEntity(action);
   }
 
   // Actualizar una accion por ID
@@ -51,7 +54,6 @@ export class ActionService {
         throw new NotFoundException(`Action with ID "${id}" not found`);
       }
 
-      return updatedAction;
   }
 
   async donate(id: string, donateActionDto: DonateActionDto) {
@@ -93,7 +95,6 @@ export class ActionService {
 
     this.client.emit('donate-event', donate_event);
 
-    return updatedAction;
   }
   async volunteer(id: string, volunteerAction: VolunteerActionDto){
     if (!isValidObjectId(id)) {
@@ -110,7 +111,7 @@ export class ActionService {
       throw new BadRequestException(`User with ID "${volunteerAction.user}" already volunteered`);
     }
     
-    const updatedAction = await this.actionModel.findByIdAndUpdate(
+    await this.actionModel.findByIdAndUpdate(
       id,
       {
         $push: { volunteers: volunteerAction.user }
@@ -125,7 +126,6 @@ export class ActionService {
 
     this.client.emit('volunteer-event', volunteer_event);
 
-    return updatedAction;
   }
 
   // Eliminar una accion por ID
@@ -134,5 +134,21 @@ export class ActionService {
     if(!action){
       throw new NotFoundException(`Action with ID "${id}" not found`);
     }
+  }
+
+
+  private mapToEntity(document: ActionDocument): ActionEntity {
+    return {
+      title: document.title,
+      description: document.description,
+      creationDate: document.creationDate,
+      cause: document.cause,
+      type: document.type,
+      status: document.status,
+      goal: document.goal,
+      progress: document.progress,
+      volunteers: document.volunteers,
+      donors: document.donors
+    };
   }
 }

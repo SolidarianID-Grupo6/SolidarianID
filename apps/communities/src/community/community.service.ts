@@ -14,6 +14,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { UserJoinEventDto } from './dto/user-join-community.dto';
 import { CauseService } from '../cause/cause.service';
 import { CommunityEntity } from './entities/community.entity';
+import { CreateCauseDto } from '../cause/dto/create-cause.dto';
 
 @Injectable()
 export class CommunityService {
@@ -36,29 +37,31 @@ export class CommunityService {
   
     const causePromises = [];
 
-    const idCommunity = savedCommunity._id.toString();
+    const idCommunity = String(savedCommunity._id);
 
     // 2. Create causes with community reference
     for (const cause of createCommunityDto.causes) {
       // Crear el objeto de datos para cada causa
-      const causeData = {
+      const causeData: CreateCauseDto = {
         title: cause.title,
         description: cause.description,
-        community: idCommunity,
-        duration: 30,
+        endDate: cause.endDate,
+        category: cause.category,
+        keywords: cause.keywords,
+        location: cause.location,
         actions: [], 
         events: []
       };
     
       // Crear la promesa para la causa y agregarla al array
-      const causeCreationPromise = this.causeService.create(savedCommunity._id.toString(),causeData);
+      const causeCreationPromise = this.causeService.create(idCommunity,causeData);
       causePromises.push(causeCreationPromise);
     }
 
     const createdCauses = await Promise.all(causePromises);
   
     // 3. Update community with cause references
-    savedCommunity.causes = createdCauses.map(cause => cause._id);
+    savedCommunity.causes = createdCauses;
 
     await savedCommunity.save();
 
@@ -128,7 +131,11 @@ export class CommunityService {
           throw new BadRequestException(`User ${idUser} is already a member of this community`);
       }
 
-      community.members.push(idUser);
+      await this.communityModel.findByIdAndUpdate(
+        idCommunity,
+        { $push: { members: idUser } },
+        { new: true, runValidators: true }
+      ).exec();
 
       const userJoinCommunityEvent: UserJoinEventDto = {
           userId: idUser,

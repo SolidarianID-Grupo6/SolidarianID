@@ -10,6 +10,8 @@ import { Model } from 'mongoose';
 import { CommunityJoinRequest, CommunityJoinRequestDocument } from './schemas/community-join-request.schema';
 import { CommunityJoinRequestEntity } from './entities/community-join-request.entity';
 import { CommunityService } from '../community/community.service';
+import { UserJoinRequestDto } from './dto/user-join-request.dto';
+import { UserJoinStatus } from './entities/user-request-status.enum';
 
 @Injectable()
 export class CommunityJoinRequestService {
@@ -28,29 +30,29 @@ export class CommunityJoinRequestService {
       throw new NotFoundException(`Community with ID ${userRequest.idCommunity} not found`);
     }
 
-    const userId = userRequest.userId;
+    const userId = userRequest.idUserId;
 
     if (community.members.includes(userId)) {
       throw new BadRequestException(
-        `User with ID ${userRequest.userId} is already a member`,
+        `User with ID ${userRequest.idUserId} is already a member`,
       );
     }
 
     const communityJoinRequest = await this.communityJoinRequestModel.findOne({ 
       idCommunity: userRequest.idCommunity,
-      idUserId: userRequest.userId 
+      idUserId: userRequest.idUserId 
     }).exec();
 
     
     if (communityJoinRequest) {
-      throw new BadRequestException(`Request already exists for user ID ${userRequest.userId}`);
+      throw new BadRequestException(`Request already exists for user ID ${userRequest.idUserId}`);
     }
 
     const requestJoinCommunity = this.communityJoinRequestModel.create({ 
       idCommunity: userRequest.idCommunity, 
-      idUserId: userRequest.userId });
+      idUserId: userRequest.idUserId });
 
-      return (await requestJoinCommunity)._id.toString();
+      return String((await requestJoinCommunity)._id);
   }
 
   // Aceptar una solicitud de unirse a una comunidad
@@ -60,53 +62,49 @@ export class CommunityJoinRequestService {
     if (!request) {
       throw new NotFoundException(`Request with ID ${idRequest} not found`);
     }
+
+    if (request.status !== UserJoinStatus.Pending) {
+      throw new BadRequestException(`Request with ID ${idRequest} is already approved or rejected`);
+    }
+
     //Poner estado a las solicitudes y poner pendeintes y aprobadas
   
-    await this.communityService.addMember(id, userId);
+    await this.communityService.addMember(request.idCommunity, request.userId);
 
-    const updatedCommunity = await this.communityJoinRequestModel.findByIdAndUpdate(
-      id,
-      {
-        $pull: { pendingRequests: userId },
-      },
+    const updatedRequest = await this.communityJoinRequestModel.findByIdAndUpdate(
+      idRequest,
+      { status: UserJoinStatus.Approved },
       { new: true, runValidators: true }
     ).exec();
-    
-    if (!updatedCommunity) {
-      throw new NotFoundException(`Community with ID ${id} not found`);
+
+    if (!updatedRequest) {
+      throw new NotFoundException(`Request with ID ${idRequest} not found`);
     }
     
   }
 
   // Rechazar una solicitud de unirse a una comunidad
-  async rejectRequest(id: string, userRequest: UserRequestDto): Promise<CommunityJoinRequest> {
-    const community = await this.communityJoinRequestModel.findById(id).exec();
+  async rejectRequest(idRequest: string): Promise<void> {
+    const request = await this.communityJoinRequestModel.findOne({ _id: idRequest }).exec();
 
-    if (!community) {
-      throw new NotFoundException(`Community with ID "${id}" not found`);
+    if (!request) {
+      throw new NotFoundException(`Request with ID ${idRequest} not found`);
     }
 
-    const userId = userRequest.userId;
-
-    if(!community.pendingRequests.includes(userId)) {
-      throw new BadRequestException(
-        `User with ID "${userId}" has not requested to join`,
-      );
+    if (request.status !== UserJoinStatus.Pending) {
+      throw new BadRequestException(`Request with ID ${idRequest} is already approved or rejected`);
     }
 
-    const updatedCommunity = await this.communityJoinRequestModel.findByIdAndUpdate(
-      id,
-      {
-        $pull: { pendingRequests: userId },
-      },
+    const updatedRequest = await this.communityJoinRequestModel.findByIdAndUpdate(
+      idRequest,
+      { status: UserJoinStatus.Rejected },
       { new: true, runValidators: true }
     ).exec();
     
-    if (!updatedCommunity) {
+    if (!updatedRequest) {
       throw new NotFoundException(`Community not found`);
     }
 
-    return updatedCommunity.save();
   }
 
 
@@ -120,7 +118,7 @@ export class CommunityJoinRequestService {
   async findOne(id: string): Promise<CommunityJoinRequestEntity> {
     const request = await this.communityJoinRequestModel.findById(id).exec();
     if (!request) {
-      throw new NotFoundException(`Community with ID "${id}" not found`);
+      throw new NotFoundException(`Community with ID ${id} not found`);
     }
     return this.mapToEntity(request);
   }
@@ -129,6 +127,7 @@ export class CommunityJoinRequestService {
     return {
       idCommunity: document.idCommunity,
       idUserId: document.userId,
+      status: document.status,
     };
   }
 }

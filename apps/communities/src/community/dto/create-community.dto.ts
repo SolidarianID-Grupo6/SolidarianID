@@ -1,5 +1,6 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
-import { Cause } from '../../cause/schemas/cause.schema';
+import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { CreateCauseDto } from '../../cause/dto/create-cause.dto';
+import { Type } from 'class-transformer';
 
 export class CreateCommunityDto {
 
@@ -13,5 +14,7 @@ export class CreateCommunityDto {
   admin: number;
 
   @IsArray()
-  causes: Cause[];
+  @ValidateNested({ each: true })
+  @Type(() => CreateCauseDto)
+  causes: CreateCauseDto[];
 }
