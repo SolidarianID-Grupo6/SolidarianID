@@ -1,6 +1,9 @@
 import { CauseStatus } from "./cause-status.enum";
 
 export class CauseEntity {
+
+      id: string;
+
       title: string;
     
       description: string;

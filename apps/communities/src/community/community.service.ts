@@ -149,6 +149,7 @@ export class CommunityService {
 
   private mapToEntity(document: CommunityDocument): CommunityEntity {
     return {
+      id: String(document._id),
       name: document.name,
       description: document.description,
       creator: document.creator,

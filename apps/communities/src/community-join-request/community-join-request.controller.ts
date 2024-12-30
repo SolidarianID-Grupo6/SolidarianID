@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Put } from '@nestjs/common';
 import { CommunityJoinRequestService } from './community-join-request.service';
 import { CommunityJoinRequestEntity } from './entities/community-join-request.entity';
 import { UserJoinRequestDto } from './dto/user-join-request.dto';
@@ -13,17 +13,23 @@ export class CommunityJoinRequestController {
     return this.communityJoinRequestService.findAll();
   }
 
+  @Get(':idCommunity')
+  async findByCommunitYPending(@Param('idCommunity') idCommunity: string): Promise<CommunityJoinRequestEntity[]> {
+    return this.communityJoinRequestService.findPendingRequestsByCommunity(idCommunity);
+  }
+
+
   @Post('requests')
   async requestJoin(@Body() userJoinRequest: UserJoinRequestDto): Promise<string> {
     return this.communityJoinRequestService.requestJoin(userJoinRequest);
   }
 
-  @Post('acceptances/:idRequest')
+  @Put('acceptances/:idRequest')
   async acceptRequest(@Param('idRequest') idRequest: string): Promise<void> {
     await this.communityJoinRequestService.acceptRequest(idRequest);
   }
 
-  @Post('rejections/:idRequest')
+  @Put('rejections/:idRequest')
   async rejectRequest(@Param('idRequest') idRequest: string): Promise<void> {
     await this.communityJoinRequestService.rejectRequest(idRequest);
   }

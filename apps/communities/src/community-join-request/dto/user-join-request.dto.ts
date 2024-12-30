@@ -1,4 +1,4 @@
 export class UserJoinRequestDto {
     idCommunity: string;
-    idUserId: number;
+    idUser: number;
 }

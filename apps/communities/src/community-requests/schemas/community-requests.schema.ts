@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Cause } from '../../cause/schemas/cause.schema';
 import { CommunityRequestStatus } from '../entities/CommunityRequest-status.enum';
 import { CreateCauseDto } from '../../cause/dto/create-cause.dto';
 

@@ -91,6 +91,7 @@ export class CommunityRequestsService {
   // Método helper para mapear de Document a Entity
   private mapToEntity(document: CommunityRequestsDocument): CommunityRequestsEntity {
     return {
+      id: String(document._id),
       name: document.name,
       description: document.description,
       creator: document.creator,
