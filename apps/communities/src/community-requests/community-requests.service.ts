@@ -75,10 +75,11 @@ export class CommunityRequestsService {
   }
   
   // Rechazar una solicitud
-  async rejectRequest(requestId: string): Promise<void> {
+  async rejectRequest(requestId: string, rejectReason: string): Promise<void> {
     const request = await this.requestModel.findByIdAndUpdate(
       requestId,
-      { status: CommunityRequestStatus.Rejected },
+      { status: CommunityRequestStatus.Rejected,
+        rejectReason: rejectReason },
       { new: true },
     ).exec();
 
@@ -97,6 +98,7 @@ export class CommunityRequestsService {
       creator: document.creator,
       status: document.status,
       requestDate: document.requestDate,
+      rejectReason: document.rejectReason,
       causes: document.causes
     };
   }

@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Render } from '@nestjs/common';
 import { FrontEndService } from './front-end.service';
 
 @Controller()
@@ -6,7 +6,8 @@ export class FrontEndController {
   constructor(private readonly frontEndService: FrontEndService) {}
 
   @Get()
-  getHello(): string {
-    return this.frontEndService.getHello();
+  @Render('index.hbs')
+  root() {
+    return { message: 'Hello world!' };
   }
 }

@@ -22,6 +22,9 @@ export class CommunityRequests {
   @Prop({ default: new Date() })
   requestDate: Date;
 
+  @Prop()
+  rejectReason: string;
+
   @Prop({ required: true})
   causes: CreateCauseDto[];
 

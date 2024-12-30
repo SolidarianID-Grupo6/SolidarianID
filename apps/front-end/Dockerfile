@@ -10,6 +10,7 @@ RUN npm ci
 # Copy specific service files
 COPY ./apps/front-end ./apps/front-end
 
+
 # Production artifacts
 EXPOSE 3004
 CMD ["npm", "run", "start:dev:front-end"]
