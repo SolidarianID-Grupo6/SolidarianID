@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { CauseStatus } from '../entities/cause-status.enum';
+import { ODS_ENUM } from '@app/iam/authentication/enums/ods.enum';
 
 export type CauseDocument = Cause & Document;
 
@@ -19,6 +20,9 @@ export class Cause {
 
   @Prop()
   endDate: Date;
+
+  @Prop()
+  ods: ODS_ENUM[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
   community: string;
