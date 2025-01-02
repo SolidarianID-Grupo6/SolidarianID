@@ -10,6 +10,9 @@ RUN npm ci
 # Copy specific service files
 COPY ./apps/statistics ./apps/statistics
 
+# Install service dependencies
+COPY ./libs ./libs
+
 # Production artifacts
 EXPOSE 3003
 CMD ["npm", "run", "start:dev:statistics"]
