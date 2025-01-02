@@ -49,14 +49,14 @@ export class AccessTokenGuard implements CanActivate {
 
       const accessTokenCookie = cookieHeader
         .split(';')
-        .find((c) => c.trim().startsWith(`${tokenName}=`));
+        .find((c) => c.trim().startsWith(`accessToken=`));
 
       if (!accessTokenCookie) return undefined;
 
       const JWTString = accessTokenCookie.split('=j:')[1];
       const JWT = JSON.parse(JWTString);
 
-      return JWT.accessToken;
+      return JWT[tokenName];
     } catch (error) {
       return undefined;
     }

@@ -70,12 +70,12 @@ export class UsersController {
     @Res({ passthrough: true }) response: Response,
   ) {
     console.log(
-      this.accessTokenGuard.extractTokenFromCookie(request, 'accessToken'),
+      this.accessTokenGuard.extractTokenFromCookie(request, 'refreshToken'),
     );
     const newAccessToken = await this.usersService.refreshTokens({
       refreshToken: this.accessTokenGuard.extractTokenFromCookie(
         request,
-        'accessToken',
+        'refreshToken',
       ),
     });
     response.cookie('accessToken', newAccessToken, {
