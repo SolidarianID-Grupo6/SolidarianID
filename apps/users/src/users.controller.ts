@@ -8,9 +8,10 @@ import {
   Param,
   Patch,
   Post,
+  Req,
   Res,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { UsersService } from './users.service';
 import { EventPattern } from '@nestjs/microservices';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -20,10 +21,15 @@ import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
 import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
 
 @Controller()
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly accessTokenGuard: AccessTokenGuard,
+  ) {}
 
   @Get()
   findAll() {
@@ -55,6 +61,28 @@ export class UsersController {
   @Post('register')
   register(@Body() userRegistration: RegisterUserDto) {
     return this.usersService.register(userRegistration);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Get('refresh-tokens')
+  async refreshTokens(
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    console.log(
+      this.accessTokenGuard.extractTokenFromCookie(request, 'accessToken'),
+    );
+    const newAccessToken = await this.usersService.refreshTokens({
+      refreshToken: this.accessTokenGuard.extractTokenFromCookie(
+        request,
+        'accessToken',
+      ),
+    });
+    response.cookie('accessToken', newAccessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
   }
 
   @Get(':id')

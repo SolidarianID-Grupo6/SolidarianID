@@ -9,6 +9,7 @@ import { IamModule } from '@app/iam';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from '@app/iam/config/jwt.config';
+import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import jwtConfig from '@app/iam/config/jwt.config';
     ConfigModule.forFeature(jwtConfig),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, AccessTokenGuard],
 })
 export class UsersModule {}

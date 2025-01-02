@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -10,6 +16,7 @@ import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '@app/iam/config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class UsersService {
@@ -43,21 +50,11 @@ export class UsersService {
       throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
     }
 
-    const accessToken = await this.jwtService.signAsync(
-      {
-        sub: user.id,
-        email: user.email,
-      } as ActiveUserData,
-      {
-        audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
-        secret: this.jwtConfiguration.secret,
-        expiresIn: this.jwtConfiguration.accessTokenTtl,
-      },
-    );
+    const [accessToken, refreshToken] = await this.generateTokens(user);
 
     return {
       accessToken: accessToken,
+      refreshToken: refreshToken,
     };
   }
 
@@ -81,6 +78,31 @@ export class UsersService {
     const newUser = this.usersRepository.create(userDto);
     const { password, ...response } = await this.usersRepository.save(newUser);
     return response;
+  }
+
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync<
+        Pick<ActiveUserData, 'sub'>
+      >(refreshTokenDto.refreshToken, {
+        secret: this.jwtConfiguration.secret,
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+      });
+
+      const user = await this.usersRepository.findOneOrFail({
+        where: { id: sub },
+      });
+
+      const [accessToken, refreshToken] = await this.generateTokens(user);
+
+      return {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      };
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 
   findAll() {
@@ -126,5 +148,34 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async generateTokens(user: User) {
+    return await Promise.all([
+      this.signToken<ActiveUserData>(
+        user.id,
+        this.jwtConfiguration.accessTokenTtl,
+        {
+          sub: user.id,
+          email: user.email,
+        },
+      ),
+      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl),
+    ]);
+  }
+
+  private async signToken<T>(userId: string, expiresIn: number, payload?: T) {
+    return await this.jwtService.signAsync(
+      {
+        sub: userId,
+        ...payload,
+      },
+      {
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+        secret: this.jwtConfiguration.secret,
+        expiresIn: expiresIn,
+      },
+    );
   }
 }

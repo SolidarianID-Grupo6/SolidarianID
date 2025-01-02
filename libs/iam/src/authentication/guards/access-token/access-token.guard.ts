@@ -22,7 +22,7 @@ export class AccessTokenGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const token =
-      this.extractTokenFromCookie(request) ??
+      this.extractTokenFromCookie(request, 'accessToken') ??
       this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
@@ -39,14 +39,17 @@ export class AccessTokenGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromCookie(request: Request): string | undefined {
+  public extractTokenFromCookie(
+    request: Request,
+    tokenName: string,
+  ): string | undefined {
     try {
       const cookieHeader = decodeURIComponent(request.headers.cookie);
       if (!cookieHeader) return undefined;
 
       const accessTokenCookie = cookieHeader
         .split(';')
-        .find((c) => c.trim().startsWith('accessToken='));
+        .find((c) => c.trim().startsWith(`${tokenName}=`));
 
       if (!accessTokenCookie) return undefined;
 
