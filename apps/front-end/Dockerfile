@@ -9,7 +9,8 @@ RUN npm ci
 
 # Copy specific service files
 COPY ./apps/front-end ./apps/front-end
-
+COPY ./apps/front-end/public ./dist/apps/front-end/public
+COPY ./apps/front-end/views ./dist/apps/front-end/views
 
 # Production artifacts
 EXPOSE 3004
