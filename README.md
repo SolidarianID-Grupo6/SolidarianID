@@ -83,6 +83,8 @@ REDIS_HOST=redis
 REDIS_PORT=6379
 ```
 
+> Remember to grant permissions to the ./volumes folder with `chmod -R 770 ./volumes`.
+
 # Ramas:
 
 - División por microservicios basada en [NestJS Monorepo](https://docs.nestjs.com/cli/monorepo):
