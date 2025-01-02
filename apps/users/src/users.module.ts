@@ -8,9 +8,8 @@ import { History } from './history/entities/history.entity';
 import { IamModule } from '@app/iam';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { GoogleOauthModule } from './oauth/google.oauth/google.oauth.module';
 import jwtConfig from '@app/iam/config/jwt.config';
-import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
-import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
 
 @Module({
   imports: [
@@ -29,6 +28,7 @@ import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-id
     IamModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
+    GoogleOauthModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

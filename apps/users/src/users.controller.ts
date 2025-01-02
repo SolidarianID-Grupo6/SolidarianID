@@ -83,7 +83,7 @@ export class UsersController {
     });
   }
 
-  @Get(':id')
+  @Get('user/:id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
