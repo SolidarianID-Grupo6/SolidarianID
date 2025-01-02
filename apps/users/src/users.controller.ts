@@ -21,7 +21,6 @@ import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
 import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
 
 @Controller()

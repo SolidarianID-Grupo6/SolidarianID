@@ -7,6 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import jwtConfig from './config/jwt.config';
 import { AuthenticationGuard } from './authentication/guards/authentication/authentication.guard';
 import { AccessTokenGuard } from './authentication/guards/access-token/access-token.guard';
+import { RefreshTokenIdsStorage } from './authentication/refresh-token-ids.storage/refresh-token-ids.storage';
 
 @Module({
   imports: [
@@ -23,8 +24,9 @@ import { AccessTokenGuard } from './authentication/guards/access-token/access-to
       useClass: AuthenticationGuard,
     },
     AccessTokenGuard,
+    RefreshTokenIdsStorage,
   ],
-  exports: [HashingService],
+  exports: [HashingService, RefreshTokenIdsStorage, AccessTokenGuard],
   controllers: [],
 })
 export class IamModule {}

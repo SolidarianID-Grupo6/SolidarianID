@@ -54,6 +54,7 @@ services:
       - ./libs:/app/libs
     depends_on:
       - postgres
+      - redis
     networks:
       - solidarianetwork
 
@@ -127,6 +128,19 @@ services:
       - '5432:5432'
     networks:
       - solidarianetwork
+
+  redis:
+    image: redis:7
+    restart: always
+    container_name: solidarianid-redis
+    volumes:
+      - ./volumes/redisdata:/data/db
+      - ./volumes/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    networks:
+      - solidarianetwork
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
 # Utils:
   pgadmin:

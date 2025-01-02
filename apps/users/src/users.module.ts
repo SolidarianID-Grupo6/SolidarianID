@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import jwtConfig from '@app/iam/config/jwt.config';
 import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
+import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
 
 @Module({
   imports: [
@@ -30,6 +31,6 @@ import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/ac
     ConfigModule.forFeature(jwtConfig),
   ],
   controllers: [UsersController],
-  providers: [UsersService, AccessTokenGuard],
+  providers: [UsersService],
 })
 export class UsersModule {}
