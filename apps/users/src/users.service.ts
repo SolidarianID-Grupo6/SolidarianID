@@ -164,7 +164,7 @@ export class UsersService {
     return user;
   }
 
-  async generateTokens(user: User) {
+  private async generateTokens(user: User) {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<ActiveUserData>(
@@ -173,6 +173,7 @@ export class UsersService {
         {
           sub: user.id,
           email: user.email,
+          role: user.role,
         },
       ),
       this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl, {

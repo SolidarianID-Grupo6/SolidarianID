@@ -22,6 +22,8 @@ import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
 import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
+import { Roles } from '@app/iam/authorization/decorators/roles.decorator';
+import { Role } from './enums/role.enum';
 
 @Controller()
 export class UsersController {
@@ -68,9 +70,6 @@ export class UsersController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    console.log(
-      this.accessTokenGuard.extractTokenFromCookie(request, 'refreshToken'),
-    );
     const newAccessToken = await this.usersService.refreshTokens({
       refreshToken: this.accessTokenGuard.extractTokenFromCookie(
         request,
@@ -99,7 +98,7 @@ export class UsersController {
     return this.usersService.remove(id);
   }
 
-  // Only for admins
+  @Roles(Role.Admin)
   @Get('fullUserInfo/:id')
   getFullUserInfo(@Param('id') id: string, @ActiveUser() user: ActiveUserData) {
     console.log(user);

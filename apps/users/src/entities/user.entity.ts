@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { History } from '../history/entities/history.entity';
+import { Role } from '../enums/role.enum';
 
 @Entity('users')
 export class User {
@@ -35,6 +36,9 @@ export class User {
 
   @Column({ nullable: true })
   presentation: string;
+
+  @Column({ type: 'enum', enum: Role, default: Role.Registered })
+  role: Role;
 
   @JoinTable()
   @OneToMany((type) => History, (history) => history.user, { cascade: true })
