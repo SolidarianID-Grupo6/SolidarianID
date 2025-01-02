@@ -3,7 +3,7 @@ import { CommunityRequestsService } from './community-requests.service';
 import { CreateCommunityRequestsDto } from './dto/create-community-request.dto';
 import { CommunityRequestsEntity } from './entities/community-request.entity';
 
-@Controller('community-requests')
+@Controller('community-requests/')
 export class CommunityRequestsController {
   constructor(private readonly requestService: CommunityRequestsService) {}
 

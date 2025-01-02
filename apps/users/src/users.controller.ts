@@ -25,7 +25,7 @@ import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/ac
 import { Roles } from '@app/iam/authorization/decorators/roles.decorator';
 import { Role } from './enums/role.enum';
 
-@Controller()
+@Controller('users/')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
