@@ -5,11 +5,13 @@ import { CauseController } from './cause.controller';
 import { Cause, CauseSchema } from './schemas/cause.schema';
 import { CommunityModule } from '../community/community.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { IamModule } from '@app/iam';
+
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Cause.name, schema: CauseSchema }]),
-    forwardRef(() => CommunityModule),
+    forwardRef(() => CommunityModule),IamModule,
     ClientsModule.register([{
       name: 'NATS_SERVICE',
       transport: Transport.NATS,
