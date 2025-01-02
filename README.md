@@ -83,7 +83,7 @@ REDIS_HOST=redis
 REDIS_PORT=6379
 ```
 
-> Remember to grant permissions to the ./volumes folder with `chmod -R 770 ./volumes`.
+> Remember to grant permissions to the ./volumes folder with `chmod -R 770 ./volumes` .
 
 # Ramas:
 
