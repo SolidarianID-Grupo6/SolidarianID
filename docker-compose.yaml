@@ -51,8 +51,10 @@ services:
       - "3002:3002"
     volumes:
       - ./apps/users:/app/apps/users
+      - ./libs:/app/libs
     depends_on:
       - postgres
+      - redis
     networks:
       - solidarianetwork
 
@@ -117,14 +119,28 @@ services:
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_DB=${POSTGRES_DEFAULT_DB}
     container_name: solidarianid-postgres
     volumes:
       - ./volumes/pgdata:/var/lib/postgresql/data
+      - ./volumes/init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the init script
     ports:
       - '5432:5432'
     networks:
       - solidarianetwork
+
+  redis:
+    image: redis:7
+    restart: always
+    container_name: solidarianid-redis
+    volumes:
+      - ./volumes/redisdata:/data/db
+      - ./volumes/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    networks:
+      - solidarianetwork
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
 
 # Utils:
   pgadmin:
@@ -203,7 +219,7 @@ configs:
         "Name": "SolidarianID",
         "Host": "postgres",
         "Port": 5432,
-        "MaintenanceDB": "${POSTGRES_DB}",
+        "MaintenanceDB": "${POSTGRES_DEFAULT_DB}",
         "Username": "${POSTGRES_USER}",
         "PassFile": "/pgpass",
         "SSLMode": "prefer"
