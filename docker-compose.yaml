@@ -73,6 +73,7 @@ services:
       - "3003:3003"
     volumes:
       - ./apps/statistics:/app/apps/statistics
+      - ./libs:/app/libs
     networks:
       - solidarianetwork
 
