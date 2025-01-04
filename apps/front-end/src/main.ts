@@ -12,6 +12,7 @@ async function bootstrap() {
 
   console.log('Views Directory:', '/app/apps/front-end/src/views');
   console.log('Static Assets Directory:', '/app/apps/front-end/src/public');
+  
 
   await app.listen(process.env.PORT ?? 3004);
 }

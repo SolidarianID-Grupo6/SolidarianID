@@ -149,18 +149,17 @@ function renderCommunities(communities) {
         <!-- Checkbox al lado izquierdo -->
         <input type="checkbox" class="mr-4" id="community-${community.id}" data-index="${index}">
 
-        <div class="flex items-center space-x-4">
-          <!-- Botón Ver Detalles -->
-          <button class="bg-teal-500 text-white px-4 py-2 rounded hover:bg-teal-600" onclick="showPopup(${index})">
-            Ver Detalles
-          </button>
-          
+        <div class="flex items-center space-x-6">          
           <!-- Datos de la solicitud -->
           <div>
-            <h3 class="text-lg font-bold">Solicitud ${index + 1}: ${community.name}</h3>
-            <p class="text-sm text-gray-600">${community.description || 'Sin descripción'}</p>
+            <h3 class="text-lg font-bold">Nombre: ${community.name}</h3>
+            <p class="text-sm text-gray-600">Descripción: ${community.description}</p>
           </div>
         </div>
+         <!-- Botón Ver Detalles -->
+          <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" onclick="showPopup(${index})">
+            Ver Detalles
+          </button>
 
         <!-- Botón Rechazar -->
         <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
@@ -182,7 +181,7 @@ function showPopup(index) {
     <p><strong>Descripción:</strong> ${community.description || 'Sin descripción'}</p>
     <p><strong>Fecha de Solicitud:</strong> ${new Date(community.requestDate).toLocaleString()}</p>
     <p><strong>Estado:</strong> ${community.status}</p>
-    <p><strong>Causas:</strong> ${community.causes.map(cause => `<span>${cause.name}</span>`).join(', ')}</p>
+    <p><strong>Causas:</strong> ${community.causes.map(cause => `<span>${cause.title}</span>`).join(', ')}</p>
     <p><strong>Creador:</strong> ${community.creator}</p>
   `;
 
