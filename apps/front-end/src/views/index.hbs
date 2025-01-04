@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SolidarianID</title>
+  <link rel="stylesheet" href="/stylesheets/output.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
+  <!-- Para soporte de fetch si lo necesitas -->
+</head>
+
+<body class="bg-gray-100 font-sans">
+  <!-- Header -->
+  <header class="bg-white shadow-xl py-4">
+    <div class="mx-auto flex items-center justify-between px-6">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <img src="/images/logo.png" alt="Logo" class="w-32 h-16 object-cover">
+      </div>
+
+      <!-- Título -->
+      <div class="flex-grow text-center">
+        <h1 class="text-2xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
+          SolidarianID
+        </h1>
+      </div>
+
+      <!-- Usuario -->
+      <div class="text-sm text-gray-700">
+        <span class="font-semibold">Usuario:</span> Administrador
+      </div>
+    </div>
+  </header>
+
+  <!-- Nav Tabs -->
+  <nav class="bg-gray-200">
+    <div class="container mx-auto flex justify-around text-center">
+      <a href="#" class="py-3 px-6 hover:bg-teal-100 border-b-4 border-transparent hover:border-teal-500"
+        onclick="showTab('validacion')">
+        Validación
+      </a>
+      <a href="#" class="py-3 px-6 hover:bg-teal-100 border-b-4 border-transparent hover:border-teal-500"
+        onclick="showTab('estadisticas')">
+        Estadísticas
+      </a>
+      <a href="#" class="py-3 px-6 hover:bg-teal-100 border-b-4 border-transparent hover:border-teal-500"
+        onclick="showTab('informes')">
+        Informes
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto mt-6 flex-grow">
+    <div class="bg-white shadow-md rounded p-4">
+      <!-- Tabs Content -->
+      <div id="validacion" class="tabcontent">
+        <div id="comunidades-list" class="space-y-4">
+          <!-- Aquí se renderizarán las solicitudes -->
+        </div>
+
+        <!-- Botón de Validar debajo del panel -->
+<div class="mt-6 flex justify-end">
+  <button class="bg-green-1000 text-black px-6 py-3 rounded hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-400" onclick="validateSelectedCommunities()">
+    Validar Seleccionadas
+  </button>
+</div>
+        </div>
+      </div>
+
+      <!-- Popup (Ventana emergente) -->
+      <div id="detailsPopup" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+          <h2 class="text-xl font-bold mb-4">Detalles de la Solicitud</h2>
+          <div id="popupContent"></div>
+          <button class="bg-red-500 text-white px-4 py-2 rounded mt-4" onclick="closePopup()">Cerrar</button>
+        </div>
+      </div>
+
+      <div id="estadisticas" class="tabcontent hidden">
+        <!-- Contenido de estadísticas -->
+        <p>Contenido de estadísticas aquí...</p>
+      </div>
+
+      <div id="informes" class="tabcontent hidden">
+        <!-- Contenido de informes -->
+        <p>Contenido de informes aquí...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-4 mt-auto">
+    <h2 class="text-lg font-bold mb-3 text-white tracking-tight">
+      Conéctate con nosotros
+    </h2>
+    <p>Siempre estamos aquí para ayudarte. Si tienes alguna pregunta o necesitas soporte, no dudes en contactarnos.</p>
+    <div class="social-links flex justify-center space-x-4 mt-4">
+      <a href="#" class="text-teal-500"><i class="fab fa-facebook"></i></a>
+      <a href="#" class="text-teal-400"><i class="fab fa-twitter"></i></a>
+      <a href="#" class="text-pink-500"><i class="fab fa-instagram"></i></a>
+      <a href="#" class="text-blue-500"><i class="fab fa-linkedin"></i></a>
+    </div>
+    <div class="footer-bottom mt-4 text-sm text-gray-400 border-t border-gray-600 pt-2">
+      <p>&copy; 2024 SolidarianID. Todos los derechos reservados.</p>
+      <p><a href="#" class="text-teal-400 hover:underline">Política de privacidad</a> | <a href="#"
+          class="text-teal-400 hover:underline">Términos de uso</a></p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Función para mostrar el contenido de la pestaña seleccionada
+    function showTab(tabName) {
+      console.log(`Mostrando pestaña: ${tabName}`);
+      const tabContents = document.querySelectorAll('.tabcontent');
+      tabContents.forEach(content => content.classList.add('hidden')); // Ocultar todos
+      document.getElementById(tabName).classList.remove('hidden'); // Mostrar el seleccionado
+    }
+
+    let communities = [];
+
+async function fetchCommunities() {
+  try {
+    const response = await fetch('http://localhost:3001/community-requests');
+    if (!response.ok) {
+      console.log('Error en la solicitud:', response);
+      throw new Error(`Error al obtener comunidades: ${response.statusText}`);
+    }
+
+    communities = await response.json();
+    renderCommunities(communities);
+  } catch (error) {
+    console.error(error);
+    document.getElementById('comunidades-list').innerHTML = `
+      <p class="text-red-500">Error al cargar las comunidades.</p>
+    `;
+  }
+}
+
+function renderCommunities(communities) {
+  const list = document.getElementById('comunidades-list');
+  list.innerHTML = ''; // Limpiar contenido previo
+
+  communities.forEach((community, index) => {
+    const item = `
+      <div class="solicitud-item flex items-center justify-between p-4 bg-gray-50 shadow-md rounded">
+        <!-- Checkbox al lado izquierdo -->
+        <input type="checkbox" class="mr-4" id="community-${community.id}" data-index="${index}">
+
+        <div class="flex items-center space-x-6">          
+          <!-- Datos de la solicitud -->
+          <div>
+            <h3 class="text-lg font-bold">Nombre: ${community.name}</h3>
+            <p class="text-sm text-gray-600">Descripción: ${community.description}</p>
+          </div>
+        </div>
+         <!-- Botón Ver Detalles -->
+          <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" onclick="showPopup(${index})">
+            Ver Detalles
+          </button>
+
+        <!-- Botón Rechazar -->
+        <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
+          Rechazar
+        </button>
+      </div>
+    `;
+    list.innerHTML += item;
+  });
+}
+
+// Mostrar el popup con los detalles de la solicitud
+function showPopup(index) {
+  const community = communities[index];
+
+  const popupContent = `
+    <p><strong>ID:</strong> ${community.id}</p>
+    <p><strong>Nombre:</strong> ${community.name}</p>
+    <p><strong>Descripción:</strong> ${community.description || 'Sin descripción'}</p>
+    <p><strong>Fecha de Solicitud:</strong> ${new Date(community.requestDate).toLocaleString()}</p>
+    <p><strong>Estado:</strong> ${community.status}</p>
+    <p><strong>Causas:</strong> ${community.causes.map(cause => `<span>${cause.title}</span>`).join(', ')}</p>
+    <p><strong>Creador:</strong> ${community.creator}</p>
+  `;
+
+  document.getElementById('popupContent').innerHTML = popupContent;
+  document.getElementById('detailsPopup').classList.remove('hidden');
+}
+
+// Cerrar el popup
+function closePopup() {
+  document.getElementById('detailsPopup').classList.add('hidden');
+}
+
+// Función para validar las solicitudes seleccionadas
+// Crear una función async para manejar la validación
+async function validateSelectedCommunities() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked'); // Obtener los checkboxes seleccionados
+  
+  if(checkboxes.length === 0) {
+    alert('Por favor, selecciona al menos una solicitud para validar.');
+    return;
+  }
+  // Usamos un for...of en lugar de forEach para que funcione con await
+  for (const checkbox of checkboxes) {
+    const communityId = checkbox.id.split('-')[1]; // Obtener el ID de la comunidad desde el id del checkbox
+    const community = communities.find(community => community.id == communityId); // Buscar la comunidad correspondiente en el array
+    
+    if (community) {
+      try {
+        // Hacer la solicitud fetch para cada comunidad seleccionada
+        const response = await fetch(`http://localhost:3001/community-requests/approve/${community.id}`, {
+          method: 'PUT', // O el método adecuado según tu API, 'POST' o 'DELETE', etc.
+        });
+
+        if (!response.ok) {
+          console.log('Error en la solicitud:', response);
+          throw new Error(`Error aprobando la solicitud de creación de comunidad: ${response.statusText}`);
+        }
+        
+        // Si la respuesta es exitosa, puedes agregar un mensaje o actualizar la UI si es necesario
+        console.log(`Solicitud ${community.id} aprobada con éxito`);
+
+      } catch (error) {
+        console.error('Error al aprobar la solicitud:', error);
+      }
+    }
+
+    window.location.reload();
+  }
+}
+
+
+// Función para rechazar una solicitud
+async function rejectCommunity(communityId) {
+  console.log('Rechazar solicitud con ID:', communityId);
+
+  try {
+    // Hacer la solicitud fetch para rechazar la comunidad con el communityId
+    const response = await fetch(`http://localhost:3001/community-requests/reject/${communityId}`, {
+      method: 'PUT', // Asumiendo que es un método PUT para rechazar la solicitud
+    });
+
+    if (!response.ok) {
+      console.log('Error en la solicitud:', response);
+      throw new Error(`Error rechazando la solicitud de creación de comunidad: ${response.statusText}`);
+    }
+
+    // Si la respuesta es exitosa, puedes agregar un mensaje o actualizar la UI si es necesario
+    console.log(`Solicitud ${communityId} rechazada con éxito`);
+
+  } catch (error) {
+    console.error('Error al rechazar la solicitud:', error);
+  }
+
+  window.location.reload();
+}
+
+// Configurar la pestaña predeterminada y cargar datos
+window.onload = function () {
+  showTab('validacion');
+  fetchCommunities();
+};
+
+  </script>
+</body>
+
+</html>
