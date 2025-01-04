@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { History } from '../history/entities/history.entity';
-import { Role } from '../enums/role.enum';
+import { Role } from '@app/iam/authorization/enums/role.enum';
 
 @Entity('users')
 export class User {
