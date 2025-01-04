@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { HistoryModule } from './history/history.module';
@@ -28,9 +28,10 @@ import jwtConfig from '@app/iam/config/jwt.config';
     IamModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
-    GoogleOauthModule,
+    forwardRef(() => GoogleOauthModule),
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

@@ -16,22 +16,22 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   surnames: string;
 
   @Column()
   email: string;
 
-  @Column()
+  @Column('boolean', { default: false })
   isEmailPublic: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column()
   birthdate: Date;
 
-  @Column()
+  @Column('boolean', { default: false })
   isBirthdatePublic: boolean;
 
   @Column({ nullable: true })
@@ -39,6 +39,9 @@ export class User {
 
   @Column({ type: 'enum', enum: Role, default: Role.Registered })
   role: Role;
+
+  @Column({ nullable: true })
+  googleId: string;
 
   @JoinTable()
   @OneToMany((type) => History, (history) => history.user, { cascade: true })

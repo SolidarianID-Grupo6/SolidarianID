@@ -165,7 +165,7 @@ export class UsersService {
     return user;
   }
 
-  private async generateTokens(user: User) {
+  public async generateTokens(user: User) {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<ActiveUserData>(
