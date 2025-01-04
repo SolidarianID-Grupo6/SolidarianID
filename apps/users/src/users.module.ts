@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleOauthModule } from './oauth/google.oauth/google.oauth.module';
 import jwtConfig from '@app/iam/config/jwt.config';
+import { GithubOauthModule } from './oauth/github.oauth/github.oauth.module';
 
 @Module({
   imports: [
@@ -29,6 +30,8 @@ import jwtConfig from '@app/iam/config/jwt.config';
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     forwardRef(() => GoogleOauthModule),
+    forwardRef(() => GithubOauthModule),
+    GithubOauthModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],

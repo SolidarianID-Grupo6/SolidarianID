@@ -43,6 +43,9 @@ export class User {
   @Column({ nullable: true })
   googleId: string;
 
+  @Column({ nullable: true })
+  githubId: string;
+
   @JoinTable()
   @OneToMany((type) => History, (history) => history.user, { cascade: true })
   history: History[];

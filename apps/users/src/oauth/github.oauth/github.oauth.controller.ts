@@ -14,26 +14,24 @@ import { UsersService } from '../../users.service';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConfigService } from '@nestjs/config';
 
 @Auth(AuthType.None)
-@Controller('oauth/google')
-export class GoogleOauthController {
+@Controller('oauth/github')
+export class GithubOauthController {
   constructor(
     private readonly usersService: UsersService,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    private readonly configService: ConfigService,
   ) {}
 
   @Get()
-  @UseGuards(AuthGuard('google'))
-  googleLogin() {
-    return { msg: 'Google Authentication' };
+  @UseGuards(AuthGuard('github'))
+  githubLogin() {
+    return { msg: 'Github Authentication' };
   }
 
   @Get('callback')
-  @UseGuards(AuthGuard('google'))
+  @UseGuards(AuthGuard('github'))
   async handleRedirect(@Req() req, @Res({ passthrough: true }) res: Response) {
     const userProfile = req.user;
     try {
@@ -43,11 +41,10 @@ export class GoogleOauthController {
 
       if (!user) {
         const newUser = this.usersRepository.create({
-          googleId: userProfile.id,
+          githubId: userProfile.id,
           email: userProfile.emails[0].value,
-          name: userProfile.name.givenName,
-          surnames: userProfile.name.familyName,
-          birthdate: userProfile.birthday
+          name: userProfile._json.login,
+          birthdate: userProfile._json.birthday
             ? new Date(userProfile.birthday)
             : new Date(),
         });
