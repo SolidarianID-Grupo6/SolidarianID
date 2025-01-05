@@ -22,6 +22,6 @@ import { IamModule } from '@app/iam';
   ],
   controllers: [CauseController],
   providers: [CauseService],
-  exports: [CauseService]
+  exports: [CauseService, MongooseModule]
 })
 export class CauseModule {}

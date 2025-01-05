@@ -43,4 +43,9 @@ export class CreateCauseDto {
     @IsString()
     location: string;
 
+    @IsOptional()
+    @IsString()
+    community: string;
+
+
 }

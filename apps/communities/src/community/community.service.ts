@@ -50,7 +50,9 @@ export class CommunityService {
         keywords: cause.keywords,
         location: cause.location,
         actions: [], 
-        events: []
+        events: [],
+        ods: cause.ods,
+        community: idCommunity
       };
     
       // Crear la promesa para la causa y agregarla al array
