@@ -1,0 +1,11 @@
+POST http://localhost:3001/actions
+Content-Type: application/json
+
+{
+  "title": "Reclutamiento de Voluntarios",
+  "description": "Buscar voluntarios para asistir en la distribución de alimentos.",
+  "cause": "677822f30cdef6d79cd7e9a3",
+  "type": "volunteer",
+  "volunteerGoalCount": 20
+}
+
