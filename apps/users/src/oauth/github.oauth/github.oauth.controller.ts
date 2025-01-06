@@ -36,7 +36,7 @@ export class GithubOauthController {
     const userProfile = req.user;
     try {
       let user = await this.usersRepository.findOne({
-        where: { googleId: req.user.id },
+        where: { githubId: req.user.id },
       });
 
       if (!user) {
