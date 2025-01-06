@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { HistoryModule } from './history/history.module';
@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleOauthModule } from './oauth/google.oauth/google.oauth.module';
 import jwtConfig from '@app/iam/config/jwt.config';
+import { GithubOauthModule } from './oauth/github.oauth/github.oauth.module';
 
 @Module({
   imports: [
@@ -28,9 +29,12 @@ import jwtConfig from '@app/iam/config/jwt.config';
     IamModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
-    GoogleOauthModule,
+    forwardRef(() => GoogleOauthModule),
+    forwardRef(() => GithubOauthModule),
+    GithubOauthModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

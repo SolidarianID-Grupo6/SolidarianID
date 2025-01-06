@@ -1,4 +1,4 @@
-import { Role } from 'apps/users/src/enums/role.enum';
+import { Role } from '@app/iam/authorization/enums/role.enum';
 
 export interface ActiveUserData {
   /**

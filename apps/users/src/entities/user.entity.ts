@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { History } from '../history/entities/history.entity';
-import { Role } from '../enums/role.enum';
+import { Role } from '@app/iam/authorization/enums/role.enum';
 
 @Entity('users')
 export class User {
@@ -16,22 +16,22 @@ export class User {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   surnames: string;
 
   @Column()
   email: string;
 
-  @Column()
+  @Column('boolean', { default: false })
   isEmailPublic: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   password: string;
 
   @Column()
   birthdate: Date;
 
-  @Column()
+  @Column('boolean', { default: false })
   isBirthdatePublic: boolean;
 
   @Column({ nullable: true })
@@ -39,6 +39,12 @@ export class User {
 
   @Column({ type: 'enum', enum: Role, default: Role.Registered })
   role: Role;
+
+  @Column({ nullable: true })
+  googleId: string;
+
+  @Column({ nullable: true })
+  githubId: string;
 
   @JoinTable()
   @OneToMany((type) => History, (history) => history.user, { cascade: true })

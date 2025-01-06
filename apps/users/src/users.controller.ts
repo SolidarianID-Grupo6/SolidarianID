@@ -23,7 +23,7 @@ import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
 import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
 import { Roles } from '@app/iam/authorization/decorators/roles.decorator';
-import { Role } from './enums/role.enum';
+import { Role } from '@app/iam/authorization/enums/role.enum';
 
 @Controller('users/')
 export class UsersController {
