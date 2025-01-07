@@ -1,8 +1,8 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class DonateActionDto {
-  @IsNumber()
-  user: number;
+  @IsString()
+  user: string;
 
   @IsNumber()
   donation: number;

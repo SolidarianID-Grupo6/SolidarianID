@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { ArrayMinSize, IsArray, IsDateString, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { CreateActionDto } from '../../action/dto/create-action.dto';
 import { CreateEventDto } from '../../event/dto/create-event.dto';
 import { Type } from 'class-transformer';
@@ -14,6 +14,10 @@ export class CreateCauseDto {
     @IsString()
     @IsDateString()
     endDate: string;
+
+    @IsArray()
+    @ArrayMinSize(1, { message: 'El array debe tener al menos un elemento.' })
+    ods: string[];
 
     @IsArray()
     @IsOptional()
@@ -38,5 +42,10 @@ export class CreateCauseDto {
     @IsOptional()
     @IsString()
     location: string;
+
+    @IsOptional()
+    @IsString()
+    community: string;
+
 
 }

@@ -4,7 +4,7 @@ import { CommunityJoinRequestEntity } from './entities/community-join-request.en
 import { UserJoinRequestDto } from './dto/user-join-request.dto';
 
 
-@Controller('community-join-request')
+@Controller('community-join-request/')
 export class CommunityJoinRequestController {
   constructor(private readonly communityJoinRequestService: CommunityJoinRequestService) {}
 

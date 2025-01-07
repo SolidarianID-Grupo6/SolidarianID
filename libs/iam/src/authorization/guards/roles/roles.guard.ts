@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ROLES_KEY } from '../../decorators/roles.decorator';
 import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { REQUEST_USER_KEY } from 'libs/iam/iam.constants';
-import { Role } from 'apps/users/src/enums/role.enum';
+import { Role } from '@app/iam/authorization/enums/role.enum';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

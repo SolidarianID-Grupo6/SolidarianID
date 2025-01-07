@@ -2,6 +2,7 @@
 /dist
 /node_modules
 /build
+/apps/front-end/node_modules
 
 # Logs
 logs

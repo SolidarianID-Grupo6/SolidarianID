@@ -2,11 +2,15 @@ import { Controller, Body, Get, Param, Put, Delete } from '@nestjs/common';
 import { CommunityService } from './community.service';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { CommunityEntity } from './entities/community.entity';
+import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
+import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
+
 
 @Controller('communities/')
 export class CommunityController {
   constructor(private readonly communityService: CommunityService) {}
 
+  @Auth(AuthType.None)
   @Get()
   async findAll(): Promise<CommunityEntity[]> {
     return this.communityService.findAll();
