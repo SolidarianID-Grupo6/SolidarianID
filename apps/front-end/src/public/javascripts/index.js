@@ -8,7 +8,7 @@ function showTab(tabName) {
 // Cargar comunidades al iniciar la página
 async function fetchCommunities() {
   try {
-    const response = await fetch('http://localhost:3001/communities');
+    const response = await fetch('http://localhost:3001/communities-requests');
     if (!response.ok) {
       throw new Error(`Error al obtener comunidades: ${response.statusText}`);
     }
