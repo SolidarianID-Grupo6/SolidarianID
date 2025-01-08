@@ -16,7 +16,7 @@
     <div class="mx-auto flex items-center justify-between px-6">
       <!-- Logo -->
       <div class="flex items-center">
-        <img src="/images/logo.png" alt="Logo" class="w-32 h-16 object-cover">
+        <img src="/images/logo.png" alt="Logo" class="w-32 h-16 object-cover rounded-lg">
       </div>
 
       <!-- Título -->
@@ -27,7 +27,7 @@
       </div>
 
       <!-- Usuario -->
-      <div class="text-sm text-gray-700">
+      <div class="text-sm text-gray-700" font->
         <span class="font-semibold">Usuario:</span> Administrador
       </div>
     </div>
@@ -35,21 +35,25 @@
 
   <!-- Nav Tabs -->
   <nav class="bg-gray-200">
-    <div class="container mx-auto flex justify-around text-center">
-      <a href="#" class="py-3 px-6 hover:bg-teal-100 border-b-4 border-transparent hover:border-teal-500"
-        onclick="showTab('validacion')">
+    <div class=" mx-auto flex justify-around text-center">
+      <!-- Link: Validación -->
+      <a href="#" id="tab-validacion" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300"
+        onclick="showTab('validacion', this)">
         Validación
       </a>
-      <a href="#" class="py-3 px-6 hover:bg-teal-100 border-b-4 border-transparent hover:border-teal-500"
-        onclick="showTab('estadisticas')">
+      <!-- Link: Estadísticas -->
+      <a href="#" id="tab-estadisticas" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300"
+        onclick="showTab('estadisticas', this)">
         Estadísticas
       </a>
-      <a href="#" class="py-3 px-6 hover:bg-teal-100 border-b-4 border-transparent hover:border-teal-500"
-        onclick="showTab('informes')">
+      <!-- Link: Informes -->
+      <a href="#" id="tab-informes" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow  transition-all duration-300"
+        onclick="showTab('informes', this)">
         Informes
       </a>
     </div>
   </nav>
+
 
   <!-- Main Content -->
   <main class="container mx-auto mt-6 flex-grow">
@@ -104,19 +108,26 @@
     </div>
     <div class="footer-bottom mt-4 text-sm text-gray-400 border-t border-gray-600 pt-2">
       <p>&copy; 2024 SolidarianID. Todos los derechos reservados.</p>
-      <p><a href="#" class="text-teal-400 hover:underline">Política de privacidad</a> | <a href="#"
-          class="text-teal-400 hover:underline">Términos de uso</a></p>
+      <p><a href="#" class="text-blue-400 hover:underline">Política de privacidad</a> | <a href="#"
+          class="text-blue-400 hover:underline">Términos de uso</a></p>
     </div>
   </footer>
 
   <!-- JavaScript -->
   <script>
     // Función para mostrar el contenido de la pestaña seleccionada
-    function showTab(tabName) {
+    function showTab(tabName, element) {
       console.log(`Mostrando pestaña: ${tabName}`);
       const tabContents = document.querySelectorAll('.tabcontent');
       tabContents.forEach(content => content.classList.add('hidden')); // Ocultar todos
       document.getElementById(tabName).classList.remove('hidden'); // Mostrar el seleccionado
+
+      // Remueve la clase 'active' de todos los enlaces
+      const tabs = document.querySelectorAll('nav a');
+      tabs.forEach(tab => tab.classList.remove('active'));
+
+      // Añade la clase 'active' al enlace actual
+      element.classList.add('active');
     }
 
     let communities = [];
@@ -145,27 +156,35 @@ function renderCommunities(communities) {
 
   communities.forEach((community, index) => {
     const item = `
-      <div class="solicitud-item flex items-center justify-between p-4 bg-gray-50 shadow-md rounded">
-        <!-- Checkbox al lado izquierdo -->
-        <input type="checkbox" class="mr-4" id="community-${community.id}" data-index="${index}">
+      <div class="flex items-center p-4 bg-gray-50 shadow-md rounded-lg">
+  <!-- Checkbox al lado izquierdo -->
+  <input type="checkbox" class="mr-4" id="community-${community.id}" data-index="${index}">
 
-        <div class="flex items-center space-x-6">          
-          <!-- Datos de la solicitud -->
-          <div>
-            <h3 class="text-lg font-bold">Nombre: ${community.name}</h3>
-            <p class="text-sm text-gray-600">Descripción: ${community.description}</p>
-          </div>
-        </div>
-         <!-- Botón Ver Detalles -->
-          <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700" onclick="showPopup(${index})">
-            Ver Detalles
-          </button>
+  <!-- Contenedor dividido en tres columnas -->
+  <div class="grid grid-cols-3 gap-4 flex-1">
+    <!-- Columna 1: Nombre y Descripción -->
+    <div>
+      <h3 class="text-lg font-bold">Nombre: ${community.name}</h3>
+      <p class="text-sm text-gray-600">Descripción: ${community.description}</p>
+    </div>
 
-        <!-- Botón Rechazar -->
-        <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
-          Rechazar
-        </button>
-      </div>
+    <!-- Columna 2: Fecha -->
+    <div class="flex items-center justify-center">
+      <p class="text-sm text-gray-600">Fecha: ${new Date(community.requestDate).toLocaleDateString()}</p>
+    </div>
+
+    <!-- Columna 3: Botones -->
+    <div class="flex items-center justify-end space-x-2">
+      <button class="bg-cyan-500 text-white px-4 py-2 rounded hover:bg-cyan-600" onclick="showPopup(${index})">
+        <img src="/images/info-icon.png" alt="Info" class="w-5 h-5">
+      </button>
+      <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
+        Rechazar
+      </button>
+    </div>
+  </div>
+</div>
+
     `;
     list.innerHTML += item;
   });
@@ -260,7 +279,8 @@ async function rejectCommunity(communityId) {
 
 // Configurar la pestaña predeterminada y cargar datos
 window.onload = function () {
-  showTab('validacion');
+  const defaultTab = document.querySelector('nav a:first-child');
+  showTab('validacion', defaultTab);
   fetchCommunities();
 };
 
