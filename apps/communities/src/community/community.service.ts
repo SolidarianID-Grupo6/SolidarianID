@@ -15,6 +15,8 @@ import { UserJoinEventDto } from './dto/user-join-community.dto';
 import { CauseService } from '../cause/cause.service';
 import { CommunityEntity } from './entities/community.entity';
 import { CreateCauseDto } from '../cause/dto/create-cause.dto';
+import { CreateCommunityEventDto } from 'libs/events/dto/create-community-dto';
+import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 
 @Injectable()
 export class CommunityService {
@@ -39,6 +41,8 @@ export class CommunityService {
 
     const idCommunity = String(savedCommunity._id);
 
+    const causesEvent = [];
+
     // 2. Create causes with community reference
     for (const cause of createCommunityDto.causes) {
       // Crear el objeto de datos para cada causa
@@ -58,6 +62,19 @@ export class CommunityService {
       // Crear la promesa para la causa y agregarla al array
       const causeCreationPromise = this.causeService.create(idCommunity,causeData);
       causePromises.push(causeCreationPromise);
+
+      const odsEnumValues = cause.ods.map((odsDescription) => this.causeService.mapToEnum(odsDescription));
+      
+      const causeId = await causeCreationPromise;
+
+      // Crear el objeto de datos para el evento de causa
+      const causeEvent = {
+        cause_id: causeId,
+        title: cause.title,
+        ods: odsEnumValues,
+      };
+
+      causesEvent.push(causeEvent);
     }
 
     const createdCauses = await Promise.all(causePromises);
@@ -67,13 +84,14 @@ export class CommunityService {
 
     await savedCommunity.save();
 
-    const userEvent : UserJoinEventDto = {
-      userId: createCommunityDto.admin,
-      communityId: idCommunity
-    }
-
+    const communityEvent: CreateCommunityEventDto = {
+      community_id: idCommunity,
+      name: savedCommunity.name,
+      causes: causesEvent
+    };
+ 
     //Enviar evento a Users para que aparezca en el historial de comunidades del usuario
-    this.client.emit('create-community', userEvent);
+    this.client.emit(CommunityEvent.CreateCommunity, communityEvent);
 
     return idCommunity;
   } 
@@ -139,12 +157,7 @@ export class CommunityService {
         { new: true, runValidators: true }
       ).exec();
 
-      const userJoinCommunityEvent: UserJoinEventDto = {
-          userId: idUser,
-          communityId: idCommunity,
-      };
-
-      this.client.emit('user-joined-community', userJoinCommunityEvent);
+      this.client.emit(CommunityEvent.NewCommunityUser, idCommunity);
 
   }
 

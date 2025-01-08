@@ -9,6 +9,10 @@ import { VolunteerActionDto } from './dto/volunteer-action.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { ActionEntity } from './entities/action.entity';
 import { Cause, CauseDocument } from '../cause/schemas/cause.schema'; 
+import { CommunityEvent } from 'libs/events/enums/community.events.enum';
+import { CreateActionStatsDto } from 'libs/events/dto/create-action-dto';
+import { CreateCauseStatsDto } from 'libs/events/dto/create-community-dto';
+import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
 
 
 @Injectable()
@@ -48,6 +52,16 @@ export class ActionService {
     // Actualiza la causa para añadir la acción a su lista de acciones
     existingCause.actions.push(actionId);
     await existingCause.save();
+
+    const actionEvent : CreateActionStatsDto = { 
+      actionId: actionId,
+      cause_id: String(existingCause._id),
+      title: createActionDto.title,
+      description: createActionDto.description,
+      goal: createActionDto.foodGoalQuantity | createActionDto.moneyGoalAmount | createActionDto.volunteerGoalCount,
+    };
+
+    this.client.emit(CommunityEvent.CreateAction, actionEvent);
 
     return actionId;
   }
@@ -208,13 +222,13 @@ export class ActionService {
     }
   
     // Emitir el evento de donación
-    //const donateEvent: DonateActionEventDto = {
-      //userId: donateActionDto.user,
-      //actionId: id,
-      //donation: donateActionDto.donation,
-    //};
-  
-    //this.client.emit('donate-event', donateEvent);
+    const donateEvent: DonateEventDto = {
+      actionId: String(action._id),
+      causeId: String(action.cause),
+      progress: donateActionDto.donation,
+    };
+
+    this.client.emit(CommunityEvent.DonateEvent, donateEvent);
   
     // Devuelve la acción actualizada
     return this.mapToEntity(updatedAction);
@@ -253,6 +267,16 @@ export class ActionService {
       progress: progress,},
       { new: true, runValidators: true }
     ).exec();
+
+
+     // Emitir el evento de donación
+     const donateEvent: DonateEventDto = {
+      actionId: String(action._id),
+      causeId: String(action.cause),
+      progress: 1,
+    };
+
+    this.client.emit(CommunityEvent.DonateEvent, donateEvent);
   }
   
 

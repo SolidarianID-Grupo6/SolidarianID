@@ -16,16 +16,19 @@ export class CommunityController {
     return this.communityService.findAll();
   }
 
+  @Auth(AuthType.None)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<CommunityEntity> {
     return this.communityService.findOne(id);
   }
 
+  @Auth(AuthType.None)
   @Put(':id')
   async update( @Param('id') id: string, @Body() updateCommunityDto: UpdateCommunityDto) {
     await this.communityService.update(id, updateCommunityDto);
   }
 
+  @Auth(AuthType.None)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     await this.communityService.remove(id);

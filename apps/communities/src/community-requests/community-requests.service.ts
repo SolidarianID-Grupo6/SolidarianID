@@ -62,6 +62,10 @@ export class CommunityRequestsService {
       throw new NotFoundException('Solicitud no encontrada');
     }
 
+    if (request.status !== CommunityRequestStatus.Approved) {
+      throw new BadRequestException('La solicitud no ha sido aprobada');
+    }
+
     const createCommunity: CreateCommunityDto = {
       name: request.name,
       description: request.description,
