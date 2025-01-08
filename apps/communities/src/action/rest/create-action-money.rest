@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "title": "Recaudación de Fondos",
   "description": "Recolectar fondos para apoyo educativo.",
-  "cause": "677822f30cdef6d79cd7e9a3",
+  "cause": "677ee39918263ddcbcbfc890",
   "type": "money",
   "moneyGoalAmount": 5000
 }
