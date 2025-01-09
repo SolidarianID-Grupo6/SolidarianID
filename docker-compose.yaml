@@ -177,17 +177,6 @@ services:
     networks:
       - solidarianetwork
 
-  cassandra:
-    image: cassandra:5.0
-    restart: always
-    container_name: solidarianid-cassandra
-    volumes:
-      - ./volumes/cassandradata:/var/lib/cassandra
-    ports:
-      - "9042:9042"
-    networks:
-      - solidarianetwork
-
 # Utils:
   pgadmin:
     image: dpage/pgadmin4:8.14
