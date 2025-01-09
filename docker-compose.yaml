@@ -166,7 +166,7 @@ services:
     networks:
       - solidarianetwork
 
-# Utils:
+  # Utils:
   pgadmin:
     image: dpage/pgadmin4:8.14
     restart: always
