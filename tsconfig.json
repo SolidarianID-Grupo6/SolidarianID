@@ -23,6 +23,12 @@
       ],
       "@app/iam/*": [
         "libs/iam/src/*"
+      ],
+      "@app/neo4j": [
+        "libs/neo4j/src"
+      ],
+      "@app/neo4j/*": [
+        "libs/neo4j/src/*"
       ]
     }
   }
