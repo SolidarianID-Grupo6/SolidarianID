@@ -24,7 +24,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/gateway/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/gateway/test/jest-e2e.json",
+    "test:users:e2e": "jest --config ./apps/users/test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -46,6 +47,7 @@
     "ioredis": "^5.4.2",
     "mongoose": "^8.8.4",
     "nats": "^2.28.2",
+    "neo4j-driver": "^5.27.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-google-oauth20": "^2.0.0",
@@ -102,7 +104,8 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@app/iam(|/.*)$": "<rootDir>/libs/iam/src/$1"
+      "^@app/iam(|/.*)$": "<rootDir>/libs/iam/src/$1",
+      "^@app/neo4j(|/.*)$": "<rootDir>/libs/neo4j/src/$1"
     }
   }
 }
