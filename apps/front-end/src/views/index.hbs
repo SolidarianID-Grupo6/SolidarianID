@@ -11,49 +11,41 @@
 </head>
 
 <body class="bg-gray-100 font-sans">
-  <!-- Header -->
   <header class="bg-white shadow-xl py-4">
-    <div class="mx-auto flex items-center justify-between px-6">
-      <!-- Logo -->
-      <div class="flex items-center">
-        <img src="/images/logo.png" alt="Logo" class="w-32 h-16 object-cover rounded-lg">
-      </div>
-
-      <!-- Título -->
-      <div class="flex-grow text-center">
-        <h1 class="text-2xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
-          SolidarianID
-        </h1>
-      </div>
-
-      <!-- Usuario -->
-      <div class="text-sm text-gray-700" font->
-        <span class="font-semibold">Usuario:</span> Administrador
-      </div>
+  <div class="mx-auto flex items-center justify-between px-4 sm:px-6">
+    <!-- Logo / Botón Hamburguesa -->
+    <div>
+      <img id="menuToggle" src="/images/logo.png" alt="Logo" class="w-20 h-10 sm:w-24 sm:h-12 md:w-32 md:h-16 object-cover rounded-lg cursor-pointer sm:cursor-default sm:pointer-events-none">
     </div>
-  </header>
 
-  <!-- Nav Tabs -->
+    <!-- Título -->
+    <div class="flex-1 text-center px-4 sm:px-6">
+      <h1 class="text-lg sm:text-xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
+        SolidarianID
+      </h1>
+    </div>
+
+    <!-- Usuario -->
+    <div class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">
+      <span class="font-semibold">Administrador</span>
+    </div>
+  </div>
+</header>
+
   <nav class="bg-gray-200">
-    <div class=" mx-auto flex justify-around text-center">
-      <!-- Link: Validación -->
-      <a href="#" id="tab-validacion" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300"
-        onclick="showTab('validacion', this)">
+    <!-- Menú desplegable (oculto por defecto en móviles) -->
+    <div id="menuContent" class="hidden flex sm:flex justify-around flex-row text-center sm:space-x-4">
+      <a href="#" id="tab-validacion" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('validacion', this)">
         Validación
       </a>
-      <!-- Link: Estadísticas -->
-      <a href="#" id="tab-estadisticas" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300"
-        onclick="showTab('estadisticas', this)">
+      <a href="#" id="tab-estadisticas" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('estadisticas', this)">
         Estadísticas
       </a>
-      <!-- Link: Informes -->
-      <a href="#" id="tab-informes" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow  transition-all duration-300"
-        onclick="showTab('informes', this)">
+      <a href="#" id="tab-informes" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('informes', this)">
         Informes
       </a>
     </div>
   </nav>
-
 
   <!-- Main Content -->
   <main class="container mx-auto mt-6 mb-6 flex-grow">
@@ -105,35 +97,38 @@
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="bg-gray-800 text-white py-6 mt-auto">
-  <div class="container mx-auto text-center">
-    <h2 class="text-lg font-bold mb-3 text-white tracking-tight">
-      Conéctate con nosotros
-    </h2>
-    <p>Siempre estamos aquí para ayudarte. Si tienes alguna pregunta o necesitas soporte, no dudes en contactarnos.</p>
-    <div class="social-links flex justify-center space-x-4 mt-4">
-      <a href="https://www.facebook.com" target="_blank">
-        <img src="/images/social/facebook-icon.png" alt="Facebook" class="w-6 h-6">
-      </a>
-      <a href="https://www.twitter.com" target="_blank">
-        <img src="/images/social/twitter-icon.png" alt="Twitter" class="w-6 h-6">
-      </a>
-      <a href="https://www.instagram.com" target="_blank">
-        <img src="/images/social/instagram-icon.png" alt="Instagram" class="w-6 h-6">
-      </a>
-      <a href="https://www.linkedin.com" target="_blank">
-        <img src="/images/social/linkedin-icon.png" alt="LinkedIn" class="w-6 h-6">
-      </a>
+<footer class="bg-gray-800 text-white py-6 mt-auto">
+  <div class="container mx-auto text-center sm:text-left sm:flex sm:justify-between">
+    <div class="mb-4 sm:mb-0">
+      <h2 class="text-lg font-bold mb-3 text-white tracking-tight">
+        Conéctate con nosotros
+      </h2>
+      <p>Siempre estamos aquí para ayudarte. Si tienes alguna pregunta o necesitas soporte, no dudes en contactarnos.</p>
     </div>
-
-    <div class="footer-bottom mt-4 text-sm text-gray-400 border-t border-gray-600 pt-2">
-      <p>&copy; 2024 SolidarianID. Todos los derechos reservados.</p>
-      <p><a href="#" class="text-blue-400 hover:underline">Política de privacidad</a> | <a href="#"
-          class="text-blue-400 hover:underline">Términos de uso</a></p>
+    <div>
+        <div class="social-links flex justify-center space-x-4 sm:justify-center mb-4 sm:mb-0">
+            <a href="https://www.facebook.com" target="_blank" class="flex items-center">
+              <img src="/images/social/facebook-icon.png" alt="Facebook" class="w-6 h-6">
+            </a>
+            <a href="https://www.twitter.com" target="_blank" class="flex items-center">
+              <img src="/images/social/twitter-icon.png" alt="Twitter" class="w-6 h-6">
+            </a>
+            <a href="https://www.instagram.com" target="_blank" class="flex items-center">
+              <img src="/images/social/instagram-icon.png" alt="Instagram" class="w-6 h-6">
+            </a>
+            <a href="https://www.linkedin.com" target="_blank" class="flex items-center">
+              <img src="/images/social/linkedin-icon.png" alt="LinkedIn" class="w-6 h-6">
+            </a>
+        </div>
+        <div class="footer-bottom text-sm text-gray-400 border-t sm:border-none border-gray-600 pt-2 text-center sm:text-left">
+          <p>&copy; 2024 SolidarianID. Todos los derechos reservados.</p>
+          <p><a href="#" class="text-blue-400 hover:underline">Política de privacidad</a> | <a href="#"
+              class="text-blue-400 hover:underline">Términos de uso</a></p>
+        </di>
     </div>
   </div>
 </footer>
+
 
 
   <!-- JavaScript -->
@@ -178,39 +173,37 @@ function renderCommunities(communities) {
   list.innerHTML = ''; // Limpiar contenido previo
 
   communities.forEach((community, index) => {
-    const item = `
-      <div class="flex items-center p-4 bg-gray-50 shadow-md rounded-lg">
-  <!-- Checkbox al lado izquierdo -->
-  <input type="checkbox" class="mr-4" id="community-${community.id}" data-index="${index}">
+   const item = `
+  <div class="flex items-center p-2 sm:p-4 bg-gray-50 shadow-md rounded-lg sm:max-w-full max-w-lg mx-auto">
+    <!-- Checkbox al lado izquierdo -->
+    <input type="checkbox" class="mr-2 sm:mr-4 self-center" id="community-${community.id}" data-index="${index}">
 
-  <!-- Contenedor dividido en tres columnas -->
-  <div class="grid grid-cols-3 gap-4 flex-1">
-    <!-- Columna 1: Nombre y Descripción -->
-    <div>
-      <h3 class="text-lg font-bold">Nombre: ${community.name}</h3>
-      <p class="text-sm text-gray-600">Descripción: ${community.description}</p>
-    </div>
+    <!-- Contenedor dividido en tres columnas -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 flex-1">
+      <!-- Columna 1: Nombre y Descripción -->
+      <div class="sm:text-left text-center">
+        <h3 class="text-base sm:text-lg font-bold">Nombre: ${community.name}</h3>
+        <p class="text-xs sm:text-sm text-gray-600">Descripción: ${community.description}</p>
+      </div>
 
-    <!-- Columna 2: Fecha -->
-    <div class="flex items-center justify-center">
-      <p class="text-sm text-gray-600">Fecha: ${new Date(community.requestDate).toLocaleDateString()}</p>
-    </div>
+      <!-- Columna 2: Fecha -->
+      <div class="flex items-center justify-center">
+        <p class="text-xs sm:text-sm text-gray-600">Fecha de la solicitud: ${new Date(community.requestDate).toLocaleDateString()}</p>
+      </div>
 
-    <!-- Columna 3: Botones -->
-    <div class="flex items-center justify-end space-x-2">
-      <button type="button" class="text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2" onclick="showPopup(${index})">
-        <img src="/images/info-icon.png" alt="Info" class="w-5 h-5">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-        <span class="sr-only">Icon description</span>
-      </button>
-      <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
-        Rechazar
-      </button>
+      <!-- Columna 3: Botones -->
+      <div class="flex items-center justify-center sm:justify-end space-x-1 sm:space-x-2">
+        <button type="button" class="text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 font-medium rounded-full text-xs sm:text-sm p-2 sm:p-2.5 text-center inline-flex items-center me-1 sm:me-2" onclick="showPopup(${index})">
+          <img src="/images/info-icon.png" alt="Info" class="w-4 h-4 sm:w-5 sm:h-5">
+        </button>
+        <button class="bg-red-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
+          Rechazar
+        </button>
+      </div>
     </div>
   </div>
-</div>
+`;
 
-    `;
     list.innerHTML += item;
   });
 }
@@ -220,29 +213,33 @@ function showPopup(index) {
   const community = communities[index];
 
   const popupContent = `
-  <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-    <p class="font-bold text-gray-700">ID:</p>
-    <p class="text-gray-600">${community.id}</p>
+  <div class="max-w-[30rem] sm:max-w-[40rem] mx-auto p-4 bg-white rounded-lg shadow-lg">
+    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+      <p class="font-bold text-gray-700">ID:</p>
+      <p class="text-gray-600 break-words">${community.id}</p>
 
-    <p class="font-bold text-gray-700">Nombre:</p>
-    <p class="text-gray-600">${community.name}</p>
+      <p class="font-bold text-gray-700">Nombre:</p>
+      <p class="text-gray-600">${community.name}</p>
 
-    <p class="font-bold text-gray-700">Descripción:</p>
-    <p class="text-gray-600">${community.description || 'Sin descripción'}</p>
+      <p class="font-bold text-gray-700">Descripción:</p>
+      <p class="text-gray-600">${community.description || 'Sin descripción'}</p>
 
-    <p class="font-bold text-gray-700">Fecha de Solicitud:</p>
-    <p class="text-gray-600">${new Date(community.requestDate).toLocaleDateString()}</p>
+      <p class="font-bold text-gray-700">Fecha de Solicitud:</p>
+      <p class="text-gray-600">${new Date(community.requestDate).toLocaleDateString()}</p>
 
-    <p class="font-bold text-gray-700">Estado:</p>
-    <p class="text-gray-600">${community.status}</p>
+      <p class="font-bold text-gray-700">Estado:</p>
+      <p class="text-gray-600">${community.status}</p>
 
-    <p class="font-bold text-gray-700">Causas:</p>
-    <p class="text-gray-600">${community.causes.map(cause => `<span>${cause.title}</span>`).join(', ')}</p>
+      <p class="font-bold text-gray-700">Causas:</p>
+      <p class="text-gray-600">${community.causes.map(cause => `<span>${cause.title}</span>`).join(', ')}</p>
 
-    <p class="font-bold text-gray-700">Creador:</p>
-    <p class="text-gray-600">${community.creator}</p>
+      <p class="font-bold text-gray-700">Creador:</p>
+      <p class="text-gray-600">${community.creator}</p>
+    </div>
   </div>
 `;
+
+
 
 
   document.getElementById('popupContent').innerHTML = popupContent;
@@ -318,12 +315,23 @@ async function rejectCommunity(communityId) {
   window.location.reload();
 }
 
-// Configurar la pestaña predeterminada y cargar datos
-window.onload = function () {
-  const defaultTab = document.querySelector('nav a:first-child');
-  showTab('validacion', defaultTab);
-  fetchCommunities();
-};
+  // Configurar la pestaña predeterminada y cargar datos
+  window.onload = function () {
+    const defaultTab = document.querySelector('nav a:first-child');
+    showTab('validacion', defaultTab);
+    fetchCommunities();
+  };
+
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    const menuContent = document.getElementById('menuContent');
+
+    // Verificar si estamos en móvil (pantalla < 640px)
+    if (window.innerWidth < 640) {
+      menuContent.classList.toggle('hidden'); // Alternar entre mostrar y ocultar el menú
+    }
+  });
+
+
 
   </script>
 </body>
