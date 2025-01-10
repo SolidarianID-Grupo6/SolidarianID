@@ -109,7 +109,6 @@ export class CommunityRequestsService {
     ).exec();
   }
 
-
   // Método helper para mapear de Document a Entity
   private mapToEntity(document: CommunityRequestsDocument): CommunityRequestsEntity {
     return {

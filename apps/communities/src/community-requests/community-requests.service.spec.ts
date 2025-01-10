@@ -130,7 +130,6 @@ describe('CommunityRequestsService', () => {
         status: { $in: [CommunityRequestStatus.Pending, CommunityRequestStatus.Approved] },
       });
     });
-    
 
     it('should create a new request if no conflicting request exists', async () => {
       requestModel.findOne.mockImplementation(() => ({
@@ -244,7 +243,7 @@ describe('CommunityRequestsService', () => {
       }));
 
       const result = await service.findOne('1');
-      expect(result.name).toEqual('Test Community');
+      expect(result.name).toBe('Test Community');
     });
   });
 

@@ -44,7 +44,6 @@ export class InformationService {
         await newCommunityStats.save();
     }
 
-
     async newUserCommunity(idCommunity: string): Promise<void> {
         await this.informationModel.findOneAndUpdate(
           { community_id: idCommunity },
@@ -65,7 +64,6 @@ export class InformationService {
           { new: true }
         ).exec();
     }
-
 
     async createCause(data: CreateCauseStatsDto) {
         const newCause = {

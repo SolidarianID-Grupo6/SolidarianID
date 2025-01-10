@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  BadRequestException
+} from '@nestjs/common';
 import { ActionService } from './action.service';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
@@ -10,7 +19,7 @@ import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 
 @Controller('actions')
 export class ActionController {
-  constructor(private readonly actionService: ActionService) {}
+  constructor(private readonly actionService: ActionService) { }
 
   // Crear una nueva acción
   @Auth(AuthType.None)

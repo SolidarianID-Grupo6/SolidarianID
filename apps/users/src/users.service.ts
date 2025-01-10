@@ -21,7 +21,6 @@ import { randomUUID } from 'crypto';
 import { InvalidatedRefreshTokenError } from '@app/iam/authentication/refresh-token-ids.storage/InvalidatedRefreshTokenError';
 import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
 
-
 @Injectable()
 export class UsersService {
   constructor(

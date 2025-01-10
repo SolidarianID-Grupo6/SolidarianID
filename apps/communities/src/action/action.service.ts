@@ -8,12 +8,10 @@ import { DonateActionDto } from './dto/donate-action.dto';
 import { VolunteerActionDto } from './dto/volunteer-action.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { ActionEntity } from './entities/action.entity';
-import { Cause, CauseDocument } from '../cause/schemas/cause.schema'; 
+import { Cause, CauseDocument } from '../cause/schemas/cause.schema';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import { CreateActionStatsDto } from 'libs/events/dto/create-action-dto';
-import { CreateCauseStatsDto } from 'libs/events/dto/create-community-dto';
 import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
-
 
 @Injectable()
 export class ActionService {
@@ -22,7 +20,6 @@ export class ActionService {
     @InjectModel(Cause.name) private readonly causeModel: Model<CauseDocument>,
     @Inject('NATS_SERVICE') private readonly client: ClientProxy,
   ) { }
-
 
   async createAction(createActionDto: CreateActionDto): Promise<string> {
     const { type, cause } = createActionDto;
@@ -53,7 +50,7 @@ export class ActionService {
     existingCause.actions.push(actionId);
     await existingCause.save();
 
-    const actionEvent : CreateActionStatsDto = { 
+    const actionEvent: CreateActionStatsDto = {
       actionId: actionId,
       cause_id: String(existingCause._id),
       title: createActionDto.title,
@@ -106,7 +103,6 @@ export class ActionService {
     return String(savedAction._id);
   }
 
-
   // Obtener todas las acciones
   async findAll(): Promise<ActionEntity[]> {
     const actions = await this.actionModel.find().exec();
@@ -158,32 +154,31 @@ export class ActionService {
     }
   }
 
-
   async donate(id: string, donateActionDto: DonateActionDto): Promise<ActionEntity> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
     }
-  
+
     const action = await this.actionModel.findById(id).exec();
-  
+
     if (!action) {
       throw new NotFoundException(`Action with ID "${id}" not found`);
     }
-  
+
     let updatedAction;
-  
+
     // Lógica basada en el tipo de acción
     if (action.type === 'money') {
       // Donaciones monetarias
       const newMoneyAmount = (action.moneyCurrentAmount || 0) + donateActionDto.donation;
-  
+
       // Verifica si se supera la meta
       if (action.moneyGoalAmount && newMoneyAmount > action.moneyGoalAmount) {
         throw new BadRequestException('Donation exceeds the goal amount');
       }
-  
+
       const progress = Math.round((newMoneyAmount / action.moneyGoalAmount) * 100);
-  
+
       // Actualiza la acción con el progreso y donantes
       updatedAction = await this.actionModel.findByIdAndUpdate(
         id,
@@ -194,18 +189,18 @@ export class ActionService {
         },
         { new: true, runValidators: true }
       ).exec();
-  
+
     } else if (action.type === 'food') {
       // Donaciones de alimentos
       const newFoodQuantity = (action.foodCurrentQuantity || 0) + donateActionDto.donation;
-  
+
       // Verifica si se supera la meta
       if (action.foodGoalQuantity && newFoodQuantity > action.foodGoalQuantity) {
         throw new BadRequestException('Donation exceeds the food goal quantity');
       }
-  
+
       const progress = Math.round((newFoodQuantity / action.foodGoalQuantity) * 100);
-  
+
       // Actualiza la acción con el progreso
       updatedAction = await this.actionModel.findByIdAndUpdate(
         id,
@@ -216,11 +211,11 @@ export class ActionService {
         },
         { new: true, runValidators: true }
       ).exec();
-  
+
     } else {
       throw new BadRequestException('Donations are only applicable for money or food actions');
     }
-  
+
     // Emitir el evento de donación
     const donateEvent: DonateEventDto = {
       actionId: String(action._id),
@@ -229,23 +224,22 @@ export class ActionService {
     };
 
     this.client.emit(CommunityEvent.DonateEvent, donateEvent);
-  
+
     // Devuelve la acción actualizada
     return this.mapToEntity(updatedAction);
   }
-  
 
   async volunteer(id: string, volunteerActionDto: VolunteerActionDto): Promise<void> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
     }
-  
+
     const action = await this.actionModel.findById(id).exec();
-  
+
     if (!action) {
       throw new NotFoundException(`Action with ID "${id}" not found`);
     }
-  
+
     // Verifica si el usuario ya está en la lista de voluntarios
     if (action.volunteers.includes(volunteerActionDto.user)) {
       throw new BadRequestException(`User with ID "${volunteerActionDto.user}" already volunteered`);
@@ -259,18 +253,19 @@ export class ActionService {
     }
 
     const progress = Math.round((newCurrentCount / action.volunteerGoalCount) * 100);
-  
+
     await this.actionModel.findByIdAndUpdate(
       id,
-      { $push: { volunteers: volunteerActionDto.user },
-      volunteerCurrentCount: newCurrentCount,
-      progress: progress,},
+      {
+        $push: { volunteers: volunteerActionDto.user },
+        volunteerCurrentCount: newCurrentCount,
+        progress: progress,
+      },
       { new: true, runValidators: true }
     ).exec();
 
-
-     // Emitir el evento de donación
-     const donateEvent: DonateEventDto = {
+    // Emitir el evento de donación
+    const donateEvent: DonateEventDto = {
       actionId: String(action._id),
       causeId: String(action.cause),
       progress: 1,
@@ -278,17 +273,16 @@ export class ActionService {
 
     this.client.emit(CommunityEvent.DonateEvent, donateEvent);
   }
-  
 
   // Eliminar una accion por ID
   async remove(id: string): Promise<void> {
     const action = await this.actionModel.findByIdAndDelete(id).exec();
-  
+
     if (!action) {
       throw new NotFoundException(`Action with ID "${id}" not found`);
     }
   }
-  
+
   private mapToEntity(document: ActionDocument): ActionEntity {
     const baseEntity: ActionEntity = {
       id: String(document._id),
@@ -300,7 +294,7 @@ export class ActionService {
       status: document.status,
       progress: document.progress || 0, // Asegura que progress siempre tenga un valor
     };
-  
+
     // Mapea propiedades específicas según el tipo
     switch (document.type) {
       case 'food':
@@ -309,22 +303,21 @@ export class ActionService {
         baseEntity.foodType = document.foodType || null;
         baseEntity.donors = document.donors || [];
         break;
-  
+
       case 'money':
         baseEntity.goal = document.moneyGoalAmount || 0;
         baseEntity.current = document.moneyCurrentAmount || 0;
         baseEntity.donors = document.donors || [];
         break;
-  
+
       case 'volunteer':
         baseEntity.goal = document.volunteerGoalCount || 0;
         baseEntity.current = document.volunteerCurrentCount || 0;
         baseEntity.volunteers = document.volunteers || [];
         break;
     }
-  
+
     return baseEntity;
   }
-  
-  
+
 }
