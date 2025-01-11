@@ -33,10 +33,16 @@ jobs:
         run: terraform apply -auto-approve -var "ami_id=${{ secrets.AMI_ID }}" -var "instance_type=${{ secrets.INSTANCE_TYPE }}" -var "key_name=${{ secrets.KEY_NAME }}"
         working-directory: ./ci-cd/terraform
 
+      - name: Inspect Terraform Output
+        run: |
+          terraform output public_ip
+        working-directory: ./ci-cd/terraform
+
+
       - name: Get EC2 Public IP
         id: get_ec2_ip
         run: |
-          EC2_PUBLIC_IP=$(terraform output public_ip | sed 's/"//g' | tr -d '[:space:]')
+          EC2_PUBLIC_IP=$(terraform output -raw public_ip | sed 's/"//g' | tr -d '[:space:]')
           echo "Retrieved IP: $EC2_PUBLIC_IP"
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
         working-directory: ./ci-cd/terraform
