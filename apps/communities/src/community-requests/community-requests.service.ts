@@ -26,7 +26,7 @@ export class CommunityRequestsService {
     
     if (existingCommunity) {
       throw new BadRequestException(
-        `A request with the community name ${createRequestDto.name} already exists and is ${existingCommunity.status}.`
+        `A request with the community name ${createRequestDto.name} already exists`
       );
     }
 
@@ -44,23 +44,33 @@ export class CommunityRequestsService {
   async findOne(id: string): Promise<CommunityRequestsEntity> {
     const request = await this.requestModel.findById(id).exec();
     if (!request) {
-      throw new NotFoundException(`Community with ID "${id}" not found`);
+      throw new NotFoundException(`Community with ID ${id} not found`);
     }
     return this.mapToEntity(request);
   }
 
   // Aprobar una solicitud y crear la comunidad
   async approveRequest(requestId: string): Promise<string> {
-    
+    const request1 = await this.requestModel.findById(
+      requestId).exec();
+
+    if (!request1) {
+      throw new NotFoundException('Solicitud no encontrada');
+    }
+
+    if (request1.status === CommunityRequestStatus.Approved ) {
+      throw new BadRequestException('La solicitud no ha sido aprobada');
+    }
+
+    if (request1.status === CommunityRequestStatus.Rejected ) {
+      throw new BadRequestException('La solicitud no ha sido aprobada');
+    }
+
     const request = await this.requestModel.findByIdAndUpdate(
       requestId,
       { status: CommunityRequestStatus.Approved },
       { new: true },
     ).exec();
-    
-    if (!request) {
-      throw new NotFoundException('Solicitud no encontrada');
-    }
 
     const createCommunity: CreateCommunityDto = {
       name: request.name,
@@ -75,19 +85,29 @@ export class CommunityRequestsService {
   }
   
   // Rechazar una solicitud
-  async rejectRequest(requestId: string, rejectReason: string): Promise<void> {
-    const request = await this.requestModel.findByIdAndUpdate(
+  async rejectRequest(requestId: string): Promise<void> {
+    const request1 = await this.requestModel.findById(
       requestId,
-      { status: CommunityRequestStatus.Rejected,
-        rejectReason: rejectReason },
-      { new: true },
     ).exec();
 
-    if (!request) {
+    if (!request1) {
       throw new NotFoundException('Solicitud no encontrada');
     }
-  }
 
+    if (request1.status === CommunityRequestStatus.Approved ) {
+      throw new BadRequestException('La solicitud no ha sido rechazada');
+    }
+
+    if (request1.status === CommunityRequestStatus.Rejected ) {
+      throw new BadRequestException('La solicitud no ha sido rechazada');
+    }
+
+    await this.requestModel.findByIdAndUpdate(
+      requestId,
+      { status: CommunityRequestStatus.Rejected},
+      { new: true },
+    ).exec();
+  }
 
   // Método helper para mapear de Document a Entity
   private mapToEntity(document: CommunityRequestsDocument): CommunityRequestsEntity {

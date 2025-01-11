@@ -19,23 +19,52 @@ export class Action {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Cause', required: true })
   cause: string;
 
-  @Prop({ required: true })
-  type: string; 
+  @Prop({ type: String, enum: ['food', 'money', 'volunteer'], required: true })
+  type: string;
 
   @Prop()
   status: string;
 
   @Prop()
-  goal: number;
+  foodType?: string; //Específico para alimentos
 
   @Prop()
-  progress: number; 
-
-  @Prop([{ type: Number }])
-  volunteers: number[];
+  foodGoalQuantity?: number; // Objetivo de cantidad para alimentos
 
   @Prop()
-  donors: Donor[];
+  foodCurrentQuantity?: number; // Cantidad actual de alimentos
+
+  @Prop()
+  moneyGoalAmount?: number; // Objetivo monetario
+
+  @Prop()
+  moneyCurrentAmount?: number; // Cantidad actual de dinero
+
+  @Prop()
+  volunteerGoalCount?: number; // Objetivo de voluntarios
+
+  @Prop()
+  volunteerCurrentCount?: number; // Cantidad actual de voluntarios
+
+  @Prop({
+    type: [String],
+    default: undefined, // Evita que MongoDB cree un array vacío automáticamente
+    required: function (this: Action) {
+      return this.type === 'volunteer';
+    },
+  })
+  volunteers?: string[]; // Voluntarios dentro de la acción
+
+  @Prop({
+    type: Array,
+    default: function (this: Action) {
+      return this.type === 'food' || this.type === 'money' ? [] : undefined;
+    },
+  })
+  donors?: Donor[]; // Donantes dentro de la acción
+
+  @Prop()
+  progress?: number;
 
 }
 

@@ -1,13 +1,13 @@
 name: solidarianid
 
 services:
-# Microservices:
+  # Microservices:
   gateway:
     build:
       context: .
       dockerfile: ./apps/gateway/Dockerfile
     container_name: solidarianid-gateway
-    env_file: 
+    env_file:
       - .env
     environment:
       - PORT=3000
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: ./apps/communities/Dockerfile
     container_name: solidarianid-communities
-    env_file: 
+    env_file:
       - .env
     environment:
       - PORT=3001
@@ -43,7 +43,7 @@ services:
       context: .
       dockerfile: ./apps/users/Dockerfile
     container_name: solidarianid-users
-    env_file: 
+    env_file:
       - .env
     environment:
       - PORT=3002
@@ -55,6 +55,8 @@ services:
     depends_on:
       - postgres
       - redis
+      - nats
+      - neo4j
     networks:
       - solidarianetwork
 
@@ -63,7 +65,7 @@ services:
       context: .
       dockerfile: ./apps/statistics/Dockerfile
     container_name: solidarianid-statistics
-    env_file: 
+    env_file:
       - .env
     environment:
       - PORT=3003
@@ -71,6 +73,7 @@ services:
       - "3003:3003"
     volumes:
       - ./apps/statistics:/app/apps/statistics
+      - ./libs:/app/libs
     networks:
       - solidarianetwork
 
@@ -79,7 +82,7 @@ services:
       context: .
       dockerfile: ./apps/front-end/Dockerfile
     container_name: solidarianid-front-end
-    env_file: 
+    env_file:
       - .env
     environment:
       - PORT=3004
@@ -90,12 +93,12 @@ services:
     networks:
       - solidarianetwork
 
-# Databases:
+  # Databases:
   mongo:
     image: mongo:6.0
     restart: always
     container_name: solidarianid-mongo
-    env_file: 
+    env_file:
       - .env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
@@ -114,7 +117,7 @@ services:
   postgres:
     image: postgres:17
     restart: always
-    env_file: 
+    env_file:
       - .env
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
@@ -123,7 +126,7 @@ services:
     container_name: solidarianid-postgres
     volumes:
       - ./volumes/pgdata:/var/lib/postgresql/data
-      - ./volumes/init.sql:/docker-entrypoint-initdb.d/init.sql  # Mount the init script
+      - ./volumes/init.sql:/docker-entrypoint-initdb.d/init.sql # Mount the init script
     ports:
       - '5432:5432'
     networks:
@@ -140,14 +143,35 @@ services:
       - "6379:6379"
     networks:
       - solidarianetwork
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+
+  neo4j:
+    image: neo4j:5-community
+    restart: always
+    environment:
+      - NEO4J_AUTH=${NEO4J_USERNAME}/${NEO4J_PASSWORD}
+      - NEO4J_dbms_default__database=${NEO4J_USERS_DATABASE}
+      - NEO4JLABS_PLUGINS=["apoc"]
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+    container_name: solidarianid-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./volumes/neo4jdata/data:/data
+      - ./volumes/neo4jdata/conf:/conf
+      - ./volumes/neo4jdata/logs:/logs
+      - ./volumes/neo4jdata/plugins:/plugins
+    networks:
+      - solidarianetwork
 
 # Utils:
   pgadmin:
     image: dpage/pgadmin4:8.14
     restart: always
     container_name: solidarianid-pgadmin
-    env_file: 
+    env_file:
       - .env
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_EMAIL}
@@ -173,7 +197,7 @@ services:
     container_name: solidarianid-sonarqube
     depends_on:
       - postgres
-    env_file: 
+    env_file:
       - .env
     environment:
       - SONAR_JDBC_URL=jdbc:postgresql://postgres:5432/sonar
@@ -194,8 +218,8 @@ services:
     image: nats:2.10
     container_name: solidarianid-nats
     ports:
-      - "4222:4222"  # Client connections
-      - "8222:8222"  # HTTP management interface (optional)
+      - "4222:4222" # Client connections
+      - "8222:8222" # HTTP management interface (optional)
     networks:
       - solidarianetwork
 
@@ -208,6 +232,7 @@ volumes:
   sonarqube_temp:
   sonar_db:
   sonar_db_data:
+
 
 configs:
   pgpass:

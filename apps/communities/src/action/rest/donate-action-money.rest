@@ -1,0 +1,8 @@
+POST http://localhost:3001/actions/677aa5e532ad0a3ca5768ed3/donate
+Content-Type: application/json
+
+
+{
+  "user": "skfjh3",
+  "donation": 300
+}

@@ -1,0 +1,8 @@
+POST http://localhost:3001/actions/677ef5c5bf15ce4d091cfc14/volunteer
+Content-Type: application/json
+
+
+{
+  "user": "ttrwa"
+}
+

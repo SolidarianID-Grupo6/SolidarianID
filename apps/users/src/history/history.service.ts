@@ -8,14 +8,14 @@ import { User } from '../entities/user.entity';
 
 @Injectable()
 export class HistoryService {
-  constructor(
+  public constructor(
     @InjectRepository(History)
     private readonly historyRepository: Repository<History>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
-  async create(createHistoryDto: CreateHistoryDto): Promise<History> {
+  public async create(createHistoryDto: CreateHistoryDto): Promise<History> {
     const user = await this.userRepository.findOne({
       where: { id: createHistoryDto.userId },
     });
@@ -32,19 +32,19 @@ export class HistoryService {
     return await this.historyRepository.save(history);
   }
 
-  findAll() {
+  public findAll() {
     return `This action returns all history`;
   }
 
-  findOne(id: number) {
+  public findOne(id: number) {
     return `This action returns a #${id} history`;
   }
 
-  update(id: number, updateHistoryDto: UpdateHistoryDto) {
+  public update(id: number, updateHistoryDto: UpdateHistoryDto) {
     return `This action updates a #${id} history`;
   }
 
-  remove(id: number) {
+  public remove(id: number) {
     return `This action removes a #${id} history`;
   }
 }

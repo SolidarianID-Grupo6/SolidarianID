@@ -81,6 +81,22 @@ JWT_REFRESH_TOKEN_TTL=86400 # 1 day (milliseconds)
 # Redis:
 REDIS_HOST=redis
 REDIS_PORT=6379
+
+# Neo4J:
+NEO4J_SCHEME=bolt
+NEO4J_HOST=neo4j
+NEO4J_PORT=7687
+NEO4J_USERNAME=
+NEO4J_PASSWORD=
+NEO4J_USERS_DATABASE=solidarianidusers
+
+# Google OAuth 2.0
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Github OAuth 2.0
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
 ```
 
 > Remember to grant permissions to the ./volumes folder with `chmod -R 770 ./volumes` .

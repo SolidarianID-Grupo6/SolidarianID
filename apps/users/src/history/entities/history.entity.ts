@@ -15,7 +15,10 @@ export class History {
   @Column()
   action: string;
 
-  @ManyToOne(() => User, (user) => user.history)
+  @ManyToOne(() => User, (user) => user.history, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'userId' })
   user: User;
 }
