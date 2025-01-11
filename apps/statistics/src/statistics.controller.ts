@@ -1,34 +1,33 @@
-import { Controller } from '@nestjs/common';
-import { EventPattern, Payload } from '@nestjs/microservices';
-import { StatisticsService } from './statistics.service';
-import { CommunityEvent } from 'libs/events/enums/community.events.enum';
+import { Controller, Get, Param } from '@nestjs/common';
+import { InformationService } from './information/information.service';
 
 @Controller('/statistics')
 export class StatisticsController {
-  constructor(private readonly statisticsService: StatisticsService) {}
+  constructor(private readonly informationService: InformationService) { }
 
-  @EventPattern(CommunityEvent.CommunitiesByODS)
-  async handleCommunitiesByODS(@Payload() data: any) {
-    return this.statisticsService.getCommunitiesByODS(data);
+  @Get('getCommunitiesByODS')
+  async getCommunitiesByODS() {
+    return this.informationService.getCommunitiesByODS();
   }
 
-  @EventPattern(CommunityEvent.CausesByODS)
-  async handleCausesByODS(@Payload() data: any) {
-    return this.statisticsService.getCausesByODS(data);
+  @Get('getCausesByODS')
+  async getCausesByODS() {
+    return this.informationService.getCausesByODS();
   }
 
-  @EventPattern(CommunityEvent.SupportByODS)
-  async handleSupportByODS(@Payload() data: any) {
-    return this.statisticsService.getSupportByODS(data);
+  @Get('getSupportByODS')
+  async getSupportByODS() {
+    return this.informationService.getSupportByODS();
   }
 
-  @EventPattern(CommunityEvent.SupportByCommunity)
-  async handleSupportByCommunity(@Payload() data: any) {
-    return this.statisticsService.getSupportByCommunity(data);
+  @Get('getSupportByCommunity')
+  async getSupportByCommunity() {
+    return this.informationService.getSupportByCommunity();
   }
 
-  @EventPattern(CommunityEvent.ActionsByCommunity)
-  async handleActionsByCommunity(@Payload() data: any) {
-    return this.statisticsService.getActionsByCommunity(data);
+  @Get('getProgressByCommunity')
+  async getProgressByCommunity() {
+    return this.informationService.getActionProgressByCommunity();
   }
+
 }

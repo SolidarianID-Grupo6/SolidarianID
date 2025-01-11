@@ -10,5 +10,6 @@ import { CommunityStats, CommunityStatsSchema } from './schemas/Information.sche
   ],
   controllers: [InformationController],
   providers: [InformationService],
+  exports: [InformationService],
 })
-export class InformationModule {}
+export class InformationModule { }
