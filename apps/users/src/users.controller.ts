@@ -80,7 +80,7 @@ export class UsersController {
   }
 
   @Get()
-  getProfile(@ActiveUser() user: ActiveUserData) {
+  getProfile(@ActiveUser() user: IActiveUserData) {
     return this.usersService.getProfile(user.sub);
   }
 
@@ -97,14 +97,14 @@ export class UsersController {
 
   @Get('follow/:id')
   followUser(
-    @ActiveUser() user: ActiveUserData,
+    @ActiveUser() user: IActiveUserData,
     @Param('id') followedId: string,
   ) {
     return this.usersService.followUser(user.sub, followedId);
   }
 
   @Post('find')
-  find(@Body() query: FindQueryDto, @ActiveUser() user: ActiveUserData) {
+  find(@Body() query: FindQueryDto, @ActiveUser() user: IActiveUserData) {
     return this.usersService.find(query, user.sub);
   }
 
