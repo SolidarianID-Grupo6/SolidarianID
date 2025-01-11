@@ -20,7 +20,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
-import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
+import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
 import { Roles } from '@app/iam/authorization/decorators/roles.decorator';
 import { Role } from '@app/iam/authorization/enums/role.enum';
@@ -31,7 +31,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly accessTokenGuard: AccessTokenGuard,
-  ) {}
+  ) { }
 
   @EventPattern('test-event')
   async handleEvent(data: string) {
@@ -80,7 +80,7 @@ export class UsersController {
   }
 
   @Get()
-  getProfile(@ActiveUser() user: ActiveUserData) {
+  getProfile(@ActiveUser() user: IActiveUserData) {
     return this.usersService.getProfile(user.sub);
   }
 
@@ -97,14 +97,14 @@ export class UsersController {
 
   @Get('follow/:id')
   followUser(
-    @ActiveUser() user: ActiveUserData,
+    @ActiveUser() user: IActiveUserData,
     @Param('id') followedId: string,
   ) {
     return this.usersService.followUser(user.sub, followedId);
   }
 
   @Post('find')
-  find(@Body() query: FindQueryDto, @ActiveUser() user: ActiveUserData) {
+  find(@Body() query: FindQueryDto, @ActiveUser() user: IActiveUserData) {
     return this.usersService.find(query, user.sub);
   }
 

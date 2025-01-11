@@ -3,13 +3,13 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 export class DonateEventDto {
     @IsString()
     @IsNotEmpty()
-    actionId: string;
+    public actionId: string;
 
     @IsString()
     @IsNotEmpty()
-    causeId: string;
+    public causeId: string;
 
     @IsNumber()
     @IsNotEmpty()
-    progress: number;
+    public progress: number;
 }

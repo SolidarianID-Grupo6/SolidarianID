@@ -15,17 +15,17 @@ import { HashingService } from '@app/iam/hashing/hashing.service';
 import { JwtService } from '@nestjs/jwt';
 import jwtConfig from '@app/iam/config/jwt.config';
 import { ConfigType } from '@nestjs/config';
-import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { randomUUID } from 'crypto';
 import { InvalidatedRefreshTokenError } from '@app/iam/authentication/refresh-token-ids.storage/InvalidatedRefreshTokenError';
 import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
 import { Neo4jService } from '@app/neo4j';
 import { FindQueryDto } from './dto/find-query.dto';
+import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 
 @Injectable()
 export class UsersService {
-  constructor(
+  public constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly hashingService: HashingService,
@@ -34,9 +34,9 @@ export class UsersService {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
     private readonly neo4jService: Neo4jService,
-  ) {}
+  ) { }
 
-  async login(userLogin: LoginUserDto) {
+  public async login(userLogin: LoginUserDto) {
     const user = await this.usersRepository.findOne({
       where: { email: userLogin.email },
     });
@@ -123,10 +123,10 @@ export class UsersService {
     }
   }
 
-  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+  public async refreshTokens(refreshTokenDto: RefreshTokenDto) {
     try {
       const { sub, refreshTokenId } = await this.jwtService.verifyAsync<
-        Pick<ActiveUserData, 'sub'> & { refreshTokenId: string }
+        Pick<IActiveUserData, 'sub'> & { refreshTokenId: string }
       >(refreshTokenDto.refreshToken, {
         secret: this.jwtConfiguration.secret,
         audience: this.jwtConfiguration.audience,
@@ -190,7 +190,7 @@ export class UsersService {
     return response;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  public async update(id: string, updateUserDto: UpdateUserDto) {
     const user = await this.usersRepository.preload({
       id: id,
       ...updateUserDto,
@@ -344,7 +344,7 @@ export class UsersService {
   public async generateTokens(user: User) {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
-      this.signToken<ActiveUserData>(
+      this.signToken<IActiveUserData>(
         user.id,
         this.jwtConfiguration.accessTokenTtl,
         {

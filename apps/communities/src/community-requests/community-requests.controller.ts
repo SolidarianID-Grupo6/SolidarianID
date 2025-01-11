@@ -7,11 +7,13 @@ import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 
 @Controller('community-requests/')
 export class CommunityRequestsController {
-  constructor(private readonly requestService: CommunityRequestsService) {}
+  constructor(private readonly requestService: CommunityRequestsService) { }
 
   @Auth(AuthType.None)
   @Post()
-  async createRequest(@Body() createRequestDto: CreateCommunityRequestsDto): Promise<string> {
+  async createRequest(
+    @Body() createRequestDto: CreateCommunityRequestsDto,
+  ): Promise<string> {
     return this.requestService.createRequest(createRequestDto);
   }
 

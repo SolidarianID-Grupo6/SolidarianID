@@ -5,7 +5,6 @@ import { CommunityEntity } from './entities/community.entity';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 
-
 @Controller('communities/')
 export class CommunityController {
   constructor(private readonly communityService: CommunityService) {}

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SolidarianID</title>
+  <link rel="stylesheet" href="/stylesheets/output.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
+  <!-- Para soporte de fetch si lo necesitas -->
+</head>
+
+<body class="bg-gray-100 font-sans">
+  <header class="bg-white shadow-xl py-4">
+  <div class="mx-auto flex items-center justify-between px-4 sm:px-6">
+    <!-- Logo / Botón Hamburguesa -->
+    <div>
+      <img id="menuToggle" src="/images/logo.png" alt="Logo" class="w-20 h-10 sm:w-24 sm:h-12 md:w-32 md:h-16 object-cover rounded-lg cursor-pointer sm:cursor-default sm:pointer-events-none">
+    </div>
+
+    <!-- Título -->
+    <div class="flex-1 text-center px-4 sm:px-6">
+      <h1 class="text-lg sm:text-xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
+        SolidarianID
+      </h1>
+    </div>
+
+    <!-- Usuario -->
+    <div class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">
+      <span class="font-semibold">Administrador</span>
+    </div>
+  </div>
+</header>
+
+  <nav class="bg-gray-200">
+    <!-- Menú desplegable (oculto por defecto en móviles) -->
+    <div id="menuContent" class="hidden flex sm:flex justify-around flex-row text-center sm:space-x-4">
+      <a href="#" id="tab-validacion" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('validacion', this)">
+        Validación
+      </a>
+      <a href="#" id="tab-estadisticas" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('estadisticas', this)">
+        Estadísticas
+      </a>
+      <a href="#" id="tab-informes" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('informes', this)">
+        Informes
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="container mx-auto mt-6 mb-6 flex-grow">
+    <div class="bg-white shadow-md rounded p-4">
+      <!-- Tabs Content -->
+      <div id="validacion" class="tabcontent">
+        <div id="comunidades-list" class="space-y-4 mt-2">
+          <!-- Aquí se renderizarán las solicitudes -->
+        </div>
+
+        <!-- Botón de Validar debajo del panel -->
+          <div class="mt-6 flex justify-end">
+            <button class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-teal-400" onclick="validateSelectedCommunities()">
+              Validar Solicitudes Seleccionadas
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="detailsPopup" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+          <!-- Título -->
+          <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Detalles de la Solicitud</h2>
+
+          <!-- Contenido dinámico -->
+          <div id="popupContent" class="space-y-4">
+            <!-- Aquí se inyecta el contenido dinámico -->
+          </div>
+
+          <!-- Botón de cierre -->
+          <div class="flex justify-end mt-6">
+            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400" onclick="closePopup()">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="estadisticas" class="tabcontent hidden">
+        <!-- Contenido de estadísticas -->
+        <p>Contenido de estadísticas aquí...</p>
+      </div>
+
+      <div id="informes" class="tabcontent hidden">
+        <!-- Contenido de informes -->
+        <p>Contenido de informes aquí...</p>
+      </div>
+    </div>
+  </main>
+
+<footer class="bg-gray-800 text-white py-6 mt-auto">
+  <div class="container mx-auto text-center sm:text-left sm:flex sm:justify-between">
+    <div class="mb-4 sm:mb-0">
+      <h2 class="text-lg font-bold mb-3 text-white tracking-tight">
+        Conéctate con nosotros
+      </h2>
+      <p>Siempre estamos aquí para ayudarte. Si tienes alguna pregunta o necesitas soporte, no dudes en contactarnos.</p>
+    </div>
+    <div>
+        <div class="social-links flex justify-center space-x-4 sm:justify-center mb-4 sm:mb-0">
+            <a href="https://www.facebook.com" target="_blank" class="flex items-center">
+              <img src="/images/social/facebook-icon.png" alt="Facebook" class="w-6 h-6">
+            </a>
+            <a href="https://www.twitter.com" target="_blank" class="flex items-center">
+              <img src="/images/social/twitter-icon.png" alt="Twitter" class="w-6 h-6">
+            </a>
+            <a href="https://www.instagram.com" target="_blank" class="flex items-center">
+              <img src="/images/social/instagram-icon.png" alt="Instagram" class="w-6 h-6">
+            </a>
+            <a href="https://www.linkedin.com" target="_blank" class="flex items-center">
+              <img src="/images/social/linkedin-icon.png" alt="LinkedIn" class="w-6 h-6">
+            </a>
+        </div>
+        <div class="footer-bottom text-sm text-gray-400 border-t sm:border-none border-gray-600 pt-2 text-center sm:text-left">
+          <p>&copy; 2024 SolidarianID. Todos los derechos reservados.</p>
+          <p><a href="#" class="text-blue-400 hover:underline">Política de privacidad</a> | <a href="#"
+              class="text-blue-400 hover:underline">Términos de uso</a></p>
+        </di>
+    </div>
+  </div>
+</footer>
+
+
+
+  <!-- JavaScript -->
+  <script>
+    // Función para mostrar el contenido de la pestaña seleccionada
+    function showTab(tabName, element) {
+      console.log(`Mostrando pestaña: ${tabName}`);
+      const tabContents = document.querySelectorAll('.tabcontent');
+      tabContents.forEach(content => content.classList.add('hidden')); // Ocultar todos
+      document.getElementById(tabName).classList.remove('hidden'); // Mostrar el seleccionado
+
+      // Remueve la clase 'active' de todos los enlaces
+      const tabs = document.querySelectorAll('nav a');
+      tabs.forEach(tab => tab.classList.remove('active'));
+
+      // Añade la clase 'active' al enlace actual
+      element.classList.add('active');
+    }
+
+    let communities = [];
+
+async function fetchCommunities() {
+  try {
+    const response = await fetch('http://localhost:3001/community-requests');
+    if (!response.ok) {
+      console.log('Error en la solicitud:', response);
+      throw new Error(`Error al obtener comunidades: ${response.statusText}`);
+    }
+
+    communities = await response.json();
+    renderCommunities(communities);
+  } catch (error) {
+    console.error(error);
+    document.getElementById('comunidades-list').innerHTML = `
+      <p class="text-red-500">Error al cargar las comunidades.</p>
+    `;
+  }
+}
+
+function renderCommunities(communities) {
+  const list = document.getElementById('comunidades-list');
+  list.innerHTML = ''; // Limpiar contenido previo
+
+  communities.forEach((community, index) => {
+   const item = `
+  <div class="flex items-center p-2 sm:p-4 bg-gray-50 shadow-md rounded-lg sm:max-w-full max-w-lg mx-auto">
+    <!-- Checkbox al lado izquierdo -->
+    <input type="checkbox" class="mr-2 sm:mr-4 self-center" id="community-${community.id}" data-index="${index}">
+
+    <!-- Contenedor dividido en tres columnas -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 flex-1">
+      <!-- Columna 1: Nombre y Descripción -->
+      <div class="sm:text-left text-center">
+        <h3 class="text-base sm:text-lg font-bold">Nombre: ${community.name}</h3>
+        <p class="text-xs sm:text-sm text-gray-600">Descripción: ${community.description}</p>
+      </div>
+
+      <!-- Columna 2: Fecha -->
+      <div class="flex items-center justify-center">
+        <p class="text-xs sm:text-sm text-gray-600">Fecha de la solicitud: ${new Date(community.requestDate).toLocaleDateString()}</p>
+      </div>
+
+      <!-- Columna 3: Botones -->
+      <div class="flex items-center justify-center sm:justify-end space-x-1 sm:space-x-2">
+        <button type="button" class="text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 font-medium rounded-full text-xs sm:text-sm p-2 sm:p-2.5 text-center inline-flex items-center me-1 sm:me-2" onclick="showPopup(${index})">
+          <img src="/images/info-icon.png" alt="Info" class="w-4 h-4 sm:w-5 sm:h-5">
+        </button>
+        <button class="bg-red-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
+          Rechazar
+        </button>
+      </div>
+    </div>
+  </div>
+`;
+
+    list.innerHTML += item;
+  });
+}
+
+// Mostrar el popup con los detalles de la solicitud
+function showPopup(index) {
+  const community = communities[index];
+
+  const popupContent = `
+  <div class="max-w-[30rem] sm:max-w-[40rem] mx-auto p-4 bg-white rounded-lg shadow-lg">
+    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+      <p class="font-bold text-gray-700">ID:</p>
+      <p class="text-gray-600 break-words">${community.id}</p>
+
+      <p class="font-bold text-gray-700">Nombre:</p>
+      <p class="text-gray-600">${community.name}</p>
+
+      <p class="font-bold text-gray-700">Descripción:</p>
+      <p class="text-gray-600">${community.description || 'Sin descripción'}</p>
+
+      <p class="font-bold text-gray-700">Fecha de Solicitud:</p>
+      <p class="text-gray-600">${new Date(community.requestDate).toLocaleDateString()}</p>
+
+      <p class="font-bold text-gray-700">Estado:</p>
+      <p class="text-gray-600">${community.status}</p>
+
+      <p class="font-bold text-gray-700">Causas:</p>
+      <p class="text-gray-600">${community.causes.map(cause => `<span>${cause.title}</span>`).join(', ')}</p>
+
+      <p class="font-bold text-gray-700">Creador:</p>
+      <p class="text-gray-600">${community.creator}</p>
+    </div>
+  </div>
+`;
+
+
+
+
+  document.getElementById('popupContent').innerHTML = popupContent;
+  document.getElementById('detailsPopup').classList.remove('hidden');
+}
+
+// Cerrar el popup
+function closePopup() {
+  document.getElementById('detailsPopup').classList.add('hidden');
+}
+
+// Función para validar las solicitudes seleccionadas
+// Crear una función async para manejar la validación
+async function validateSelectedCommunities() {
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked'); // Obtener los checkboxes seleccionados
+  
+  if(checkboxes.length === 0) {
+    alert('Por favor, selecciona al menos una solicitud para validar.');
+    return;
+  }
+  // Usamos un for...of en lugar de forEach para que funcione con await
+  for (const checkbox of checkboxes) {
+    const communityId = checkbox.id.split('-')[1]; // Obtener el ID de la comunidad desde el id del checkbox
+    const community = communities.find(community => community.id == communityId); // Buscar la comunidad correspondiente en el array
+    
+    if (community) {
+      try {
+        // Hacer la solicitud fetch para cada comunidad seleccionada
+        const response = await fetch(`http://localhost:3001/community-requests/approve/${community.id}`, {
+          method: 'PUT', // O el método adecuado según tu API, 'POST' o 'DELETE', etc.
+        });
+
+        if (!response.ok) {
+          console.log('Error en la solicitud:', response);
+          throw new Error(`Error aprobando la solicitud de creación de comunidad: ${response.statusText}`);
+        }
+        
+        // Si la respuesta es exitosa, puedes agregar un mensaje o actualizar la UI si es necesario
+        console.log(`Solicitud ${community.id} aprobada con éxito`);
+
+      } catch (error) {
+        console.error('Error al aprobar la solicitud:', error);
+      }
+    }
+
+    window.location.reload();
+  }
+}
+
+
+// Función para rechazar una solicitud
+async function rejectCommunity(communityId) {
+  console.log('Rechazar solicitud con ID:', communityId);
+
+  try {
+    // Hacer la solicitud fetch para rechazar la comunidad con el communityId
+    const response = await fetch(`http://localhost:3001/community-requests/reject/${communityId}`, {
+      method: 'PUT', // Asumiendo que es un método PUT para rechazar la solicitud
+    });
+
+    if (!response.ok) {
+      console.log('Error en la solicitud:', response);
+      throw new Error(`Error rechazando la solicitud de creación de comunidad: ${response.statusText}`);
+    }
+
+    // Si la respuesta es exitosa, puedes agregar un mensaje o actualizar la UI si es necesario
+    console.log(`Solicitud ${communityId} rechazada con éxito`);
+
+  } catch (error) {
+    console.error('Error al rechazar la solicitud:', error);
+  }
+
+  window.location.reload();
+}
+
+  // Configurar la pestaña predeterminada y cargar datos
+  window.onload = function () {
+    const defaultTab = document.querySelector('nav a:first-child');
+    showTab('validacion', defaultTab);
+    fetchCommunities();
+  };
+
+  document.getElementById('menuToggle').addEventListener('click', () => {
+    const menuContent = document.getElementById('menuContent');
+
+    // Verificar si estamos en móvil (pantalla < 640px)
+    if (window.innerWidth < 640) {
+      menuContent.classList.toggle('hidden'); // Alternar entre mostrar y ocultar el menú
+    }
+  });
+
+
+
+  </script>
+</body>
+
+</html>

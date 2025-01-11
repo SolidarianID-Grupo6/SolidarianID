@@ -16,7 +16,7 @@ import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
 
 @Controller('/information')
 export class InformationController {
-  constructor(private readonly informationService: InformationService) {}
+  constructor(private readonly informationService: InformationService) { }
 
   @Client({
     transport: Transport.NATS,
@@ -25,6 +25,12 @@ export class InformationController {
     },
   })
   client: ClientProxy;
+
+
+  @Get(':nameCommunity')
+  async getCommunity(@Param('nameCommunity') nameCommunity: string) {
+    return this.informationService.findOne(nameCommunity);
+  }
 
   @Get()
   async getInformation() {
@@ -52,17 +58,17 @@ export class InformationController {
   }
 
   @EventPattern(CommunityEvent.CreateCause)
-  async handleCreateNewCause(data:  CreateCauseStatsDto) {
+  async handleCreateNewCause(data: CreateCauseStatsDto) {
     return this.informationService.createCause(data);
   }
 
   @EventPattern(CommunityEvent.CreateAction)
-  async handleCreateNewAction(data:  CreateActionStatsDto) {
+  async handleCreateNewAction(data: CreateActionStatsDto) {
     return this.informationService.createAction(data);
   }
 
   @EventPattern(CommunityEvent.DonateEvent)
-  async handleCreateDonate(data:  DonateEventDto) {
+  async handleCreateDonate(data: DonateEventDto) {
     return this.informationService.donateorVolunteer(data);
   }
 }

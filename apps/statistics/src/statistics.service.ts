@@ -3,5 +3,5 @@ import { EventPattern } from '@nestjs/microservices';
 
 @Injectable()
 export class StatisticsService {
-  
+
 }

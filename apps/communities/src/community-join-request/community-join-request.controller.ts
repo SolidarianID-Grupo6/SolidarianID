@@ -5,7 +5,6 @@ import { UserJoinRequestDto } from './dto/user-join-request.dto';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 
-
 @Controller('community-join-request/')
 export class CommunityJoinRequestController {
   constructor(private readonly communityJoinRequestService: CommunityJoinRequestService) {}

@@ -24,7 +24,7 @@ export class GoogleOauthController {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   @Get()
   @UseGuards(AuthGuard('google'))
