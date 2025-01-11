@@ -6,11 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { History } from './history/entities/history.entity';
 import { IamModule } from '@app/iam';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { GoogleOauthModule } from './oauth/google.oauth/google.oauth.module';
 import jwtConfig from '@app/iam/config/jwt.config';
 import { GithubOauthModule } from './oauth/github.oauth/github.oauth.module';
+import { Neo4jModule } from '@app/neo4j';
+import { Neo4jConfig } from '@app/neo4j/interfaces/neo4j-config.interface';
 
 @Module({
   imports: [
@@ -32,6 +34,18 @@ import { GithubOauthModule } from './oauth/github.oauth/github.oauth.module';
     forwardRef(() => GoogleOauthModule),
     forwardRef(() => GithubOauthModule),
     GithubOauthModule,
+    Neo4jModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): Neo4jConfig => ({
+        scheme: configService.get('NEO4J_SCHEME'),
+        host: configService.get('NEO4J_HOST'),
+        port: configService.get('NEO4J_PORT'),
+        username: configService.get('NEO4J_USERNAME'),
+        password: configService.get('NEO4J_PASSWORD'),
+        database: configService.get('NEO4J_USERS_DATABASE'),
+      }),
+    }),
   ],
   controllers: [UsersController],
   providers: [UsersService],
