@@ -36,11 +36,14 @@ jobs:
       - name: Get EC2 Public IP
         id: get_ec2_ip
         run: |
-          # Get IP and clean any debug output
-          EC2_PUBLIC_IP=$(terraform output public_ip | sed 's/"//g' | tr -d '[:space:]')
+          EC2_PUBLIC_IP=$(terraform output -raw public_ip | tr -d '[:space:]')
           echo "Retrieved IP: $EC2_PUBLIC_IP"
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
         working-directory: ./ci-cd/terraform
+
+      - name: Debug EC2 Public IP
+        run: |
+          echo "EC2_PUBLIC_IP is: ${{ env.EC2_PUBLIC_IP }}"
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
