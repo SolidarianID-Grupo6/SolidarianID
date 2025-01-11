@@ -1,6 +1,6 @@
 import { Role } from '@app/iam/authorization/enums/role.enum';
 
-export interface ActiveUserData {
+export interface IActiveUserData {
   /**
    * The "subject" of the token. The value of this property is the user ID
    * that granted this token.

@@ -20,7 +20,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
-import { ActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
+import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/access-token.guard';
 import { Roles } from '@app/iam/authorization/decorators/roles.decorator';
 import { Role } from '@app/iam/authorization/enums/role.enum';
@@ -100,7 +100,7 @@ export class UsersController {
 
   @Roles(Role.Admin)
   @Get('fullUserInfo/:id')
-  getFullUserInfo(@Param('id') id: string, @ActiveUser() user: ActiveUserData) {
+  getFullUserInfo(@Param('id') id: string, @ActiveUser() user: IActiveUserData) {
     console.log(user);
     return this.usersService.getFullUserInfo(id);
   }

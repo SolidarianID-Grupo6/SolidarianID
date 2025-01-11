@@ -2,24 +2,24 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateActionStatsDto {
 
-    @IsString()
-    @IsNotEmpty()
-    actionId: string;
+  @IsString()
+  @IsNotEmpty()
+  public actionId: string;
 
-    @IsString()
-    @IsNotEmpty()
-    cause_id: string;
-  
-    @IsString()
-    @IsNotEmpty()
-    title: string;
+  @IsString()
+  @IsNotEmpty()
+  public cause_id: string;
 
-    @IsString()
-    @IsNotEmpty()
-    description: string;
+  @IsString()
+  @IsNotEmpty()
+  public title: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    goal: number;
+  @IsString()
+  @IsNotEmpty()
+  public description: string;
 
-  }
+  @IsNumber()
+  @IsNotEmpty()
+  public goal: number;
+
+}
