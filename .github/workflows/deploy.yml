@@ -37,7 +37,7 @@ jobs:
         id: wait_for_ip
         run: |
           for i in {1..10}; do
-            EC2_PUBLIC_IP=$(terraform output -raw public_ip)
+            EC2_PUBLIC_IP=$(terraform output -raw public_ip 2>/dev/null)
             if [ -n "$EC2_PUBLIC_IP" ]; then
               echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
               break
