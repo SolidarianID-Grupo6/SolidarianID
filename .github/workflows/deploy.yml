@@ -38,18 +38,14 @@ jobs:
           terraform output public_ip
         working-directory: ./ci-cd/terraform
 
-
       - name: Get EC2 Public IP
         id: get_ec2_ip
         run: |
-          EC2_PUBLIC_IP=$(terraform output -raw public_ip | sed 's/"//g' | tr -d '[:space:]')
+          # Clean the Terraform output and extract only the public IP address
+          EC2_PUBLIC_IP=$(terraform output public_ip | grep -oP '\d+\.\d+\.\d+\.\d+')
           echo "Retrieved IP: $EC2_PUBLIC_IP"
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
         working-directory: ./ci-cd/terraform
-
-      - name: Debug EC2 Public IP
-        run: |
-          echo "EC2_PUBLIC_IP is: ${{ env.EC2_PUBLIC_IP }}"
 
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.3
