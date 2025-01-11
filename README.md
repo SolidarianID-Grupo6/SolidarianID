@@ -1,4 +1,5 @@
 # SolidarianID
+
 ![SolidarianID-Logo-icon](https://github.com/user-attachments/assets/15c2f076-48ab-4767-9cbf-29376f86efcf)
 Una plataforma para conectar usuarios con comunidades solidarias y causas sociales, ofreciendo herramientas para registro, gestión y colaboración dentro de una red de solidaridad.
 
@@ -59,14 +60,46 @@ MONGO_HOST=mongo
 MONGO_PORT=27017
 
 # PostgreSQL Database:
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
 POSTGRES_USER=
 POSTGRES_PASSWORD=
-POSTGRES_DB=
+POSTGRES_DEFAULT_DB=sonar
+POSTGRES_SOLIDARIANID_USERS_DB=solidarianid_users
 
 # PGAdmin - PostgreSQL Web Interface:
 PGADMIN_EMAIL=
 PGADMIN_PASSWORD=
+
+# JWT:
+JWT_SECRET=YOUR_SECRET_KEY_HERE
+JWT_TOKEN_AUDIENCE=localhost:3000
+JWT_TOKEN_ISSUER=localhost:3000
+JWT_ACCESS_TOKEN_TTL=3600 # 1 hour
+JWT_REFRESH_TOKEN_TTL=86400 # 1 day (milliseconds)
+
+# Redis:
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+# Neo4J:
+NEO4J_SCHEME=bolt
+NEO4J_HOST=neo4j
+NEO4J_PORT=7687
+NEO4J_USERNAME=
+NEO4J_PASSWORD=
+NEO4J_USERS_DATABASE=solidarianidusers
+
+# Google OAuth 2.0
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Github OAuth 2.0
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
 ```
+
+> Remember to grant permissions to the ./volumes folder with `chmod -R 770 ./volumes` .
 
 # Ramas:
 

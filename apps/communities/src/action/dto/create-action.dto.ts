@@ -1,21 +1,63 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, ValidateIf, IsArray } from 'class-validator';
+import { Donor } from '../entities/donor.entity';
 
 export class CreateActionDto {
   @IsString()
-  title: string;
+  public title: string;
 
   @IsString()
-  description: string;
+  public description: string;
 
   @IsString()
-  type: string;
+  public cause: string;
 
+  @IsEnum(['food', 'money', 'volunteer'])
+  public type: string;
+
+  @IsOptional()
   @IsString()
-  status: string;
+  @ValidateIf(o => o.type === 'food')
+  public foodType?: string;
 
+  @IsOptional()
   @IsNumber()
-  goal: number;
+  @ValidateIf(o => o.type === 'food')
+  public foodGoalQuantity?: number;
 
+  @IsOptional()
   @IsNumber()
-  progress: number;
+  @ValidateIf(o => o.type === 'food')
+  public foodCurrentQuantity?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @ValidateIf(o => o.type === 'money')
+  public moneyGoalAmount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @ValidateIf(o => o.type === 'money')
+  public moneyCurrentAmount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @ValidateIf(o => o.type === 'volunteer')
+  public volunteerGoalCount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @ValidateIf(o => o.type === 'volunteer')
+  public volunteerCurrentCount?: number;
+
+  @IsOptional()
+  @ValidateIf(o => o.type === 'volunteer')
+  @IsString({ each: true })
+  @IsArray()
+  public volunteers?: string[];
+
+  @IsOptional()
+  @ValidateIf(o => o.type === 'food' || o.type === 'money')
+  @IsArray()
+  public donors?: Donor[];
+
 }

@@ -1,0 +1,19 @@
+POST http://localhost:3002/find
+Content-Type: application/json
+
+{
+    "userQuery": "Christopher",
+    "communityQuery": "Animal Rescue",
+    "friendshipDepth": 0,
+    "limit": 10,
+    "offset": 0
+}
+
+### Find all users:
+POST http://localhost:3002/find
+Content-Type: application/json
+
+{
+    "limit": 100,
+    "offset": 0
+}

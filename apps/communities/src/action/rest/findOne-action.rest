@@ -1,0 +1,2 @@
+GET http://localhost:3001/actions/677aa5d032ad0a3ca5768ed1
+Content-Type: application/json

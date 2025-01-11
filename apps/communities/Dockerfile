@@ -9,6 +9,11 @@ RUN npm ci
 
 # Copy specific service files
 COPY ./apps/communities ./apps/communities
+COPY ./apps/users ./apps/users
+
+# Install service dependencies
+COPY ./libs ./libs
+RUN npm run build:libs
 
 # Production artifacts
 EXPOSE 3001

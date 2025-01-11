@@ -1,0 +1,11 @@
+POST http://localhost:3001/actions
+Content-Type: application/json
+
+{
+  "title": "Recaudación de Fondos",
+  "description": "Recolectar fondos para apoyo educativo.",
+  "cause": "677ee39918263ddcbcbfc890",
+  "type": "money",
+  "moneyGoalAmount": 5000
+}
+

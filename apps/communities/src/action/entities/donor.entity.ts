@@ -1,4 +1,4 @@
 export class Donor {
-    userId: number;
+    userId: string;
     amount: number;
   }

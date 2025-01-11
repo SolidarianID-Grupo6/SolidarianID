@@ -13,8 +13,11 @@ import { UpdateCauseDto } from './dto/update-cause.dto';
 import { CommunityService } from '../community/community.service';
 import { SupportUserRegisteredDto } from './dto/supportUserRegistered-cause.dto';
 import { ClientProxy } from '@nestjs/microservices';
-import { SupportEventDto } from './dto/support-event.dto';
+import { SupportEventDto } from '../../../../libs/events/dto/support-event.dto';
 import { CauseEntity } from './entities/cause.entity';
+import { ODS_ENUM } from '@app/iam/authentication/enums/ods.enum';
+import { CommunityEvent } from 'libs/events/enums/community.events.enum';
+import { CreateCauseStatsDto } from 'libs/events/dto/create-cause-dto';
 
 @Injectable()
 export class CauseService {
@@ -28,8 +31,34 @@ export class CauseService {
   // Crear una nueva causa
   async create(idCommunity: string, createCauseDto: CreateCauseDto): Promise<string> {
     await this.communityService.findOne(idCommunity);
-    const createdCause = await this.causeModel.create(createCauseDto);
+
+    const odsEnumValues = createCauseDto.ods.map((odsDescription) => this.mapToEnum(odsDescription));
+    if (odsEnumValues.includes(undefined)) {
+      throw new Error('Una o más descripciones de ODS son inválidas');
+    }
+
+    const causeWithOdsEnum = {
+      ...createCauseDto,
+      ods: odsEnumValues,
+    };
+  
+    const createdCause = await this.causeModel.create(causeWithOdsEnum);
+
+    const causeEvent: CreateCauseStatsDto = {
+      communityId: idCommunity,
+      cause_id: String(createdCause._id),
+      title: createCauseDto.title,
+      ods: odsEnumValues,
+    };
+
+    this.client.emit(CommunityEvent.CreateCause, causeEvent);
+
     return String(createdCause._id);
+  }
+
+  mapToEnum(value: string): ODS_ENUM | undefined {
+    const enumKey = Object.values(ODS_ENUM).find((val) => val === value);
+    return enumKey as ODS_ENUM;
   }
   
   // Obtener todas las cusas
@@ -93,11 +122,11 @@ export class CauseService {
     }
 
     const support_event: SupportEventDto = {
-      userId: user,
-      causeId: id
+      causeId: id,
+      communityId: cause.community,
     }
 
-    this.client.emit('support-cause', support_event);
+    this.client.emit(CommunityEvent.NewSupport, support_event);
     
   }
 

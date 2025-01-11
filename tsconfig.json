@@ -17,6 +17,19 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {}
+    "paths": {
+      "@app/iam": [
+        "libs/iam/src"
+      ],
+      "@app/iam/*": [
+        "libs/iam/src/*"
+      ],
+      "@app/neo4j": [
+        "libs/neo4j/src"
+      ],
+      "@app/neo4j/*": [
+        "libs/neo4j/src/*"
+      ]
+    }
   }
 }
