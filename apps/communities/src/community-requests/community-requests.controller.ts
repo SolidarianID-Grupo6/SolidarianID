@@ -11,7 +11,9 @@ export class CommunityRequestsController {
 
   @Auth(AuthType.None)
   @Post()
-  async createRequest(@Body() createRequestDto: CreateCommunityRequestsDto): Promise<string> {
+  async createRequest(
+    @Body() createRequestDto: CreateCommunityRequestsDto,
+  ): Promise<string> {
     return this.requestService.createRequest(createRequestDto);
   }
 
