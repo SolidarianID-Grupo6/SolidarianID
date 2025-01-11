@@ -11,7 +11,9 @@ export class CommunityRequestsController {
 
   @Auth(AuthType.None)
   @Post()
-  async createRequest(@Body() createRequestDto: CreateCommunityRequestsDto): Promise<string> {
+  async createRequest(
+    @Body() createRequestDto: CreateCommunityRequestsDto,
+  ): Promise<string> {
     return this.requestService.createRequest(createRequestDto);
   }
 
@@ -35,7 +37,7 @@ export class CommunityRequestsController {
 
   @Auth(AuthType.None)
   @Put('reject/:id')
-  async rejectRequest(@Param('id') id: string, @Body('rejectReason') rejectReason: string): Promise<void> {
-    return this.requestService.rejectRequest(id, rejectReason);
+  async rejectRequest(@Param('id') id: string): Promise<void> {
+    return this.requestService.rejectRequest(id);
   }
 }
