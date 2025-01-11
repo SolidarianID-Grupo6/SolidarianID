@@ -104,8 +104,7 @@ export class CommunityRequestsService {
 
     await this.requestModel.findByIdAndUpdate(
       requestId,
-      { status: CommunityRequestStatus.Rejected,
-        rejectReason: rejectReason },
+      { status: CommunityRequestStatus.Rejected},
       { new: true },
     ).exec();
   }
