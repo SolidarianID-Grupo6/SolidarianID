@@ -17,14 +17,18 @@ jobs:
         with:
           terraform_version: 1.0.11
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-1
+
       - name: Terraform Init
         run: terraform init
         working-directory: ./ci-cd/terraform
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve -var "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" -var "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        run: terraform destroy -auto-approve -var "ami_id=${{ secrets.AMI_ID }}" -var "instance_type=${{ secrets.INSTANCE_TYPE }}" -var "key_name=${{ secrets.KEY_NAME }}"
         working-directory: ./ci-cd/terraform
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1

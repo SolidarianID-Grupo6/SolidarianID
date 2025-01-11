@@ -13,22 +13,17 @@ variable "key_name" {
   type        = string
 }
 
-variable "security_group_id" {
-  description = "The ID of the security group to associate with the EC2 instance"
-  type        = string
-}
-
 variable "subnet_id" {
   description = "The ID of the subnet where the EC2 instance should be created"
   type        = string
 }
 
-variable "project_path" {
-  description = "The path to the project to be copied to the EC2 instance"
-  type        = string
+variable "security_groups" {
+  description = "The IDs of the security groups to associate with the EC2 instance"
+  type        = list(string)
 }
 
-variable "private_key_path" {
-  description = "Path to the private key file for SSH access"
+variable "instance_name" {
+  description = "The name to assign to the EC2 instance"
   type        = string
 }
