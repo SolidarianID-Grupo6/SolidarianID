@@ -104,7 +104,7 @@ export class CommunityRequestsService {
 
     await this.requestModel.findByIdAndUpdate(
       requestId,
-      { status: CommunityRequestStatus.Rejected },
+      { status: CommunityRequestStatus.Rejected},
       { new: true },
     ).exec();
   }
@@ -118,6 +118,7 @@ export class CommunityRequestsService {
       creator: document.creator,
       status: document.status,
       requestDate: document.requestDate,
+      rejectReason: document.rejectReason,
       causes: document.causes
     };
   }

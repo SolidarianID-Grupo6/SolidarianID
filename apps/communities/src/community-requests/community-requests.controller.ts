@@ -35,7 +35,7 @@ export class CommunityRequestsController {
 
   @Auth(AuthType.None)
   @Put('reject/:id')
-  async rejectRequest(@Param('id') id: string): Promise<void> {
-    return this.requestService.rejectRequest(id);
+  async rejectRequest(@Param('id') id: string, @Body('rejectReason') rejectReason: string): Promise<void> {
+    return this.requestService.rejectRequest(id, rejectReason);
   }
 }

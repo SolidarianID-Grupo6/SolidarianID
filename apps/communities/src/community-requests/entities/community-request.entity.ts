@@ -7,6 +7,7 @@ export class CommunityRequestsEntity {
     description: string;
     creator: number;
     status: CommunityRequestStatus;
+    rejectReason: string;
     requestDate: Date;
     causes: CreateCauseDto[];
   }
