@@ -15,7 +15,7 @@ import { SupportUserRegisteredDto } from './dto/supportUserRegistered-cause.dto'
 import { ClientProxy } from '@nestjs/microservices';
 import { SupportEventDto } from '../../../../libs/events/dto/support-event.dto';
 import { CauseEntity } from './entities/cause.entity';
-import { ODS_ENUM } from '@app/iam/authentication/enums/ods.enum';
+import { ODS_ENUM } from 'libs/enums/ods.enum';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import { CreateCauseStatsDto } from 'libs/events/dto/create-cause-dto';
 
@@ -29,10 +29,15 @@ export class CauseService {
   ) {}
 
   // Crear una nueva causa
-  async create(idCommunity: string, createCauseDto: CreateCauseDto): Promise<string> {
+  async create(
+    idCommunity: string,
+    createCauseDto: CreateCauseDto,
+  ): Promise<string> {
     await this.communityService.findOne(idCommunity);
 
-    const odsEnumValues = createCauseDto.ods.map((odsDescription) => this.mapToEnum(odsDescription));
+    const odsEnumValues = createCauseDto.ods.map((odsDescription) =>
+      this.mapToEnum(odsDescription),
+    );
     if (odsEnumValues.includes(undefined)) {
       throw new Error('Una o más descripciones de ODS son inválidas');
     }
@@ -41,7 +46,7 @@ export class CauseService {
       ...createCauseDto,
       ods: odsEnumValues,
     };
-  
+
     const createdCause = await this.causeModel.create(causeWithOdsEnum);
 
     const causeEvent: CreateCauseStatsDto = {
@@ -60,11 +65,11 @@ export class CauseService {
     const enumKey = Object.values(ODS_ENUM).find((val) => val === value);
     return enumKey as ODS_ENUM;
   }
-  
+
   // Obtener todas las cusas
   async findAll(): Promise<CauseEntity[]> {
     const causes = await this.causeModel.find().exec();
-    return causes.map(cause => this.mapToEntity(cause));
+    return causes.map((cause) => this.mapToEntity(cause));
   }
 
   // Obtener una causa por ID
@@ -90,7 +95,10 @@ export class CauseService {
     }
   }
 
-  async supportUserRegistered(id: string, supportUserRegisteredDto: SupportUserRegisteredDto): Promise<void> {
+  async supportUserRegistered(
+    id: string,
+    supportUserRegisteredDto: SupportUserRegisteredDto,
+  ): Promise<void> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
     }
@@ -104,18 +112,22 @@ export class CauseService {
     const user = supportUserRegisteredDto.userId;
 
     if (cause.registeredSupporters.includes(user)) {
-      throw new BadRequestException(`User ${user} is already registered as a supporter`);
+      throw new BadRequestException(
+        `User ${user} is already registered as a supporter`,
+      );
     }
 
-    const updatedCause = await this.causeModel.findByIdAndUpdate(
-      id,
-      {
-        $push: { 
-          registeredSupporters: user
-        }
-      },
-      { new: true, runValidators: true }
-    ).exec();
+    const updatedCause = await this.causeModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $push: {
+            registeredSupporters: user,
+          },
+        },
+        { new: true, runValidators: true },
+      )
+      .exec();
 
     if (!updatedCause) {
       throw new NotFoundException(`Cause with ID ${id} not found`);
@@ -124,10 +136,9 @@ export class CauseService {
     const support_event: SupportEventDto = {
       causeId: id,
       communityId: cause.community,
-    }
+    };
 
     this.client.emit(CommunityEvent.NewSupport, support_event);
-    
   }
 
   // Eliminar una causa por ID
