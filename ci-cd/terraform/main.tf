@@ -15,8 +15,8 @@ resource "aws_instance" "ec2_instance" {
   ami           = var.ami_id
   instance_type = var.instance_type
   key_name      = var.key_name
-  subnet_id     = var.subnet_id
-  security_groups = [var.security_group_id]
+  subnet_id     = module.network.public_subnet_id
+  security_groups = [module.security_groups.ec2_security_group_id]
 
   user_data = file("${path.module}/user_data.sh")
 

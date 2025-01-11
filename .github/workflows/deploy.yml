@@ -32,7 +32,7 @@ jobs:
         working-directory: ./ci-cd/terraform
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -var "ami_id=${{ secrets.AMI_ID }}" -var "instance_type=${{ secrets.INSTANCE_TYPE }}" -var "key_name=${{ secrets.KEY_NAME }}" -var "subnet_id=${{ secrets.SUBNET_ID }}" -var "security_group_id=${{ secrets.SECURITY_GROUP_ID }}"
+        run: terraform apply -auto-approve -var "ami_id=${{ secrets.AMI_ID }}" -var "instance_type=${{ secrets.INSTANCE_TYPE }}" -var "key_name=${{ secrets.KEY_NAME }}"
         working-directory: ./ci-cd/terraform
 
   deploy:
