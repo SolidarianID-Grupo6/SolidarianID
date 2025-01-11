@@ -2,8 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { ODS_ENUM } from '@app/iam/authentication/enums/ods.enum';
 
-
-
 export type InformationDocument = CommunityStats & Document;
 
 class ActionStats {

@@ -47,6 +47,8 @@ export class User {
   githubId: string;
 
   @JoinTable()
-  @OneToMany((type) => History, (history) => history.user, { cascade: true })
+  @OneToMany((type) => History, (history) => history.user, {
+    cascade: true,
+  })
   history: History[];
 }

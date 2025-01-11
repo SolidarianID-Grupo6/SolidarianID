@@ -71,3 +71,63 @@ Content-Type: application/json
     "isBirthdatePublic": false,
     "presentation": "Hello, I'm John Doe!"
 }
+
+### Incorrect password error (too short):
+POST http://localhost:3002/register
+Content-Type: application/json
+
+{
+    "name": "John",
+    "surnames": "Doe",
+    "email": "john.doe@example.com",
+    "isEmailPublic": false,
+    "password": "secur1A",
+    "birthdate": "1990-01-01",
+    "isBirthdatePublic": false,
+    "presentation": "Hello, I'm John Doe!"
+}
+
+### Incorrect password error (does not contain a number):
+POST http://localhost:3002/register
+Content-Type: application/json
+
+{
+    "name": "John",
+    "surnames": "Doe",
+    "email": "john.doe@example.com",
+    "isEmailPublic": false,
+    "password": "securepAssword",
+    "birthdate": "1990-01-01",
+    "isBirthdatePublic": false,
+    "presentation": "Hello, I'm John Doe!"
+}
+
+### Incorrect password error (does not contain a lowercase letter):
+POST http://localhost:3002/register
+Content-Type: application/json
+
+{
+    "name": "John",
+    "surnames": "Doe",
+    "email": "john.doe@example.com",
+    "isEmailPublic": false,
+    "password": "SECUREPASSWORD123",
+    "birthdate": "1990-01-01",
+    "isBirthdatePublic": false,
+    "presentation": "Hello, I'm John Doe!"
+}
+
+### Incorrect password error (does not contain a uppercase letter):
+POST http://localhost:3002/register
+Content-Type: application/json
+
+{
+    "name": "John",
+    "surnames": "Doe",
+    "email": "john.doe@example.com",
+    "isEmailPublic": false,
+    "password": "securepassword123",
+    "birthdate": "1990-01-01",
+    "isBirthdatePublic": false,
+    "presentation": "Hello, I'm John Doe!"
+}

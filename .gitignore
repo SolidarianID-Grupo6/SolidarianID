@@ -1,3 +1,5 @@
+apps/front-end/node_modules
+
 # compiled output
 /dist
 /node_modules
@@ -64,3 +66,10 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # Accepted Redis database initialization file:
 !/volumes/redis.conf
+# stryker temp files
+.stryker-tmp
+ci-cd/terraform/aws-remote-backend/.terraform/providers/registry.terraform.io/hashicorp/aws/3.76.1/linux_amd64/terraform-provider-aws_v3.76.1_x5
+ci-cd/terraform/aws-remote-backend/.terraform/terraform.tfstate
+ci-cd/terraform/aws-remote-backend/terraform.tfstate.backup
+ci-cd/terraform/aws-remote-backend/terraform.tfstate
+ci-cd/terraform/aws-remote-backend/.terraform.lock.hcl

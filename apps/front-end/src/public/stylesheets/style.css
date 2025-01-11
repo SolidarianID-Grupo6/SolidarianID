@@ -1,0 +1,40 @@
+/* Importaciones de Tailwind */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Estilos personalizados */
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Footer personalizado */
+footer {
+  border-top: 4px solid #2563eb;
+  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05);
+}
+
+footer .social-links a {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+footer .social-links a:hover {
+  color: #2563eb;
+  transform: scale(1.05);
+}
+
+/* Clase para sombra de texto */
+.hover\:text-shadow:hover {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.active {
+  border-bottom-color: #2563eb; /* Borde inferior azul */
+}
+
+
