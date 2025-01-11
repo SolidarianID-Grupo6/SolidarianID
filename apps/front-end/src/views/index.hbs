@@ -132,6 +132,7 @@
 
 
   <!-- JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     // Función para mostrar el contenido de la pestaña seleccionada
     function showTab(tabName, element) {
@@ -331,7 +332,40 @@ async function rejectCommunity(communityId) {
     }
   });
 
+// Seleccionar el canvas del HTML
+const ctx = document.getElementById("elemento").getContext("2d");
 
+// Configuración del gráfico
+const config = {
+  type: 'line', // Tipo de gráfico: línea
+  data: {
+    labels: ['A', 'B', 'C'], // Etiquetas de los datos
+    datasets: [{
+      label: 'Mi gráfico', // Etiqueta del dataset
+      data: [3, 6, 9], // Datos asociados a las etiquetas
+      borderColor: 'rgba(75, 192, 192, 1)', // Color de la línea
+      backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo debajo de la línea
+      borderWidth: 2 // Grosor de la línea
+    }]
+  },
+  options: {
+    responsive: true, // Hace el gráfico adaptable al tamaño del contenedor
+    plugins: {
+      legend: {
+        display: true, // Muestra la leyenda del gráfico
+        position: 'top' // Posición de la leyenda
+      },
+      title: {
+        display: true, // Muestra el título del gráfico
+        text: 'Ejemplo de Gráfico de Línea' // Texto del título
+      }
+    }
+  },
+  plugins: [] // Puedes añadir plugins personalizados aquí si es necesario
+};
+
+// Crear el gráfico
+const chart = new Chart(ctx, config);
 
   </script>
 </body>
