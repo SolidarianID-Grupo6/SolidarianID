@@ -39,7 +39,7 @@ jobs:
           # Get IP and clean any debug output
           EC2_PUBLIC_IP=$(terraform output public_ip | sed 's/"//g' | tr -d '[:space:]')
           echo "Retrieved IP: $EC2_PUBLIC_IP"
-          echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> "$GITHUB_ENV"
+          echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
         working-directory: ./ci-cd/terraform
 
       - name: Set up SSH
