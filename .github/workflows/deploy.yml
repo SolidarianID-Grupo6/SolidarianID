@@ -62,7 +62,7 @@ jobs:
 
       - name: Create .env file on EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ env.EC2_PUBLIC_IP }} "echo '$EC2_PUBLIC_IP' > /home/ec2-user/.env"
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ env.EC2_PUBLIC_IP }} "echo '${{ secrets.ENV }}' > /home/ec2-user/.env"
 
       - name: Run Docker Compose on EC2
         run: |
