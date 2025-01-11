@@ -1,6 +1,6 @@
-import { ODS_ENUM } from "@app/iam/authentication/enums/ods.enum";
-import { Type } from "class-transformer";
-import { IsArray, IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import { ODS_ENUM } from 'libs/enums/ods.enum';
+import { Type } from 'class-transformer';
+import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 export class CreateCauseStatsDto {
   @IsString()
