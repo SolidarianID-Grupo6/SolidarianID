@@ -37,16 +37,9 @@ jobs:
         id: get_ec2_ip
         run: |
           # Get IP and clean any debug output
-          EC2_PUBLIC_IP=$(terraform output -raw public_ip | grep -oE '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+')
-          
-          # Verify we got a valid IP
-          if [[ $EC2_PUBLIC_IP =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> "$GITHUB_ENV"
-            echo "Retrieved IP: $EC2_PUBLIC_IP"
-          else
-            echo "Error: Failed to get valid IP address"
-            exit 1
-          fi
+          EC2_PUBLIC_IP=$(terraform output public_ip)
+          echo "Retrieved IP: $EC2_PUBLIC_IP"
+          echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> "$GITHUB_ENV"
         working-directory: ./ci-cd/terraform
 
       - name: Set up SSH
