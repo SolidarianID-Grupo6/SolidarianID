@@ -42,7 +42,7 @@ jobs:
         id: get_ec2_ip
         run: |
           # Clean the Terraform output and extract only the public IP address
-          EC2_PUBLIC_IP=$(terraform output public_ip | grep -oP '\d+\.\d+\.\d+\.\d+')
+          EC2_PUBLIC_IP=$(terraform output public_ip | grep -oP '\d+\.\d+\.\d+\.\d+' | head -n 1 | tr -d '[:space:]')
           echo "Retrieved IP: $EC2_PUBLIC_IP"
           echo "EC2_PUBLIC_IP=$EC2_PUBLIC_IP" >> $GITHUB_ENV
         working-directory: ./ci-cd/terraform
