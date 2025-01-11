@@ -33,15 +33,6 @@ jobs:
         run: terraform apply -auto-approve -var "ami_id=${{ secrets.AMI_ID }}" -var "instance_type=${{ secrets.INSTANCE_TYPE }}" -var "key_name=${{ secrets.KEY_NAME }}"
         working-directory: ./ci-cd/terraform
 
-  deploy:
-    name: Deploy Application
-    runs-on: ubuntu-latest
-    needs: terraform
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
       - name: Wait for EC2 Public IP
         id: wait_for_ip
         run: |
