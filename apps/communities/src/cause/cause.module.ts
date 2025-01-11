@@ -7,7 +7,6 @@ import { CommunityModule } from '../community/community.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { IamModule } from '@app/iam';
 
-
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Cause.name, schema: CauseSchema }]),

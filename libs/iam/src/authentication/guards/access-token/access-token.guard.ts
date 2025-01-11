@@ -13,13 +13,13 @@ import { REQUEST_USER_KEY } from 'libs/iam/iam.constants';
 
 @Injectable()
 export class AccessTokenGuard implements CanActivate {
-  constructor(
+  public constructor(
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
-  ) {}
+  ) { }
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
     const token =
       this.extractTokenFromCookie(request, 'accessToken') ??

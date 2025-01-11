@@ -3,7 +3,6 @@ import { CreateActionDto } from '../../action/dto/create-action.dto';
 import { CreateEventDto } from '../../event/dto/create-event.dto';
 import { Type } from 'class-transformer';
 
-
 export class CreateCauseDto {
     @IsString()
     title: string;
@@ -46,6 +45,5 @@ export class CreateCauseDto {
     @IsOptional()
     @IsString()
     community: string;
-
 
 }

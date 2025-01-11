@@ -11,7 +11,6 @@ import { Community, CommunityDocument } from './schemas/community.schema';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { UpdateCommunityDto } from './dto/update-community.dto';
 import { ClientProxy } from '@nestjs/microservices';
-import { UserJoinEventDto } from './dto/user-join-community.dto';
 import { CauseService } from '../cause/cause.service';
 import { CommunityEntity } from './entities/community.entity';
 import { CreateCauseDto } from '../cause/dto/create-cause.dto';
@@ -26,7 +25,7 @@ export class CommunityService {
     @Inject('NATS_SERVICE') private readonly client: ClientProxy,
     @Inject(forwardRef(() => CauseService))
     private readonly causeService: CauseService,
-  ) {}
+  ) { }
 
   async create(createCommunityDto: CreateCommunityDto): Promise<string> {
     // 1. Create community first without causes
@@ -36,7 +35,7 @@ export class CommunityService {
       admins: [createCommunityDto.admin],
     });
     const savedCommunity = await newCommunity.save();
-  
+
     const causePromises = [];
 
     const idCommunity = String(savedCommunity._id);
@@ -53,18 +52,18 @@ export class CommunityService {
         category: cause.category,
         keywords: cause.keywords,
         location: cause.location,
-        actions: [], 
+        actions: [],
         events: [],
         ods: cause.ods,
         community: idCommunity
       };
-    
+
       // Crear la promesa para la causa y agregarla al array
-      const causeCreationPromise = this.causeService.create(idCommunity,causeData);
+      const causeCreationPromise = this.causeService.create(idCommunity, causeData);
       causePromises.push(causeCreationPromise);
 
       const odsEnumValues = cause.ods.map((odsDescription) => this.causeService.mapToEnum(odsDescription));
-      
+
       const causeId = await causeCreationPromise;
 
       // Crear el objeto de datos para el evento de causa
@@ -78,7 +77,7 @@ export class CommunityService {
     }
 
     const createdCauses = await Promise.all(causePromises);
-  
+
     // 3. Update community with cause references
     savedCommunity.causes = createdCauses;
 
@@ -89,20 +88,18 @@ export class CommunityService {
       name: savedCommunity.name,
       causes: causesEvent
     };
- 
+
     //Enviar evento a Users para que aparezca en el historial de comunidades del usuario
     this.client.emit(CommunityEvent.CreateCommunity, communityEvent);
 
     return idCommunity;
-  } 
-  
-  
+  }
+
   // Obtener todas las comunidades
   async findAll(): Promise<CommunityEntity[]> {
     const communities = await this.communityModel.find().exec();
     return communities.map(community => this.mapToEntity(community));
   }
-
 
   // Obtener una comunidad por ID
   async findOne(id: string): Promise<CommunityEntity> {
@@ -140,27 +137,26 @@ export class CommunityService {
     }
   }
 
-  async addMember(idCommunity: string, idUser: number){
-      const community = await this.communityModel.findById(idCommunity);
-    
-      if (!community) {
-          throw new NotFoundException(`Community with ID "${idCommunity}" not found`);
-      }
+  async addMember(idCommunity: string, idUser: number) {
+    const community = await this.communityModel.findById(idCommunity);
 
-      if (community.members.includes(idUser)) {
-          throw new BadRequestException(`User ${idUser} is already a member of this community`);
-      }
+    if (!community) {
+      throw new NotFoundException(`Community with ID "${idCommunity}" not found`);
+    }
 
-      await this.communityModel.findByIdAndUpdate(
-        idCommunity,
-        { $push: { members: idUser } },
-        { new: true, runValidators: true }
-      ).exec();
+    if (community.members.includes(idUser)) {
+      throw new BadRequestException(`User ${idUser} is already a member of this community`);
+    }
 
-      this.client.emit(CommunityEvent.NewCommunityUser, idCommunity);
+    await this.communityModel.findByIdAndUpdate(
+      idCommunity,
+      { $push: { members: idUser } },
+      { new: true, runValidators: true }
+    ).exec();
+
+    this.client.emit(CommunityEvent.NewCommunityUser, idCommunity);
 
   }
-
 
   private mapToEntity(document: CommunityDocument): CommunityEntity {
     return {

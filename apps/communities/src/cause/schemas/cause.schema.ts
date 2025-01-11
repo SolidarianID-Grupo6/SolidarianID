@@ -47,7 +47,6 @@ export class Cause {
   
   @Prop({ type: String})
   location?: string;
-  
 
 }
 export const CauseSchema = SchemaFactory.createForClass(Cause);

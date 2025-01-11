@@ -42,7 +42,6 @@ export class CommunityJoinRequestService {
       idCommunity: userRequest.idCommunity,
       userId: userRequest.idUser 
     }).exec();
-
     
     if (communityJoinRequest) {
       throw new BadRequestException(`Request already exists for user ID ${userRequest.idUser}`);
@@ -106,7 +105,6 @@ export class CommunityJoinRequestService {
     }
 
   }
-
 
   // Obtener todas las solicitudes de unión a comunidades
   async findAll(): Promise<CommunityJoinRequestEntity[]> {

@@ -3,63 +3,61 @@ import { Donor } from '../entities/donor.entity';
 
 export class CreateActionDto {
   @IsString()
-  title: string;
+  public title: string;
 
   @IsString()
-  description: string;
+  public description: string;
 
   @IsString()
-  cause: string;
+  public cause: string;
 
   @IsEnum(['food', 'money', 'volunteer'])
-  type: string;
+  public type: string;
 
   @IsOptional()
   @IsString()
   @ValidateIf(o => o.type === 'food')
-  foodType?: string;
+  public foodType?: string;
 
   @IsOptional()
   @IsNumber()
   @ValidateIf(o => o.type === 'food')
-  foodGoalQuantity?: number;
+  public foodGoalQuantity?: number;
 
   @IsOptional()
   @IsNumber()
   @ValidateIf(o => o.type === 'food')
-  foodCurrentQuantity?: number;
+  public foodCurrentQuantity?: number;
 
   @IsOptional()
   @IsNumber()
   @ValidateIf(o => o.type === 'money')
-  moneyGoalAmount?: number;
+  public moneyGoalAmount?: number;
 
   @IsOptional()
   @IsNumber()
   @ValidateIf(o => o.type === 'money')
-  moneyCurrentAmount?: number;
+  public moneyCurrentAmount?: number;
 
   @IsOptional()
   @IsNumber()
   @ValidateIf(o => o.type === 'volunteer')
-  volunteerGoalCount?: number;
+  public volunteerGoalCount?: number;
 
   @IsOptional()
   @IsNumber()
   @ValidateIf(o => o.type === 'volunteer')
-  volunteerCurrentCount?: number;
+  public volunteerCurrentCount?: number;
 
   @IsOptional()
   @ValidateIf(o => o.type === 'volunteer')
   @IsString({ each: true })
   @IsArray()
-  volunteers?: string[];
+  public volunteers?: string[];
 
   @IsOptional()
   @ValidateIf(o => o.type === 'food' || o.type === 'money')
   @IsArray()
-  donors?: Donor[];
-
-
+  public donors?: Donor[];
 
 }
