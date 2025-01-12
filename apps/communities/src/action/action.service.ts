@@ -5,7 +5,6 @@ import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
 import { Action, ActionDocument } from './schemas/action.schema';
 import { DonateActionDto } from './dto/donate-action.dto';
-import { VolunteerActionDto } from './dto/volunteer-action.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { ActionEntity } from './entities/action.entity';
 import { Cause, CauseDocument } from '../cause/schemas/cause.schema';
@@ -21,7 +20,7 @@ export class ActionService {
     @Inject('NATS_SERVICE') private readonly client: ClientProxy,
   ) { }
 
-  async createAction(createActionDto: CreateActionDto): Promise<string> {
+  async createAction(createActionDto: CreateActionDto, user: string): Promise<string> {
     const { type, cause } = createActionDto;
 
     // Verifica si la causa existe
@@ -53,6 +52,7 @@ export class ActionService {
     const actionEvent: CreateActionStatsDto = {
       actionId: actionId,
       cause_id: String(existingCause._id),
+      user: +user,
       title: createActionDto.title,
       description: createActionDto.description,
       goal: createActionDto.foodGoalQuantity | createActionDto.moneyGoalAmount | createActionDto.volunteerGoalCount,
@@ -155,7 +155,7 @@ export class ActionService {
     }
   }
 
-  async donate(id: string, donateActionDto: DonateActionDto): Promise<ActionEntity> {
+  async donate(id: string, donateActionDto: DonateActionDto, user: string): Promise<ActionEntity> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
     }
@@ -184,7 +184,7 @@ export class ActionService {
       updatedAction = await this.actionModel.findByIdAndUpdate(
         id,
         {
-          $push: { donors: { userId: donateActionDto.user, amount: donateActionDto.donation } },
+          $push: { donors: { userId: user, amount: donateActionDto.donation } },
           moneyCurrentAmount: newMoneyAmount,
           progress: progress,
         },
@@ -206,7 +206,7 @@ export class ActionService {
       updatedAction = await this.actionModel.findByIdAndUpdate(
         id,
         {
-          $push: { donors: { userId: donateActionDto.user, amount: donateActionDto.donation } },
+          $push: { donors: { userId: user, amount: donateActionDto.donation } },
           foodCurrentQuantity: newFoodQuantity,
           progress: progress,
         },
@@ -221,6 +221,8 @@ export class ActionService {
     const donateEvent: DonateEventDto = {
       actionId: String(action._id),
       causeId: String(action.cause),
+      user: +user,
+      type: "donate",
       progress: donateActionDto.donation,
     };
 
@@ -230,7 +232,7 @@ export class ActionService {
     return this.mapToEntity(updatedAction);
   }
 
-  async volunteer(id: string, volunteerActionDto: VolunteerActionDto): Promise<void> {
+  async volunteer(id: string, user: string): Promise<void> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
     }
@@ -242,8 +244,8 @@ export class ActionService {
     }
 
     // Verifica si el usuario ya está en la lista de voluntarios
-    if (action.volunteers.includes(volunteerActionDto.user)) {
-      throw new BadRequestException(`User with ID "${volunteerActionDto.user}" already volunteered`);
+    if (action.volunteers.includes(user)) {
+      throw new BadRequestException(`User with ID "${user}" already volunteered`);
     }
 
     const newCurrentCount = 1 + (action.volunteerCurrentCount || 0);
@@ -258,7 +260,7 @@ export class ActionService {
     await this.actionModel.findByIdAndUpdate(
       id,
       {
-        $push: { volunteers: volunteerActionDto.user },
+        $push: { volunteers: user },
         volunteerCurrentCount: newCurrentCount,
         progress: progress,
       },
@@ -269,6 +271,8 @@ export class ActionService {
     const donateEvent: DonateEventDto = {
       actionId: String(action._id),
       causeId: String(action.cause),
+      user: +user,
+      type: "volunteer",
       progress: 1,
     };
 

@@ -4,10 +4,12 @@ import { CommunityJoinRequestEntity } from './entities/community-join-request.en
 import { UserJoinRequestDto } from './dto/user-join-request.dto';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
+import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
+import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 
 @Controller('community-join-request/')
 export class CommunityJoinRequestController {
-  constructor(private readonly communityJoinRequestService: CommunityJoinRequestService) {}
+  constructor(private readonly communityJoinRequestService: CommunityJoinRequestService) { }
 
   @Auth(AuthType.None)
   @Get()
@@ -23,8 +25,8 @@ export class CommunityJoinRequestController {
 
   @Auth(AuthType.None)
   @Post('requests')
-  async requestJoin(@Body() userJoinRequest: UserJoinRequestDto): Promise<string> {
-    return this.communityJoinRequestService.requestJoin(userJoinRequest);
+  async requestJoin(@Body() userJoinRequest: UserJoinRequestDto, @ActiveUser() user: IActiveUserData): Promise<string> {
+    return this.communityJoinRequestService.requestJoin(userJoinRequest, user.sub);
   }
 
   @Auth(AuthType.None)
