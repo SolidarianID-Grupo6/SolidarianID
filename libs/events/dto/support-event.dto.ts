@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 export class SupportEventDto {
     @IsString()
     public causeId: string;
@@ -6,6 +6,6 @@ export class SupportEventDto {
     @IsString()
     public communityId: string;
 
-    @IsNumber()
-    public user: number;
+    @IsString()
+    public user: string;
 }

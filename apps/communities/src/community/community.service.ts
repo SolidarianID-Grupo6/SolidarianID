@@ -27,7 +27,7 @@ export class CommunityService {
     private readonly causeService: CauseService,
   ) { }
 
-  async create(createCommunityDto: CreateCommunityDto, user: number): Promise<string> {
+  async create(createCommunityDto: CreateCommunityDto, user: string): Promise<string> {
     // 1. Create community first without causes
     const newCommunity = new this.communityModel({
       ...createCommunityDto,
@@ -59,7 +59,7 @@ export class CommunityService {
       };
 
       // Crear la promesa para la causa y agregarla al array
-      const causeCreationPromise = this.causeService.create(idCommunity, causeData, String(user));
+      const causeCreationPromise = this.causeService.create(idCommunity, causeData, user);
       causePromises.push(causeCreationPromise);
 
       const odsEnumValues = cause.ods.map((odsDescription) => this.causeService.mapToEnum(odsDescription));
@@ -138,7 +138,7 @@ export class CommunityService {
     }
   }
 
-  async addMember(idCommunity: string, idUser: number) {
+  async addMember(idCommunity: string, idUser: string) {
     const community = await this.communityModel.findById(idCommunity);
 
     if (!community) {

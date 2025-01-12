@@ -30,7 +30,7 @@ export class CommunityJoinRequestService {
       throw new NotFoundException(`Community with ID ${userRequest.idCommunity} not found`);
     }
 
-    if (community.members.includes(+user)) {
+    if (community.members.includes(user)) {
       throw new BadRequestException(
         `User with ID ${user} is already a member`,
       );

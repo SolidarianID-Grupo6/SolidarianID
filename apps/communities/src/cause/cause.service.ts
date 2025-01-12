@@ -51,7 +51,7 @@ export class CauseService {
     const causeEvent: CreateCauseStatsDto = {
       communityId: idCommunity,
       cause_id: String(createdCause._id),
-      user: +user,
+      user: user,
       title: createCauseDto.title,
       ods: odsEnumValues,
     };
@@ -108,7 +108,7 @@ export class CauseService {
       throw new NotFoundException(`Cause with ID "${id}" not found`);
     }
 
-    if (cause.registeredSupporters.includes(+user)) {
+    if (cause.registeredSupporters.includes(user)) {
       throw new BadRequestException(
         `User ${user} is already registered as a supporter`,
       );
@@ -133,7 +133,7 @@ export class CauseService {
     const support_event: SupportEventDto = {
       causeId: id,
       communityId: cause.community,
-      user: +user,
+      user: user,
     };
 
     this.client.emit(CommunityEvent.NewSupport, support_event);

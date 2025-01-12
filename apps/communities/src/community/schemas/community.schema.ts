@@ -15,13 +15,13 @@ export class Community {
   creationDate: Date;
 
   @Prop()
-  creator: number;
+  creator: string;
 
   @Prop()
-  admins: number[];
+  admins: string[];
 
-  @Prop({ type: [Number] })
-  members: number[];
+  @Prop({ type: [String] })
+  members: string[];
 
   @Prop()
   causes: string[];

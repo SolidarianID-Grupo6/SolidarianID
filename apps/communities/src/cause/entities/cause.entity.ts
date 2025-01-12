@@ -5,26 +5,26 @@ export class CauseEntity {
       id: string;
 
       title: string;
-    
+
       description: string;
-    
+
       creationDate: Date;
 
       endDate: Date;
-    
+
       community: string;
-    
+
       actions: string[];
-    
+
       events: string[];
-    
-      registeredSupporters: number[];
-    
+
+      registeredSupporters: string[];
+
       status: CauseStatus;
 
       category: string;
-        
+
       keywords: string[];
-        
+
       location: string;
 }
