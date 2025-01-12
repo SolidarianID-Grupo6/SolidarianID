@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { ODS_ENUM } from '@app/iam/authentication/enums/ods.enum';
+import { ODS_ENUM } from 'libs/enums/ods.enum';
 
 export type InformationDocument = CommunityStats & Document;
 
@@ -53,4 +53,5 @@ export class CommunityStats {
   causes: CauseStats[];
 }
 
-export const CommunityStatsSchema = SchemaFactory.createForClass(CommunityStats);
+export const CommunityStatsSchema =
+  SchemaFactory.createForClass(CommunityStats);
