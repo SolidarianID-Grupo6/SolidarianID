@@ -12,6 +12,7 @@ import { Cause, CauseDocument } from '../cause/schemas/cause.schema';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import { CreateActionStatsDto } from 'libs/events/dto/create-action-dto';
 import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
+import { SupportEventDto } from 'libs/events/dto/support-event.dto';
 
 @Injectable()
 export class ActionService {
@@ -160,6 +161,7 @@ export class ActionService {
     }
 
     const action = await this.actionModel.findById(id).exec();
+    const cause = await this.causeModel.findById(action.cause).exec();
 
     if (!action) {
       throw new NotFoundException(`Action with ID "${id}" not found`);
@@ -190,6 +192,13 @@ export class ActionService {
         { new: true, runValidators: true }
       ).exec();
 
+      const supportEventDto: SupportEventDto = {
+        communityId: String(cause.community),
+        causeId: String(action.cause),
+      };
+  
+      this.client.emit(CommunityEvent.NewSupport, supportEventDto);
+
     } else if (action.type === 'food') {
       // Donaciones de alimentos
       const newFoodQuantity = (action.foodCurrentQuantity || 0) + donateActionDto.donation;
@@ -211,6 +220,13 @@ export class ActionService {
         },
         { new: true, runValidators: true }
       ).exec();
+
+      const supportEventDto: SupportEventDto = {
+        communityId: String(cause.community),
+        causeId: String(action.cause),
+      };
+  
+      this.client.emit(CommunityEvent.NewSupport, supportEventDto);
 
     } else {
       throw new BadRequestException('Donations are only applicable for money or food actions');
@@ -235,6 +251,7 @@ export class ActionService {
     }
 
     const action = await this.actionModel.findById(id).exec();
+    const cause = await this.causeModel.findById(action.cause).exec();
 
     if (!action) {
       throw new NotFoundException(`Action with ID "${id}" not found`);
@@ -272,6 +289,13 @@ export class ActionService {
     };
 
     this.client.emit(CommunityEvent.DonateEvent, donateEvent);
+
+    const supportEventDto: SupportEventDto = {
+      communityId: String(cause.community),
+      causeId: String(action.cause),
+    };
+
+    this.client.emit(CommunityEvent.NewSupport, supportEventDto);
   }
 
   // Eliminar una accion por ID

@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "title": "Reclutamiento de Voluntarios",
   "description": "Buscar voluntarios para asistir en la distribución de alimentos.",
-  "cause": "677ee39918263ddcbcbfc890",
+  "cause": "6783189fbb3ccffb18933e05",
   "type": "volunteer",
   "volunteerGoalCount": 20
 }

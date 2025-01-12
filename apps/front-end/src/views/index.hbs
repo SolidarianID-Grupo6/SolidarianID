@@ -1,139 +1,237 @@
 <!DOCTYPE html>
 <html lang="es">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SolidarianID</title>
-  <link rel="stylesheet" href="/stylesheets/output.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
-  <!-- Para soporte de fetch si lo necesitas -->
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolidarianID</title>
+    <link rel="stylesheet" href="/stylesheets/output.css">
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/fetch/3.0.0/fetch.min.js"></script>
+    <!-- Para soporte de fetch si lo necesitas -->
+  </head>
 
-<body class="bg-gray-100 font-sans">
-  <header class="bg-white shadow-xl py-4">
-  <div class="mx-auto flex items-center justify-between px-4 sm:px-6">
-    <!-- Logo / Botón Hamburguesa -->
-    <div>
-      <img id="menuToggle" src="/images/logo.png" alt="Logo" class="w-20 h-10 sm:w-24 sm:h-12 md:w-32 md:h-16 object-cover rounded-lg cursor-pointer sm:cursor-default sm:pointer-events-none">
-    </div>
-
-    <!-- Título -->
-    <div class="flex-1 text-center px-4 sm:px-6">
-      <h1 class="text-lg sm:text-xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
-        SolidarianID
-      </h1>
-    </div>
-
-    <!-- Usuario -->
-    <div class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">
-      <span class="font-semibold">Administrador</span>
-    </div>
-  </div>
-</header>
-
-  <nav class="bg-gray-200">
-    <!-- Menú desplegable (oculto por defecto en móviles) -->
-    <div id="menuContent" class="hidden flex sm:flex justify-around flex-row text-center sm:space-x-4">
-      <a href="#" id="tab-validacion" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('validacion', this)">
-        Validación
-      </a>
-      <a href="#" id="tab-estadisticas" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('estadisticas', this)">
-        Estadísticas
-      </a>
-      <a href="#" id="tab-informes" class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300" onclick="showTab('informes', this)">
-        Informes
-      </a>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="container mx-auto mt-6 mb-6 flex-grow">
-    <div class="bg-white shadow-md rounded p-4">
-      <!-- Tabs Content -->
-      <div id="validacion" class="tabcontent">
-        <div id="comunidades-list" class="space-y-4 mt-2">
-          <!-- Aquí se renderizarán las solicitudes -->
+  <body class="bg-gray-100 font-sans">
+    <header class="bg-white shadow-xl py-4">
+      <div class="mx-auto flex items-center justify-between px-4 sm:px-6">
+        <!-- Logo / Botón Hamburguesa -->
+        <div>
+          <img id="menuToggle" src="/images/logo.png" alt="Logo"
+            class="w-20 h-10 sm:w-24 sm:h-12 md:w-32 md:h-16 object-cover rounded-lg cursor-pointer sm:cursor-default sm:pointer-events-none">
         </div>
 
-        <!-- Botón de Validar debajo del panel -->
+        <!-- Título -->
+        <div class="flex-1 text-center px-4 sm:px-6">
+          <h1
+            class="text-lg sm:text-xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
+            SolidarianID
+          </h1>
+        </div>
+
+        <!-- Usuario -->
+        <div class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">
+          <span class="font-semibold">Administrador</span>
+        </div>
+      </div>
+    </header>
+
+    <nav class="bg-gray-200">
+      <!-- Menú desplegable (oculto por defecto en móviles) -->
+      <div id="menuContent"
+        class="hidden flex sm:flex justify-around flex-row text-center sm:space-x-4">
+        <a href="#" id="tab-validacion"
+          class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300"
+          onclick="showTab('validacion', this)">
+          Validación
+        </a>
+        <a href="#" id="tab-estadisticas"
+          class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300"
+          onclick="showTab('estadisticas', this)">
+          Estadísticas
+        </a>
+        <a href="#" id="tab-informes"
+          class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300"
+          onclick="showTab('informes', this)">
+          Informes
+        </a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto mt-6 mb-6 flex-grow">
+
+      <!-- Tabs Content -->
+      <div id="validacion" class="tabcontent">
+        <div class="bg-white shadow-md rounded p-4">
+          <div id="comunidades-request-list" class="space-y-4 mt-2">
+            <!-- Aquí se renderizarán las solicitudes -->
+          </div>
+
+          <!-- Botón de Validar debajo del panel -->
           <div class="mt-6 flex justify-end">
-            <button class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-teal-400" onclick="validateSelectedCommunities()">
+            <button
+              class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+              onclick="validateSelectedCommunities()">
               Validar Solicitudes Seleccionadas
             </button>
           </div>
         </div>
-      </div>
+        <div id="detailsPopup"
+          class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center">
+          <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+            <!-- Título -->
+            <h2
+              class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Detalles
+              de la Solicitud</h2>
 
-      <div id="detailsPopup" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
-          <!-- Título -->
-          <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Detalles de la Solicitud</h2>
+            <!-- Contenido dinámico -->
+            <div id="popupContent" class="space-y-4">
+              <!-- Aquí se inyecta el contenido dinámico -->
+            </div>
 
-          <!-- Contenido dinámico -->
-          <div id="popupContent" class="space-y-4">
-            <!-- Aquí se inyecta el contenido dinámico -->
-          </div>
-
-          <!-- Botón de cierre -->
-          <div class="flex justify-end mt-6">
-            <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400" onclick="closePopup()">
-              Cerrar
-            </button>
+            <!-- Botón de cierre -->
+            <div class="flex justify-end mt-6">
+              <button
+                class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+                onclick="closePopup()">
+                Cerrar
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
 
       <div id="estadisticas" class="tabcontent hidden">
-        <!-- Contenido de estadísticas -->
-        <p>Contenido de estadísticas aquí...</p>
-      </div>
-
-      <div id="informes" class="tabcontent hidden">
-        <!-- Contenido de informes -->
-        <p>Contenido de informes aquí...</p>
-      </div>
-    </div>
-  </main>
-
-<footer class="bg-gray-800 text-white py-6 mt-auto">
-  <div class="container mx-auto text-center sm:text-left sm:flex sm:justify-between">
-    <div class="mb-4 sm:mb-0">
-      <h2 class="text-lg font-bold mb-3 text-white tracking-tight">
-        Conéctate con nosotros
-      </h2>
-      <p>Siempre estamos aquí para ayudarte. Si tienes alguna pregunta o necesitas soporte, no dudes en contactarnos.</p>
-    </div>
-    <div>
-        <div class="social-links flex justify-center space-x-4 sm:justify-center mb-4 sm:mb-0">
-            <a href="https://www.facebook.com" target="_blank" class="flex items-center">
-              <img src="/images/social/facebook-icon.png" alt="Facebook" class="w-6 h-6">
-            </a>
-            <a href="https://www.twitter.com" target="_blank" class="flex items-center">
-              <img src="/images/social/twitter-icon.png" alt="Twitter" class="w-6 h-6">
-            </a>
-            <a href="https://www.instagram.com" target="_blank" class="flex items-center">
-              <img src="/images/social/instagram-icon.png" alt="Instagram" class="w-6 h-6">
-            </a>
-            <a href="https://www.linkedin.com" target="_blank" class="flex items-center">
-              <img src="/images/social/linkedin-icon.png" alt="LinkedIn" class="w-6 h-6">
-            </a>
+  <div class="bg-white shadow-md rounded p-4">
+    <!-- Contenedor dividido en cuatro secciones -->
+    <div class="grid grid-cols-2 gap-4">
+      <!-- Gráfica 1 -->
+      <div class="border p-4 rounded shadow-md flex items-center justify-center">
+        <div>
+          <h3 class="text-center font-bold mb-2 ">Comunidades y Causas por ODS</h3>
+          <canvas id="chart1" class="max-w-md h-96"></canvas>
         </div>
-        <div class="footer-bottom text-sm text-gray-400 border-t sm:border-none border-gray-600 pt-2 text-center sm:text-left">
-          <p>&copy; 2024 SolidarianID. Todos los derechos reservados.</p>
-          <p><a href="#" class="text-blue-400 hover:underline">Política de privacidad</a> | <a href="#"
-              class="text-blue-400 hover:underline">Términos de uso</a></p>
-        </di>
+      </div>
+
+      <!-- Gráfica 2 -->
+      <div class="border p-4 rounded shadow-md flex items-center justify-center">
+        <div>
+          <h3 class="text-center font-bold mb-2">Apoyos por ODS</h3>
+          <canvas id="chart2" class="max-w-md h-96"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfica 3 -->
+      <div class="border p-4 rounded shadow-md flex items-center justify-center">
+        <div>
+          <h3 class="text-center font-bold mb-2">Apoyos por Comunidad</h3>
+          <canvas id="chart3" class="max-w-md h-96"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfica 4 -->
+      <div class="border p-4 rounded shadow-md flex items-center justify-center">
+        <div>
+          <h3 class="text-center font-bold mb-2">Progreso de Acciones</h3>
+          <canvas id="chart4" class="max-w-md h-96"></canvas>
+        </div>
+      </div>
     </div>
   </div>
-</footer>
+</div>
+
+</div>
 
 
+      <div id="informes" class="tabcontent hidden">
+        <div class="bg-white shadow-md rounded p-4">
+          <!-- Contenido de informes -->
+              <div id="comunidades-list" class="space-y-4 mt-2">
+                  <!-- Aquí se renderizarán las solicitudes -->
+              </div>
 
-  <!-- JavaScript -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
+              <div id="report-view" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-xs sm:max-w-lg lg:max-w-3xl h-[90vh] sm:h-[85vh] lg:h-[80vh] flex flex-col">
+                  <!-- Título del modal -->
+                  <div class="flex justify-between items-center mb-4 border-b border-gray-300 pb-2">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800">Informe de la Comunidad</h2>
+                    <button id="close-report" class="text-red-500 font-bold text-lg">&times;</button>
+                  </div>
+
+                  <!-- Contenedor con sombra para el contenido -->
+                  <div class="mx-auto p-4 sm:p-6 bg-gray-50 rounded-lg shadow-md w-full flex-grow overflow-hidden">
+                    <!-- Contenido desplazable -->
+                    <div id="report-content" class="overflow-y-auto max-h-full space-y-4">
+                      <!-- El contenido dinámico será insertado aquí -->
+                    </div>
+                  </div>
+
+                  <!-- Botón fijo al final -->
+                  <div class="flex justify-end mt-4">
+                    <button id="download-pdf" class="bg-gray-400 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-gray-600">
+                      Descargar PDF
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+        </div>
+      </div>
+
+        </div>
+        
+      </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6 mt-auto">
+      <div
+        class="container mx-auto text-center sm:text-left sm:flex sm:justify-between">
+        <div class="mb-4 sm:mb-0">
+          <h2 class="text-lg font-bold mb-3 text-white tracking-tight">
+            Conéctate con nosotros
+          </h2>
+          <p>Siempre estamos aquí para ayudarte. Si tienes alguna pregunta o
+            necesitas soporte, no dudes en contactarnos.</p>
+        </div>
+        <div>
+          <div
+            class="social-links flex justify-center space-x-4 sm:justify-center mb-4 sm:mb-0">
+            <a href="https://www.facebook.com" target="_blank"
+              class="flex items-center">
+              <img src="/images/social/facebook-icon.png" alt="Facebook"
+                class="w-6 h-6">
+            </a>
+            <a href="https://www.twitter.com" target="_blank"
+              class="flex items-center">
+              <img src="/images/social/twitter-icon.png" alt="Twitter"
+                class="w-6 h-6">
+            </a>
+            <a href="https://www.instagram.com" target="_blank"
+              class="flex items-center">
+              <img src="/images/social/instagram-icon.png" alt="Instagram"
+                class="w-6 h-6">
+            </a>
+            <a href="https://www.linkedin.com" target="_blank"
+              class="flex items-center">
+              <img src="/images/social/linkedin-icon.png" alt="LinkedIn"
+                class="w-6 h-6">
+            </a>
+          </div>
+          <div
+            class="footer-bottom text-sm text-gray-400 border-t sm:border-none border-gray-600 pt-2 text-center sm:text-left">
+            <p>&copy; 2024 SolidarianID. Todos los derechos reservados.</p>
+            <p><a href="#" class="text-blue-400 hover:underline">Política de
+                privacidad</a> | <a href="#"
+                class="text-blue-400 hover:underline">Términos de uso</a></p>
+          </di>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
     // Función para mostrar el contenido de la pestaña seleccionada
     function showTab(tabName, element) {
       console.log(`Mostrando pestaña: ${tabName}`);
@@ -147,13 +245,46 @@
 
       // Añade la clase 'active' al enlace actual
       element.classList.add('active');
+
+      if (tabName === 'validacion') {
+        fetchCommunitiesRequest();
+      }
+
+      if (tabName === 'estadisticas') {
+        renderChart1();
+        renderChart2();
+        renderChart3();
+        renderChart4();
+      }
+
+      if(tabName === 'informes') {
+        fetchCommunities();
+      }
     }
 
     let communities = [];
 
-async function fetchCommunities() {
+async function fetchCommunitiesRequest() {
   try {
     const response = await fetch('http://localhost:3001/community-requests');
+    if (!response.ok) {
+      console.log('Error en la solicitud:', response);
+      throw new Error(`Error al obtener comunidades: ${response.statusText}`);
+    }
+
+    communities = await response.json();
+    renderCommunitiesRequest(communities);
+  } catch (error) {
+    console.error(error);
+    document.getElementById('comunidades-request-list').innerHTML = `
+      <p class="text-red-500">Error al cargar las comunidades.</p>
+    `;
+  }
+}
+
+async function fetchCommunities() {
+  try {
+    const response = await fetch('http://localhost:3003/information');
     if (!response.ok) {
       console.log('Error en la solicitud:', response);
       throw new Error(`Error al obtener comunidades: ${response.statusText}`);
@@ -171,6 +302,35 @@ async function fetchCommunities() {
 
 function renderCommunities(communities) {
   const list = document.getElementById('comunidades-list');
+  list.innerHTML = ''; // Limpiar contenido previo
+
+  communities.forEach((community, index) => {
+   const item = `
+  <div class="flex flex-col sm:flex-row items-center p-4 sm:p-6 bg-gray-50 shadow-md rounded-lg max-w-full mx-auto">
+    <!-- Contenedor principal dividido en dos secciones -->
+    <div class="flex-1 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
+      <!-- Nombre de la Comunidad -->
+      <h3 class="text-base sm:text-lg font-bold text-gray-700">Comunidad:</h3>
+      <p class="text-sm sm:text-base text-gray-600">${community.name}</p>
+    </div>
+
+    <!-- Botones -->
+    <div class="mt-4 sm:mt-0 flex items-center justify-center space-x-2">
+      <button 
+        class="bg-cyan-500 hover:bg-cyan-700 text-white px-3 sm:px-4 py-1 sm:py-2 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400"
+        onclick="generateReport('${community.name}')">
+        Obtener informe de comunidad
+      </button>
+    </div>
+  </div>
+`;
+
+    list.innerHTML += item;
+  });
+}
+
+function renderCommunitiesRequest(communities) {
+  const list = document.getElementById('comunidades-request-list');
   list.innerHTML = ''; // Limpiar contenido previo
 
   communities.forEach((community, index) => {
@@ -316,11 +476,109 @@ async function rejectCommunity(communityId) {
   window.location.reload();
 }
 
+async function generateReport(communityName) {
+  try {
+    // Realizar la solicitud al servidor
+    const response = await fetch(`http://localhost:3003/information/${communityName}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      console.error('Error en la solicitud:', response);
+      throw new Error(`Error al generar el informe: ${response.statusText}`);
+    }
+
+    // Obtener datos de la comunidad
+    const data = await response.json();
+
+    // Crear el contenido HTML para el informe
+    const reportContent = `
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; text-align: justify; margin: 20px;">
+        <p><strong>Nombre de la Comunidad:</strong> ${data.name}</p>
+        <p><strong>Número Total de Miembros:</strong> ${data.total_members}</p>
+        <p><strong>ODS de la Comunidad:</strong> ${[
+          ...new Set(data.causes.flatMap((cause) => cause.ods)),
+        ].join(', ')}</p>
+        
+        <h2 style="font-size: 20px; margin-top: 20px;">Causas de la Comunidad:</h2>
+        <ol style="padding-left: 20px;">
+          ${data.causes
+            .map(
+              (cause, causeIndex) => `
+              <li style="margin-bottom: 20px;">
+                <strong>${causeIndex + 1}. Título de la Causa:</strong> ${cause.title} <br />
+                <strong>ODS Relacionados:</strong> ${cause.ods.join(', ')} <br />
+                <strong>Apoyos Totales:</strong> ${cause.total_supporters} <br />
+                ${
+                  cause.actions.length > 0
+                    ? `
+                    <h3 style="margin-top: 10px; font-size: 18px;">Acciones Relacionadas:</h3>
+                    <ol style="padding-left: 20px;">
+                      ${cause.actions
+                        .map(
+                          (action, actionIndex) => `
+                          <li>
+                            <strong>${causeIndex + 1}.${actionIndex + 1} Acción:</strong> ${action.title} <br />
+                            <strong>Descripción:</strong> ${action.description} <br />
+                            <strong>Meta:</strong> ${action.goal} <br />
+                            <strong>Progreso:</strong> ${action.progress} (${(
+                              (action.progress / action.goal) *
+                              100
+                            ).toFixed(2)}%)
+                          </li>
+                        `
+                        )
+                        .join('')}
+                    </ol>`
+                    : `<p><em>Sin acciones relacionadas.</em></p>`
+                }
+              </li>
+            `
+            )
+            .join('')}
+        </ol>
+      </div>
+    `;
+
+    // Insertar el contenido en el contenedor del informe
+    const reportView = document.getElementById('report-view');
+    const reportContainer = document.getElementById('report-content');
+    reportContainer.innerHTML = reportContent;
+
+    // Mostrar el modal
+    reportView.classList.remove('hidden');
+
+    // Configurar el botón para descargar el PDF
+    const downloadButton = document.getElementById('download-pdf');
+    downloadButton.onclick = () => {
+      const options = {
+        margin: 5, // Márgenes ajustados para el PDF
+        filename: `${communityName}-informe.pdf`,
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      };
+      html2pdf().set(options).from(reportContainer).save();
+    };
+
+    // Configurar el botón para cerrar el modal
+    const closeButton = document.getElementById('close-report');
+    closeButton.onclick = () => {
+      reportView.classList.add('hidden');
+    };
+  } catch (error) {
+    console.error('Error al generar el informe:', error);
+  }
+}
+
+
+
+
+
   // Configurar la pestaña predeterminada y cargar datos
   window.onload = function () {
     const defaultTab = document.querySelector('nav a:first-child');
     showTab('validacion', defaultTab);
-    fetchCommunities();
+    fetchCommunitiesRequest();
   };
 
   document.getElementById('menuToggle').addEventListener('click', () => {
@@ -332,42 +590,223 @@ async function rejectCommunity(communityId) {
     }
   });
 
-// Seleccionar el canvas del HTML
-const ctx = document.getElementById("elemento").getContext("2d");
-
-// Configuración del gráfico
-const config = {
-  type: 'line', // Tipo de gráfico: línea
-  data: {
-    labels: ['A', 'B', 'C'], // Etiquetas de los datos
-    datasets: [{
-      label: 'Mi gráfico', // Etiqueta del dataset
-      data: [3, 6, 9], // Datos asociados a las etiquetas
-      borderColor: 'rgba(75, 192, 192, 1)', // Color de la línea
-      backgroundColor: 'rgba(75, 192, 192, 0.2)', // Color de fondo debajo de la línea
-      borderWidth: 2 // Grosor de la línea
-    }]
-  },
-  options: {
-    responsive: true, // Hace el gráfico adaptable al tamaño del contenedor
-    plugins: {
-      legend: {
-        display: true, // Muestra la leyenda del gráfico
-        position: 'top' // Posición de la leyenda
-      },
-      title: {
-        display: true, // Muestra el título del gráfico
-        text: 'Ejemplo de Gráfico de Línea' // Texto del título
+  async function fetchData(endpoint) {
+    try {
+      const response = await fetch(`http://localhost:3003/statistics/${endpoint}`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`Error al obtener datos de ${endpoint}: ${response.statusText}`);
       }
+      return await response.json();
+    } catch (error) {
+      console.error(error);
+      return null;
     }
-  },
-  plugins: [] // Puedes añadir plugins personalizados aquí si es necesario
+  }
+
+// Colores predefinidos (alegres y vistosos)
+const predefinedColors = [
+  'rgba(255, 99, 132, 0.5)',  // Rojo vibrante
+  'rgba(54, 162, 235, 0.5)',  // Azul brillante
+  'rgba(255, 206, 86, 0.5)',  // Amarillo cálido
+  'rgba(75, 192, 192, 0.5)',  // Verde menta
+  'rgba(153, 102, 255, 0.5)', // Morado
+  'rgba(255, 159, 64, 0.5)',  // Naranja brillante
+  'rgba(255, 205, 86, 0.5)',  // Amarillo claro
+  'rgba(77, 83, 96, 0.5)',    // Gris oscuro
+  'rgba(201, 203, 255, 0.5)', // Azul pastel
+  'rgba(253, 107, 25, 0.5)',  // Naranja fuerte
+];
+
+// Función para generar colores dinámicamente si es necesario
+const generateColors = (count) => {
+  const colors = [...predefinedColors]; // Comienza con los colores predefinidos
+  while (colors.length < count) {
+    const r = Math.floor(Math.random() * 255);
+    const g = Math.floor(Math.random() * 255);
+    const b = Math.floor(Math.random() * 255);
+    colors.push(`rgba(${r}, ${g}, ${b}, 0.5)`); // Agrega colores dinámicos con transparencia
+  }
+  return colors;
 };
 
-// Crear el gráfico
-const chart = new Chart(ctx, config);
+// Función genérica para obtener datos de un endpoint
+async function fetchChartData(endpoint) {
+  try {
+    const data = await fetchData(endpoint);
+    console.log(`Datos recibidos de ${endpoint}:`, data);
+    return data;
+  } catch (error) {
+    console.error(`Error obteniendo datos de ${endpoint}:`, error);
+    return null;
+  }
+}
+
+// Gráfico combinado (Barras y Líneas)
+async function renderChart1() {
+  const comunidadesData = await fetchChartData('getCommunitiesByODS');
+  const causasData = await fetchChartData('getCausesByODS');
+
+  if (comunidadesData && causasData) {
+    const labels = Object.keys(comunidadesData);
+    const comunidadesValues = labels.map(label => comunidadesData[label] || 0);
+    const causasValues = labels.map(label => causasData[label] || 0);
+
+    const ctx1 = document.getElementById('chart1').getContext('2d');
+    new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Comunidades por ODS',
+            data: comunidadesValues,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          },
+          {
+            label: 'Causas por ODS',
+            data: causasValues,
+            borderColor: 'rgba(153, 102, 255, 1)',
+            borderWidth: 2,
+            type: 'line',
+            fill: false,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+        },
+        scales: {
+          y: { beginAtZero: true },
+        },
+      },
+    });
+  }
+}
+
+// Gráfico de Tarta (Apoyos por ODS)
+async function renderChart2() {
+  const data = await fetchChartData('getSupportByODS');
+
+  if (data) {
+    const labels = Object.keys(data);
+    const values = Object.values(data);
+    const colors = generateColors(labels.length);
+
+    const ctx2 = document.getElementById('chart2').getContext('2d');
+    new Chart(ctx2, {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+        },
+      },
+    });
+  }
+}
+
+// Gráfico de Tarta (Porcentaje de Apoyos por Comunidad)
+async function renderChart3() {
+  const data = await fetchChartData('getSupportByCommunity');
+
+  if (data) {
+    const labels = Object.keys(data);
+    const values = Object.values(data);
+
+    if (values.every(value => value === 0)) {
+      console.warn('No hay datos para mostrar en el gráfico.');
+      return;
+    }
+
+    const colors = generateColors(labels.length);
+    const ctx3 = document.getElementById('chart3').getContext('2d');
+    new Chart(ctx3, {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+        },
+      },
+    });
+  }
+}
+
+// Ejemplo de uso en una gráfica
+async function renderChart4() {
+  const data = await fetchChartData('getProgressByCommunity');
+
+  if (data) {
+    const labels = [];
+    const values = [];
+
+    // Procesar los datos
+    Object.entries(data).forEach(([community, actions]) => {
+      if (actions.length > 0) {
+        const totalProgress = actions.reduce((sum, action) => sum + action.percentageComplete, 0);
+        labels.push(community);
+        values.push(totalProgress);
+      }
+    });
+
+    // Verificar si hay datos
+    if (values.every(value => value === 0)) {
+      console.warn('Todos los valores son cero. No se puede mostrar el gráfico.');
+      return;
+    }
+
+    // Generar colores
+    const colors = generateColors(labels.length);
+
+    // Crear el gráfico
+    const ctx4 = document.getElementById('chart4').getContext('2d');
+    new Chart(ctx4, {
+      type: 'polarArea',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors,
+        }],
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+        },
+        scales: {
+          r: { ticks: { beginAtZero: true } },
+        },
+      },
+    });
+  }
+}
+
+
+  
+
 
   </script>
-</body>
+  </body>
 
 </html>

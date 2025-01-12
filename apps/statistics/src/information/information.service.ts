@@ -53,6 +53,7 @@ export class InformationService {
   }
 
   async newUserSupport(data: SupportEventDto): Promise<void> {
+    console.log('newUserSupport llamado con datos:', data);
     await this.informationModel.findOneAndUpdate(
       {
         community_id: data.communityId,
