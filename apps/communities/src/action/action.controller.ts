@@ -5,17 +5,17 @@ import {
   Body,
   Put,
   Param,
-  Delete,
-  BadRequestException
+  Delete
 } from '@nestjs/common';
 import { ActionService } from './action.service';
 import { CreateActionDto } from './dto/create-action.dto';
 import { UpdateActionDto } from './dto/update-action.dto';
 import { DonateActionDto } from './dto/donate-action.dto';
-import { VolunteerActionDto } from './dto/volunteer-action.dto';
 import { ActionEntity } from './entities/action.entity';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
+import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
+import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 
 @Controller('actions')
 export class ActionController {
@@ -24,8 +24,8 @@ export class ActionController {
   // Crear una nueva acción
   @Auth(AuthType.None)
   @Post()
-  async createAction(@Body() createActionDto: CreateActionDto): Promise<string> {
-    return this.actionService.createAction(createActionDto);
+  async createAction(@Body() createActionDto: CreateActionDto, @ActiveUser() user: IActiveUserData): Promise<string> {
+    return this.actionService.createAction(createActionDto, user.sub);
   }
 
   // Obtener todas las acciones
@@ -57,22 +57,18 @@ export class ActionController {
   @Post(':id/donate')
   async donate(
     @Param('id') id: string,
-    @Body() donateActionDto: DonateActionDto,
+    @Body() donateActionDto: DonateActionDto, @ActiveUser() user: IActiveUserData,
   ): Promise<ActionEntity> {
-    return this.actionService.donate(id, donateActionDto);
+    return this.actionService.donate(id, donateActionDto, user.sub);
   }
 
   // Voluntariar en una acción
   @Auth(AuthType.None)
   @Post(':id/volunteer')
   async volunteer(
-    @Param('id') id: string,
-    @Body() volunteerActionDto: VolunteerActionDto,
+    @Param('id') id: string, @ActiveUser() user: IActiveUserData,
   ): Promise<void> {
-    if (!volunteerActionDto.user) {
-      throw new BadRequestException('User ID is required');
-    }
-    return this.actionService.volunteer(id, volunteerActionDto);
+    return this.actionService.volunteer(id, user.sub);
   }
 
   // Eliminar una acción por ID

@@ -11,7 +11,6 @@ import { Cause, CauseDocument } from './schemas/cause.schema';
 import { CreateCauseDto } from './dto/create-cause.dto';
 import { UpdateCauseDto } from './dto/update-cause.dto';
 import { CommunityService } from '../community/community.service';
-import { SupportUserRegisteredDto } from './dto/supportUserRegistered-cause.dto';
 import { ClientProxy } from '@nestjs/microservices';
 import { SupportEventDto } from '../../../../libs/events/dto/support-event.dto';
 import { CauseEntity } from './entities/cause.entity';
@@ -26,12 +25,12 @@ export class CauseService {
     @Inject(forwardRef(() => CommunityService))
     private readonly communityService: CommunityService,
     @Inject('NATS_SERVICE') private readonly client: ClientProxy,
-  ) {}
+  ) { }
 
   // Crear una nueva causa
   async create(
     idCommunity: string,
-    createCauseDto: CreateCauseDto,
+    createCauseDto: CreateCauseDto, user: string
   ): Promise<string> {
     await this.communityService.findOne(idCommunity);
 
@@ -52,6 +51,7 @@ export class CauseService {
     const causeEvent: CreateCauseStatsDto = {
       communityId: idCommunity,
       cause_id: String(createdCause._id),
+      user: +user,
       title: createCauseDto.title,
       ods: odsEnumValues,
     };
@@ -96,8 +96,7 @@ export class CauseService {
   }
 
   async supportUserRegistered(
-    id: string,
-    supportUserRegisteredDto: SupportUserRegisteredDto,
+    id: string, user: string
   ): Promise<void> {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
@@ -109,9 +108,7 @@ export class CauseService {
       throw new NotFoundException(`Cause with ID "${id}" not found`);
     }
 
-    const user = supportUserRegisteredDto.userId;
-
-    if (cause.registeredSupporters.includes(user)) {
+    if (cause.registeredSupporters.includes(+user)) {
       throw new BadRequestException(
         `User ${user} is already registered as a supporter`,
       );
@@ -136,6 +133,7 @@ export class CauseService {
     const support_event: SupportEventDto = {
       causeId: id,
       communityId: cause.community,
+      user: +user,
     };
 
     this.client.emit(CommunityEvent.NewSupport, support_event);

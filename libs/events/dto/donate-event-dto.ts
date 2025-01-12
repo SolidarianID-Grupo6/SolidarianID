@@ -11,5 +11,13 @@ export class DonateEventDto {
 
     @IsNumber()
     @IsNotEmpty()
+    public user: number;
+
+    @IsString()
+    @IsNotEmpty()
+    public type: string;
+
+    @IsNumber()
+    @IsNotEmpty()
     public progress: number;
 }

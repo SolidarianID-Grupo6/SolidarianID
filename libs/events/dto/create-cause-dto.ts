@@ -1,5 +1,5 @@
 import { ODS_ENUM } from 'libs/enums/ods.enum';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCauseStatsDto {
   @IsString()
@@ -9,6 +9,10 @@ export class CreateCauseStatsDto {
   @IsString()
   @IsNotEmpty()
   public cause_id: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  public user: number;
 
   @IsString()
   @IsNotEmpty()
