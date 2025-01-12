@@ -73,7 +73,7 @@ describe('CommunityRequestsService', () => {
         service.createRequest({
           name: 'Test Community',
           description: 'Description',
-          creator: 1,
+          creator: "1",
           causes: [
             {
               title: 'Cause Title',
@@ -117,7 +117,7 @@ describe('CommunityRequestsService', () => {
       const result: CreateCommunityRequestsDto = {
         name: 'New Community',
         description: 'Description',
-        creator: 1,
+        creator: "1",
         causes: [cause],
       };
 
@@ -154,7 +154,7 @@ describe('CommunityRequestsService', () => {
       const result = await service.createRequest({
         name: 'New Community',
         description: 'Description',
-        creator: 1,
+        creator: "1",
         causes: [cause],
       }, "1");
 
@@ -162,7 +162,7 @@ describe('CommunityRequestsService', () => {
       expect(requestModel.create).toHaveBeenCalledWith({
         name: 'New Community',
         description: 'Description',
-        creator: 1,
+        creator: "1",
         causes: [cause],
       });
     });
@@ -184,7 +184,7 @@ describe('CommunityRequestsService', () => {
       const dto: CreateCommunityRequestsDto = {
         name: 'Valid Community',
         description: 'A valid description',
-        creator: 1,
+        creator: "1",
         causes: [cause],
       };
 

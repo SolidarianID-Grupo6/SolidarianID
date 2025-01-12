@@ -32,6 +32,7 @@ export class CauseService {
     idCommunity: string,
     createCauseDto: CreateCauseDto, user: string
   ): Promise<string> {
+
     await this.communityService.findOne(idCommunity);
 
     const odsEnumValues = createCauseDto.ods.map((odsDescription) =>
