@@ -32,8 +32,8 @@ export class Cause {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Event' }] })
   events: string[];
 
-  @Prop([{ type: Number }])
-  registeredSupporters: number[];
+  @Prop([{ type: String }, { default: [] }])
+  registeredSupporters: string[];
 
   @Prop({ type: String, default: CauseStatus.Active })
   status: CauseStatus;

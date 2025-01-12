@@ -30,7 +30,7 @@ export class CommunityRequestsService {
       );
     }
 
-    createRequestDto.creator = +user;
+    createRequestDto.creator = user;
 
     const createdRequest = await this.requestModel.create(createRequestDto);
 
