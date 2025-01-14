@@ -4,7 +4,7 @@ Content-Type: application/json
 {
   "title": "Distribución de Leche",
   "description": "Recolectar y distribuir leche para comunidades vulnerables.",
-  "cause": "677ee39918263ddcbcbfc890",
+  "cause": "6782ffd1bb3ccffb18933dda",
   "type": "food",
   "foodType": "leche",
   "foodGoalQuantity": 1000

@@ -1,8 +1,8 @@
-POST http://localhost:3001/actions/677eea9d754a565572a06871/donate
+POST http://localhost:3001/actions/6783045bbb3ccffb18933de8/donate
 Content-Type: application/json
 
 
 {
-  "user": "skfjh3",
-  "donation": 2
+  "user": "felix",
+  "donation": 100
 }

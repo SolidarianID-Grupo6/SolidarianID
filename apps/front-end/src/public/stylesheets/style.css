@@ -1,7 +1,7 @@
 /* Importaciones de Tailwind */
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 /* Estilos personalizados */
 body {

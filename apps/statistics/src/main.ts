@@ -13,6 +13,12 @@ async function bootstrap() {
     },
   });
 
+  app.enableCors({
+    origin: 'http://localhost:3004',
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type, Authorization',
+  });
+
   app.useGlobalPipes(new ValidationPipe());
 
   await app.startAllMicroservices();
