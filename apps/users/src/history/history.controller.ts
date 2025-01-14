@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, Query, Res } from '@nestjs/common';
 import { HistoryService } from './history.service';
+import { Response } from 'express';
 import { EventPattern } from '@nestjs/microservices';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import {
@@ -20,16 +21,52 @@ export class HistoryController {
   public constructor(private readonly historyService: HistoryService) {}
 
   @Get()
-  getHistory(@Query() paginationQuery, @ActiveUser() user: IActiveUserData) {
+  async getHistory(
+    @Res({ passthrough: true }) response: Response,
+    @Query() paginationQuery,
+    @ActiveUser() user: IActiveUserData,
+  ) {
     const { limit, offset } = paginationQuery;
-    return this.historyService.getHistory(user.sub, limit, offset);
+    const result = await this.historyService.getHistory(
+      user.sub,
+      limit,
+      offset,
+    );
+
+    if (!result.success) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: result.errorValue,
+      });
+    }
+
+    if (!result.value || result.value.length === 0) {
+      return response.status(HttpStatus.NO_CONTENT).send();
+    }
+
+    return response.status(HttpStatus.OK).json(result.value);
   }
 
   @Roles(Role.Admin)
   @Get(':id')
-  getHistoryById(@Param('id') id: string, @Query() paginationQuery) {
+  async getHistoryById(
+    @Res({ passthrough: true }) response: Response,
+    @Param('id') id: string,
+    @Query() paginationQuery,
+  ) {
     const { limit, offset } = paginationQuery;
-    return this.historyService.getHistory(id, limit, offset);
+    const result = await this.historyService.getHistory(id, limit, offset);
+
+    if (!result.success) {
+      return response.status(HttpStatus.NOT_FOUND).json({
+        message: result.errorValue,
+      });
+    }
+
+    if (!result.value || result.value.length === 0) {
+      return response.status(HttpStatus.NO_CONTENT).send();
+    }
+
+    return response.status(HttpStatus.OK).json(result.value);
   }
 
   @EventPattern(CommunityEvent.CreateCommunity)

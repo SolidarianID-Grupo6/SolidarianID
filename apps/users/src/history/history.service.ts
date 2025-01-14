@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { History } from './entities/history.entity';
@@ -12,6 +12,7 @@ import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto'
 import { SupportEventDto } from 'libs/events/dto/support-event.dto';
 import { CreateActionStatsDto } from 'libs/events/dto/create-action-dto';
 import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
+import { Result } from './entities/result';
 
 @Injectable()
 export class HistoryService {
@@ -22,20 +23,26 @@ export class HistoryService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  public async getHistory(userId: string, limit: number, offset: number) {
+  public async getHistory(
+    userId: string,
+    limit: number,
+    offset: number,
+  ): Promise<Result<History[]>> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      return Result.fail<History[]>(`User with ID ${userId} not found`);
     }
 
-    return this.historyRepository.find({
-      where: { user: user },
-      take: limit,
-      skip: offset,
-    });
+    return Result.ok<History[]>(
+      await this.historyRepository.find({
+        where: { user: user },
+        take: limit,
+        skip: offset,
+      }),
+    );
   }
 
   public registerCommunityCreation(
@@ -85,13 +92,13 @@ export class HistoryService {
     event: CommunityEvent,
     userId: string,
     dto: any,
-  ) {
+  ): Promise<Result<History>> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${userId} not found`);
+      return Result.fail<History>(`User with ID ${userId} not found`);
     }
 
     const history = this.historyRepository.create({
@@ -101,6 +108,6 @@ export class HistoryService {
       eventDate: new Date(),
     });
 
-    await this.historyRepository.save(history);
+    return Result.ok<History>(await this.historyRepository.save(history));
   }
 }

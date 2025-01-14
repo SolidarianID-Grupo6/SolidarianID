@@ -123,8 +123,7 @@ describe('History (e2e)', () => {
       return request(app.getHttpServer())
         .get('/history')
         .set('Cookie', regularToken)
-        .expect(200)
-        .expect([]);
+        .expect(HttpStatus.NO_CONTENT);
     });
 
     it('GET /history/:id should require admin role', () => {
@@ -138,7 +137,7 @@ describe('History (e2e)', () => {
       return request(app.getHttpServer())
         .get(`/history/${regularUser.id}`)
         .set('Cookie', adminToken)
-        .expect(200);
+        .expect(HttpStatus.NO_CONTENT);
     });
 
     it('POST /history should create a new history record', async () => {
@@ -167,6 +166,7 @@ describe('History (e2e)', () => {
         .set('Cookie', adminToken)
         .expect(HttpStatus.OK);
 
+      expect(Array.isArray(response.body)).toBe(true);
       expect(response.body).toHaveLength(1);
       expect(response.body[0].action).toBe(CommunityEvent.CreateCommunity);
       expect(response.body[0].data).toMatchObject(eventPayload);
