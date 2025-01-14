@@ -1,9 +1,0 @@
-### Correct history ittem creation:
-POST http://localhost:3002/history
-Cookie: accessToken=j%3A%7B%22accessToken%22%3A%22eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhYTNkZWIzOC1kMWQyLTQ3ZTMtODE3OC03ZGE0YmJlYzVhMzIiLCJlbWFpbCI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNzM1NTY2MjI4LCJleHAiOjE3MzU1Njk4MjgsImF1ZCI6ImxvY2FsaG9zdDozMDAwIiwiaXNzIjoibG9jYWxob3N0OjMwMDAifQ.Hq-Oe8Em1daO3vlBniiXH5-qibr1ZrWOga4yo_N5VIk%22%7D; Path=/; HttpOnly; Secure; SameSite=Strict
-Content-Type: application/json
-
-{
-    "action": "create-community",
-    "userId": "aa3deb38-d1d2-47e3-8178-7da4bbec5a32"
-}

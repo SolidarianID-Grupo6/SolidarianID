@@ -103,6 +103,7 @@ export class ActionService {
     return String(savedAction._id);
   }
 
+
   // Obtener todas las acciones
   async findAll(): Promise<ActionEntity[]> {
     const actions = await this.actionModel.find().exec();
@@ -158,7 +159,7 @@ export class ActionService {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
     }
-
+  
     const action = await this.actionModel.findById(id).exec();
 
     if (!action) {
@@ -235,7 +236,7 @@ export class ActionService {
     if (!isValidObjectId(id)) {
       throw new BadRequestException(`Invalid ID format: "${id}"`);
     }
-
+  
     const action = await this.actionModel.findById(id).exec();
 
     if (!action) {
@@ -277,6 +278,7 @@ export class ActionService {
 
     this.client.emit(CommunityEvent.DonateEvent, donateEvent);
   }
+  
 
   // Eliminar una accion por ID
   async remove(id: string): Promise<void> {

@@ -14,6 +14,9 @@ export class CreateCauseStatsDto {
   @IsArray()
   @IsNotEmpty()
   public ods: ODS_ENUM[];
+
+  @IsString()
+  public userId: string;
 }
 
 export class CreateCommunityEventDto {
