@@ -1,6 +1,6 @@
 import { ODS_ENUM } from 'libs/enums/ods.enum';
 import { Type } from 'class-transformer';
-import { IsArray, IsNotEmpty, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 export class CreateCauseStatsDto {
   @IsString()
@@ -14,6 +14,9 @@ export class CreateCauseStatsDto {
   @IsArray()
   @IsNotEmpty()
   public ods: ODS_ENUM[];
+
+  @IsString()
+  public userId: string;
 }
 
 export class CreateCommunityEventDto {
@@ -21,9 +24,9 @@ export class CreateCommunityEventDto {
   @IsNotEmpty()
   public community_id: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  public user: number;
+  public user: string;
 
   @IsString()
   @IsNotEmpty()

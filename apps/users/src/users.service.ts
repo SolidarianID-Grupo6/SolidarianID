@@ -22,6 +22,7 @@ import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-id
 import { Neo4jService } from '@app/neo4j';
 import { FindQueryDto } from './dto/find-query.dto';
 import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
+import { Role } from '@app/iam/authorization/enums/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -34,7 +35,7 @@ export class UsersService {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
     private readonly neo4jService: Neo4jService,
-  ) { }
+  ) {}
 
   public async login(userLogin: LoginUserDto) {
     const user = await this.usersRepository.findOne({
@@ -361,6 +362,30 @@ export class UsersService {
     return {
       accessToken,
       refreshToken,
+    };
+  }
+
+  public async makeUserAdmin(userId: string) {
+    const user = await this.usersRepository.findOneOrFail({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      throw new HttpException(
+        `User #${userId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    user.role = Role.Admin;
+    await this.usersRepository.save(user);
+
+    // Invalidate old tokens
+    await this.refreshTokenIdsStorage.invalidate(user.id);
+
+    return {
+      userId: user.id,
+      role: user.role,
     };
   }
 

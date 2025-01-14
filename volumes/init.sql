@@ -1,1 +1,2 @@
 CREATE DATABASE solidarianid_users;
+CREATE DATABASE solidarianid_users_testing;

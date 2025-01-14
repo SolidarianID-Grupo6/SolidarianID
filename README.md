@@ -97,6 +97,9 @@ GOOGLE_CLIENT_SECRET=
 # Github OAuth 2.0
 GITHUB_CLIENT_ID=
 GITHUB_CLIENT_SECRET=
+
+# NATS:
+NATS_URL=nats://nats:4222
 ```
 
 > Remember to grant permissions to the ./volumes folder with `chmod -R 770 ./volumes` .
