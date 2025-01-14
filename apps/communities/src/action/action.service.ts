@@ -196,6 +196,7 @@ export class ActionService {
       const supportEventDto: SupportEventDto = {
         communityId: String(cause.community),
         causeId: String(action.cause),
+        user: user,
       };
   
       this.client.emit(CommunityEvent.NewSupport, supportEventDto);
@@ -225,6 +226,7 @@ export class ActionService {
       const supportEventDto: SupportEventDto = {
         communityId: String(cause.community),
         causeId: String(action.cause),
+        user: user,
       };
   
       this.client.emit(CommunityEvent.NewSupport, supportEventDto);
@@ -298,6 +300,7 @@ export class ActionService {
     const supportEventDto: SupportEventDto = {
       communityId: String(cause.community),
       causeId: String(action.cause),
+      user: user,
     };
 
     this.client.emit(CommunityEvent.NewSupport, supportEventDto);

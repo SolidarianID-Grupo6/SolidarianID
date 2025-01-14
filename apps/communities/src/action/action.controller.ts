@@ -16,12 +16,15 @@ import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
 import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Actions')
 @Controller('actions')
 export class ActionController {
   constructor(private readonly actionService: ActionService) { }
 
   // Crear una nueva acción
+  @ApiOperation({ summary: 'Create an action' })
   @Auth(AuthType.None)
   @Post()
   async createAction(@Body() createActionDto: CreateActionDto, @ActiveUser() user: IActiveUserData): Promise<string> {
@@ -29,6 +32,7 @@ export class ActionController {
   }
 
   // Obtener todas las acciones
+  @ApiOperation({ summary: 'Get all actions' })
   @Auth(AuthType.None)
   @Get()
   async findAll(): Promise<ActionEntity[]> {
@@ -36,6 +40,7 @@ export class ActionController {
   }
 
   // Obtener una acción por ID
+  @ApiOperation({ summary: 'Get an action by id' })
   @Auth(AuthType.None)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<ActionEntity> {
@@ -43,6 +48,7 @@ export class ActionController {
   }
 
   // Actualizar una acción por ID
+  @ApiOperation({ summary: 'Update an action by id' })
   @Auth(AuthType.None)
   @Put(':id')
   async update(
@@ -53,6 +59,7 @@ export class ActionController {
   }
 
   // Donar a una acción
+  @ApiOperation({ summary: 'Donate to an action' })
   @Auth(AuthType.None)
   @Post(':id/donate')
   async donate(
@@ -63,6 +70,7 @@ export class ActionController {
   }
 
   // Voluntariar en una acción
+  @ApiOperation({ summary: 'Volunteer in an action' })
   @Auth(AuthType.None)
   @Post(':id/volunteer')
   async volunteer(
@@ -72,6 +80,7 @@ export class ActionController {
   }
 
   // Eliminar una acción por ID
+  @ApiOperation({ summary: 'Delete an action by id' })
   @Auth(AuthType.None)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<void> {
