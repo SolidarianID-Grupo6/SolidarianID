@@ -9,9 +9,9 @@ export class CreateActionStatsDto {
   @IsNotEmpty()
   public cause_id: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  public userId: string;
+  public user: string;
 
   @IsString()
   @IsNotEmpty()

@@ -11,9 +11,9 @@ export class CreateCommunityRequestsDto {
   @IsNotEmpty()
   description: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  creator: number;
+  creator: string;
 
   @IsArray()
   @ArrayNotEmpty()

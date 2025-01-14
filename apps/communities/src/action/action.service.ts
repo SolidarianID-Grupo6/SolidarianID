@@ -52,7 +52,7 @@ export class ActionService {
     const actionEvent: CreateActionStatsDto = {
       actionId: actionId,
       cause_id: String(existingCause._id),
-      user: +user,
+      user: user,
       title: createActionDto.title,
       description: createActionDto.description,
       goal: createActionDto.foodGoalQuantity | createActionDto.moneyGoalAmount | createActionDto.volunteerGoalCount,
@@ -221,7 +221,7 @@ export class ActionService {
     const donateEvent: DonateEventDto = {
       actionId: String(action._id),
       causeId: String(action.cause),
-      user: +user,
+      user: user,
       type: "donate",
       progress: donateActionDto.donation,
     };
@@ -271,7 +271,7 @@ export class ActionService {
     const donateEvent: DonateEventDto = {
       actionId: String(action._id),
       causeId: String(action.cause),
-      user: +user,
+      user: user,
       type: "volunteer",
       progress: 1,
     };

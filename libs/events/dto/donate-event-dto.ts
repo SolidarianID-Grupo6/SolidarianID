@@ -9,9 +9,9 @@ export class DonateEventDto {
   @IsNotEmpty()
   public causeId: string;
 
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  public userId: string;
+  public user: string;
 
   @IsString()
   @IsNotEmpty()

@@ -12,7 +12,6 @@ import { IamModule } from '@app/iam';
 import { UsersModule } from '../src/users.module';
 import { Role } from '@app/iam/authorization/enums/role.enum';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
-import { CreateCommunityEventDto } from 'libs/events/dto/create-community-dto';
 import { ODS_ENUM } from 'libs/enums/ods.enum';
 import { HashingService } from '@app/iam/hashing/hashing.service';
 
@@ -217,7 +216,7 @@ describe('History (e2e)', () => {
         payload: {
           actionId: '123e4567-e89b-12d3-a456-426614174000',
           cause_id: '123e4567-e89b-12d3-a456-426614174000',
-          userId: 'USER_ID',
+          user: 'USER_ID',
           title: 'Test Action',
           description: 'Test Description',
           goal: 100,
@@ -229,7 +228,7 @@ describe('History (e2e)', () => {
         payload: {
           actionId: '123e4567-e89b-12d3-a456-426614174000',
           causeId: '123e4567-e89b-12d3-a456-426614174000',
-          userId: 'USER_ID',
+          user: 'USER_ID',
           type: 'money',
           progress: 50,
         },

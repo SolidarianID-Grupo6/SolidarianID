@@ -74,11 +74,11 @@ export class HistoryService {
     event: CommunityEvent,
     dto: CreateActionStatsDto,
   ) {
-    return this.registerHistoryRecord(event, dto.userId, dto);
+    return this.registerHistoryRecord(event, dto.user, dto);
   }
 
   public registerDonation(event: CommunityEvent, dto: DonateEventDto) {
-    return this.registerHistoryRecord(event, dto.userId, dto);
+    return this.registerHistoryRecord(event, dto.user, dto);
   }
 
   private async registerHistoryRecord(
