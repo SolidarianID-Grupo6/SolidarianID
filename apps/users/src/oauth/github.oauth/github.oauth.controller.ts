@@ -14,7 +14,9 @@ import { UsersService } from '../../users.service';
 import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('OAuth')
 @Auth(AuthType.None)
 @Controller('oauth/github')
 export class GithubOauthController {
@@ -24,12 +26,14 @@ export class GithubOauthController {
     private readonly usersRepository: Repository<User>,
   ) {}
 
+  @ApiOperation({ summary: 'Authenticate with GitHub OAuth 2.0' })
   @Get()
   @UseGuards(AuthGuard('github'))
   githubLogin() {
     return { msg: 'Github Authentication' };
   }
 
+  @ApiOperation({ summary: 'GitHub OAuth 2.0 Callback route' })
   @Get('callback')
   @UseGuards(AuthGuard('github'))
   async handleRedirect(@Req() req, @Res({ passthrough: true }) res: Response) {

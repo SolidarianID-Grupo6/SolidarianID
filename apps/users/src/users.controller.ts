@@ -27,9 +27,14 @@ import { Role } from '@app/iam/authorization/enums/role.enum';
 import { FindQueryDto } from './dto/find-query.dto';
 import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
-@ApiTags('users')
+@ApiTags('Users')
 @Controller()
 export class UsersController {
   constructor(
@@ -37,9 +42,14 @@ export class UsersController {
     private readonly accessTokenGuard: AccessTokenGuard,
   ) {}
 
+  @ApiOperation({ summary: 'User login' })
+  @ApiResponse({ status: HttpStatus.OK, description: 'Correct authentication' })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'When a field is missing or the email is badly formated',
+  })
   @Auth(AuthType.None)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'User login' })
   @Post()
   async login(
     @Res({ passthrough: true }) response: Response,
@@ -53,15 +63,39 @@ export class UsersController {
     });
   }
 
+  @ApiOperation({ summary: 'New user registration' })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Correct registration',
+    example: {
+      name: 'John',
+      surnames: 'Doe',
+      email: 'john.doe@example.com',
+      isEmailPublic: false,
+      birthdate: '1990-01-01',
+      isBirthdatePublic: false,
+      presentation: "Hello, I'm John Doe!",
+      id: '820602d5-24d6-41a6-9861-1dc008f63d50',
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description:
+      'When a field is missing, the email is badly formated or the password is shorter than 8 characters, does not have lower case or/and upper case characters',
+  })
   @Auth(AuthType.None)
-  @ApiOperation({ summary: 'Register new user' })
   @Post('register')
   register(@Body() userRegistration: RegisterUserDto) {
     return this.usersService.register(userRegistration);
   }
 
-  @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Refresh the authorization token' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Refresh token is not expired',
+  })
+  @ApiForbiddenResponse({ description: 'Forbidden' })
+  @HttpCode(HttpStatus.OK)
   @Get('refresh-tokens')
   async refreshTokens(
     @Req() request: Request,
@@ -80,22 +114,28 @@ export class UsersController {
     });
   }
 
+  @ApiOperation({ summary: 'Get your current user profile' })
   @Get()
   getProfile(@ActiveUser() user: IActiveUserData) {
     return this.usersService.getProfile(user.sub);
   }
 
+  @ApiOperation({ summary: 'Get the profile of a given user by their id' })
   @Auth(AuthType.None)
   @Get('user/:id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
+  @ApiOperation({
+    summary: 'Update your user profile or hide/unhide public data',
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @ApiOperation({ summary: 'User Following' })
   @Get('follow/:id')
   followUser(
     @ActiveUser() user: IActiveUserData,
@@ -104,17 +144,22 @@ export class UsersController {
     return this.usersService.followUser(user.sub, followedId);
   }
 
+  @ApiOperation({ summary: 'User searching' })
   @Post('find')
   find(@Body() query: FindQueryDto, @ActiveUser() user: IActiveUserData) {
     return this.usersService.find(query, user.sub);
   }
 
+  @ApiOperation({ summary: 'Account deletion' })
   @Roles(Role.Admin)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
 
+  @ApiOperation({
+    summary: 'Add a given user to a community (only for admins)',
+  })
   @Roles(Role.Admin)
   @Get('addUserToCommunity/:userId/:communityId')
   addUserToCommunity(
@@ -125,12 +170,18 @@ export class UsersController {
     this.usersService.addUserToCommunity(userId, communityId);
   }
 
+  @ApiOperation({
+    summary: 'Get the full user information (only for admins)',
+  })
   @Roles(Role.Admin)
   @Get('fullUserInfo/:id')
   getFullUserInfo(@Param('id') id: string) {
     return this.usersService.getFullUserInfo(id);
   }
 
+  @ApiOperation({
+    summary: 'Make a user an admin (only for admins)',
+  })
   @Roles(Role.Admin)
   @Get('makeUserAdmin/:id')
   makeAdmin(@Param('id') id: string) {

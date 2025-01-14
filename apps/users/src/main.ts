@@ -27,10 +27,29 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('SolidarianID-users')
     .setDescription(
-      'The SolidarianID, a platform that helps solidarity with your own ID.',
+      'The SolidarianID, a platform that helps solidarity with your own ID.\n\n' +
+        '## Authentication\n' +
+        'Authentication is handled via HTTP-only cookies containing JWT tokens. **Get the token from the login endpoint.**\n\n' +
+        '### Cookie Structure\n' +
+        '```\n' +
+        'accessToken=j:{\n' +
+        '  "accessToken": "[JWT_ACCESS_TOKEN]",\n' +
+        '  "refreshToken": "[JWT_REFRESH_TOKEN]"\n' +
+        '}\n' +
+        '```\n\n' +
+        '### Cookie Properties\n' +
+        '- Path: /\n' +
+        '- HttpOnly: true\n' +
+        '- Secure: true\n' +
+        '- SameSite: Strict\n\n',
     )
     .setVersion('1.0')
-    .addBearerAuth()
+    .addCookieAuth('accessToken', {
+      type: 'apiKey',
+      in: 'cookie',
+      description: 'JWT access token stored in HTTP-only cookie',
+    })
+    .addServer('http://localhost:3002')
     .build();
 
   const document = SwaggerModule.createDocument(app, options);

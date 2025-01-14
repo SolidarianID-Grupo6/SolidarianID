@@ -15,7 +15,9 @@ import { Repository } from 'typeorm';
 import { User } from '../../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('OAuth')
 @Auth(AuthType.None)
 @Controller('oauth/google')
 export class GoogleOauthController {
@@ -24,14 +26,16 @@ export class GoogleOauthController {
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly configService: ConfigService,
-  ) { }
+  ) {}
 
+  @ApiOperation({ summary: 'Authenticate with Google OAuth 2.0' })
   @Get()
   @UseGuards(AuthGuard('google'))
   googleLogin() {
     return { msg: 'Google Authentication' };
   }
 
+  @ApiOperation({ summary: 'GitHub OAuth 2.0 callback' })
   @Get('callback')
   @UseGuards(AuthGuard('google'))
   async handleRedirect(@Req() req, @Res({ passthrough: true }) res: Response) {

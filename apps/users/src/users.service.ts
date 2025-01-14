@@ -92,7 +92,7 @@ export class UsersService {
         password: await this.hashingService.hash(userRegistration.password),
       };
       const newUser = this.usersRepository.create(userDto);
-      const { password, role, ...response } =
+      const { password, role, googleId, githubId, ...response } =
         await queryRunner.manager.save(newUser);
 
       // Add user to Neo4j

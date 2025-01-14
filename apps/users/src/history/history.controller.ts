@@ -15,11 +15,13 @@ import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
 import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { Roles } from '@app/iam/authorization/decorators/roles.decorator';
 import { Role } from '@app/iam/authorization/enums/role.enum';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('history')
 export class HistoryController {
   public constructor(private readonly historyService: HistoryService) {}
 
+  @ApiOperation({ summary: 'Get your user history' })
   @Get()
   async getHistory(
     @Res({ passthrough: true }) response: Response,
@@ -46,6 +48,9 @@ export class HistoryController {
     return response.status(HttpStatus.OK).json(result.value);
   }
 
+  @ApiOperation({
+    summary: 'Get history of a given us by id (only for admins)',
+  })
   @Roles(Role.Admin)
   @Get(':id')
   async getHistoryById(
