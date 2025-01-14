@@ -27,7 +27,9 @@ import { Role } from '@app/iam/authorization/enums/role.enum';
 import { FindQueryDto } from './dto/find-query.dto';
 import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('users')
 @Controller()
 export class UsersController {
   constructor(
@@ -37,6 +39,7 @@ export class UsersController {
 
   @Auth(AuthType.None)
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'User login' })
   @Post()
   async login(
     @Res({ passthrough: true }) response: Response,
@@ -51,12 +54,14 @@ export class UsersController {
   }
 
   @Auth(AuthType.None)
+  @ApiOperation({ summary: 'Register new user' })
   @Post('register')
   register(@Body() userRegistration: RegisterUserDto) {
     return this.usersService.register(userRegistration);
   }
 
   @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Refresh the authorization token' })
   @Get('refresh-tokens')
   async refreshTokens(
     @Req() request: Request,
