@@ -5,8 +5,10 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 @Injectable()
 export class CommunitysProxyMiddleware implements NestMiddleware {
   private proxy = createProxyMiddleware({
-    target: 'http://localhost:3001', // Microservicio de communitys
+    target: 'http://communities:3001',
     changeOrigin: true,
+    timeout: 60000, // Increase timeout to 60 seconds
+    proxyTimeout: 60000, // Add proxy timeout
   });
 
   use(req: Request, res: Response, next: NextFunction) {
