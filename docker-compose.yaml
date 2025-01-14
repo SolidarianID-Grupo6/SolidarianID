@@ -16,6 +16,9 @@ services:
     volumes:
       - ./apps/gateway:/app/apps/gateway
       - ./node_modules:/usr/src/app/node_modules
+    depends_on:
+      - communities
+      - users
     networks:
       - solidarianetwork
 
