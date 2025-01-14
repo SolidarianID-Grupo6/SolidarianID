@@ -1,0 +1,64 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/focal64"
+  config.vm.hostname = "solidarianid"
+
+  # Forward port 3002 to 80
+  config.vm.network "forwarded_port", guest: 3002, host: 80
+
+  # Create a private network
+  config.vm.network "private_network", type: "dhcp"
+
+  # Provider-specific configuration
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "8192"
+    vb.cpus = 4
+    vb.name = "solidarianid-dev"
+  end
+
+  # Sync specific project directories, excluding unnecessary ones
+  config.vm.synced_folder "../..", "/vagrant", 
+    exclude: [
+      ".git",
+      "docs/**",
+      "ci-cd/**"
+    ]
+
+  # Provision the VM
+  config.vm.provision "shell", inline: <<-SHELL
+    # Update package lists
+    apt-get update
+
+    # Install Docker
+    apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    apt-get update
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+    # Install Docker Compose
+    curl -L "https://github.com/docker/compose/releases/download/v2.21.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+
+    # Add vagrant user to docker group
+    usermod -aG docker vagrant
+    newgrp docker
+
+    # Create project directory
+    mkdir -p /opt/solidarianid
+    cp -r /vagrant/* /opt/solidarianid/
+    cp /vagrant/.env /opt/solidarianid/.env 2>/dev/null || echo "Warning: .env file not found"
+    chown -R vagrant:docker /opt/solidarianid
+    chmod -R 775 /opt/solidarianid/volumes
+
+    # Start Docker service
+    systemctl start docker
+    systemctl enable docker
+
+    # Change to project directory and run docker-compose
+    cd /opt/solidarianid
+    docker compose up -d --build
+  SHELL
+end

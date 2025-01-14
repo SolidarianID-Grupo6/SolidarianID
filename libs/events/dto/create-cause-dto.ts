@@ -1,8 +1,7 @@
-import { ODS_ENUM } from "@app/iam/authentication/enums/ods.enum";
-import { IsArray, IsNotEmpty, IsString } from "class-validator";
+import { ODS_ENUM } from 'libs/enums/ods.enum';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateCauseStatsDto {
-
   @IsString()
   @IsNotEmpty()
   public communityId: string;
@@ -10,6 +9,10 @@ export class CreateCauseStatsDto {
   @IsString()
   @IsNotEmpty()
   public cause_id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public user: string;
 
   @IsString()
   @IsNotEmpty()

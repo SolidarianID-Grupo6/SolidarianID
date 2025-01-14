@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { UsersModule } from './users.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(UsersModule);
@@ -22,6 +23,19 @@ async function bootstrap() {
   );
   await app.startAllMicroservices();
   app.enableCors();
+
+  const options = new DocumentBuilder()
+    .setTitle('SolidarianID-users')
+    .setDescription(
+      'The SolidarianID, a platform that helps solidarity with your own ID.',
+    )
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(process.env.port ?? 3002);
 }
 bootstrap();

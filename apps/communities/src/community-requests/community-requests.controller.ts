@@ -4,6 +4,8 @@ import { CreateCommunityRequestsDto } from './dto/create-community-request.dto';
 import { CommunityRequestsEntity } from './entities/community-request.entity';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
+import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
+import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 
 @Controller('community-requests/')
 export class CommunityRequestsController {
@@ -12,9 +14,9 @@ export class CommunityRequestsController {
   @Auth(AuthType.None)
   @Post()
   async createRequest(
-    @Body() createRequestDto: CreateCommunityRequestsDto,
+    @Body() createRequestDto: CreateCommunityRequestsDto, @ActiveUser() user: IActiveUserData
   ): Promise<string> {
-    return this.requestService.createRequest(createRequestDto);
+    return this.requestService.createRequest(createRequestDto, user.sub);
   }
 
   @Auth(AuthType.None)
@@ -31,7 +33,7 @@ export class CommunityRequestsController {
 
   @Auth(AuthType.None)
   @Put('approve/:id')
-  async approveRequest(@Param('id') id: string): Promise<string> {
+  async approveRequest(@Param('id') id: string, @ActiveUser() user: IActiveUserData): Promise<string> {
     return this.requestService.approveRequest(id);
   }
 

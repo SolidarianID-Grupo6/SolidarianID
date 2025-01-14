@@ -5,9 +5,9 @@ import { CommunityEntity } from './entities/community.entity';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 
-@Controller('communities/')
+@Controller('communities')
 export class CommunityController {
-  constructor(private readonly communityService: CommunityService) {}
+  constructor(private readonly communityService: CommunityService) { }
 
   @Auth(AuthType.None)
   @Get()
@@ -23,7 +23,7 @@ export class CommunityController {
 
   @Auth(AuthType.None)
   @Put(':id')
-  async update( @Param('id') id: string, @Body() updateCommunityDto: UpdateCommunityDto) {
+  async update(@Param('id') id: string, @Body() updateCommunityDto: UpdateCommunityDto) {
     await this.communityService.update(id, updateCommunityDto);
   }
 

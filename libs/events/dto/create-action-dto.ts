@@ -1,7 +1,6 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateActionStatsDto {
-
   @IsString()
   @IsNotEmpty()
   public actionId: string;
@@ -9,6 +8,10 @@ export class CreateActionStatsDto {
   @IsString()
   @IsNotEmpty()
   public cause_id: string;
+
+  @IsString()
+  @IsNotEmpty()
+  public user: string;
 
   @IsString()
   @IsNotEmpty()
@@ -21,5 +24,4 @@ export class CreateActionStatsDto {
   @IsNumber()
   @IsNotEmpty()
   public goal: number;
-
 }

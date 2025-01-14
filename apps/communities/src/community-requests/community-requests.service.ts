@@ -15,23 +15,25 @@ export class CommunityRequestsService {
     @InjectModel(CommunityRequests.name) private readonly requestModel: Model<CommunityRequestsDocument>,
     @Inject('NATS_SERVICE') private readonly client: ClientProxy,
     private readonly communityService: CommunityService,
-  ) {}
+  ) { }
 
   // Crear una nueva solicitud
-  async createRequest(createRequestDto: CreateCommunityRequestsDto): Promise<string> {
+  async createRequest(createRequestDto: CreateCommunityRequestsDto, user: string): Promise<string> {
     const existingCommunity = await this.requestModel.findOne({
       name: createRequestDto.name,
       status: { $in: [CommunityRequestStatus.Pending, CommunityRequestStatus.Approved] },
     }).exec();
-    
+
     if (existingCommunity) {
       throw new BadRequestException(
         `A request with the community name ${createRequestDto.name} already exists`
       );
     }
 
+    createRequestDto.creator = user;
+
     const createdRequest = await this.requestModel.create(createRequestDto);
-    
+
     return String(createdRequest._id);
   }
 
@@ -58,11 +60,11 @@ export class CommunityRequestsService {
       throw new NotFoundException('Solicitud no encontrada');
     }
 
-    if (request1.status === CommunityRequestStatus.Approved ) {
+    if (request1.status === CommunityRequestStatus.Approved) {
       throw new BadRequestException('La solicitud no ha sido aprobada');
     }
 
-    if (request1.status === CommunityRequestStatus.Rejected ) {
+    if (request1.status === CommunityRequestStatus.Rejected) {
       throw new BadRequestException('La solicitud no ha sido aprobada');
     }
 
@@ -72,6 +74,10 @@ export class CommunityRequestsService {
       { new: true },
     ).exec();
 
+    if (request.status !== CommunityRequestStatus.Approved) {
+      throw new BadRequestException('La solicitud no ha sido aprobada');
+    }
+
     const createCommunity: CreateCommunityDto = {
       name: request.name,
       description: request.description,
@@ -79,11 +85,11 @@ export class CommunityRequestsService {
       causes: request.causes,
     };
 
-    const id = await this.communityService.create(createCommunity);
-    
+    const id = await this.communityService.create(createCommunity, request.creator);
+
     return id;
   }
-  
+
   // Rechazar una solicitud
   async rejectRequest(requestId: string): Promise<void> {
     const request1 = await this.requestModel.findById(
@@ -94,17 +100,17 @@ export class CommunityRequestsService {
       throw new NotFoundException('Solicitud no encontrada');
     }
 
-    if (request1.status === CommunityRequestStatus.Approved ) {
+    if (request1.status === CommunityRequestStatus.Approved) {
       throw new BadRequestException('La solicitud no ha sido rechazada');
     }
 
-    if (request1.status === CommunityRequestStatus.Rejected ) {
+    if (request1.status === CommunityRequestStatus.Rejected) {
       throw new BadRequestException('La solicitud no ha sido rechazada');
     }
 
     await this.requestModel.findByIdAndUpdate(
       requestId,
-      { status: CommunityRequestStatus.Rejected},
+      { status: CommunityRequestStatus.Rejected },
       { new: true },
     ).exec();
   }

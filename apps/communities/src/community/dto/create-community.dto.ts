@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsString, ValidateNested } from 'class-validator';
 import { CreateCauseDto } from '../../cause/dto/create-cause.dto';
 import { Type } from 'class-transformer';
 
@@ -10,8 +10,8 @@ export class CreateCommunityDto {
   @IsString()
   description: string;
 
-  @IsNumber()
-  admin: number;
+  @IsString()
+  admin: string;
 
   @IsArray()
   @ValidateNested({ each: true })

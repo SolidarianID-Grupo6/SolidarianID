@@ -14,7 +14,7 @@ export class CommunityRequests {
   description: string;
 
   @Prop({ required: true })
-  creator: number;
+  creator: string;
 
   @Prop({ type: String, enum: Object.values(CommunityRequestStatus), default: CommunityRequestStatus.Pending })
   status: CommunityRequestStatus;
@@ -25,7 +25,7 @@ export class CommunityRequests {
   @Prop()
   rejectReason: string;
 
-  @Prop({ required: true})
+  @Prop({ required: true })
   causes: CreateCauseDto[];
 
 }

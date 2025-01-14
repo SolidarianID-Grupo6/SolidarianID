@@ -1,9 +1,22 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "../../../",
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "./coverage",
+    "roots": [
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/iam(|/.*)$": "<rootDir>/libs/iam/src/$1",
+      "^@app/neo4j(|/.*)$": "<rootDir>/libs/neo4j/src/$1",
+      "^libs/(.*)$": "<rootDir>/libs/$1"
+    }
 }
