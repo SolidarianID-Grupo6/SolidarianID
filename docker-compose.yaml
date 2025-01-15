@@ -17,8 +17,10 @@ services:
       - ./apps/gateway:/app/apps/gateway
       - ./node_modules:/usr/src/app/node_modules
     depends_on:
-      - communities
-      - users
+      users:
+        condition: service_healthy
+      communities:
+        condition: service_started
     networks:
       - solidarianetwork
 
@@ -64,6 +66,12 @@ services:
         condition: service_started
       nats:
         condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/api-json"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
     networks:
       - solidarianetwork
 
