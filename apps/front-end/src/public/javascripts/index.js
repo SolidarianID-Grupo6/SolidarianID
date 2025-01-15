@@ -121,10 +121,10 @@ function renderCommunitiesRequest(communities) {
 
       <!-- Columna 3: Botones -->
       <div class="flex items-center justify-center sm:justify-end space-x-1 sm:space-x-2">
-        <button type="button" class="text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 font-medium rounded-full text-xs sm:text-sm p-2 sm:p-2.5 text-center inline-flex items-center me-1 sm:me-2" onclick="showPopup(${index})">
+        <button type="button" class="text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 font-medium rounded-full text-xs sm:text-sm p-2 sm:p-2.5 text-center inline-flex items-center me-1 sm:me-2" data-action="info" data-index="${index}">
           <img src="/images/info-icon.png" alt="Info" class="w-4 h-4 sm:w-5 sm:h-5">
         </button>
-        <button class="bg-red-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-red-600" onclick="rejectCommunity('${community.id}')">
+        <button class="bg-red-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-red-600" data-action="reject" data-id="${community.id}">
           Rechazar
         </button>
       </div>
@@ -135,6 +135,26 @@ function renderCommunitiesRequest(communities) {
         list.innerHTML += item;
     });
 }
+
+// Delegación de eventos en el contenedor principal
+document.getElementById('comunidades-request-list').addEventListener('click', (event) => {
+    const target = event.target;
+
+    // Delegación para el botón de información
+    if (target.closest('button[data-action="info"]')) {
+        const index = target.closest('button[data-action="info"]').dataset.index;
+        console.log(`Mostrar información de la comunidad con índice: ${index}`);
+        showPopup(index); // Llama a la función existente
+    }
+
+    // Delegación para el botón de rechazo
+    if (target.closest('button[data-action="reject"]')) {
+        const communityId = target.closest('button[data-action="reject"]').dataset.id;
+        console.log(`Rechazar comunidad con ID: ${communityId}`);
+        rejectCommunity(communityId); // Llama a la función existente
+    }
+});
+
 
 // Mostrar el popup con los detalles de la solicitud
 function showPopup(index) {
@@ -306,7 +326,6 @@ async function generateReport(communityName) {
       </div>
     `;
 
-        // Insertar el contenido en el contenedor del informe
         const reportView = document.getElementById('report-view');
         const reportContainer = document.getElementById('report-content');
         reportContainer.innerHTML = reportContent;
@@ -326,7 +345,6 @@ async function generateReport(communityName) {
             html2pdf().set(options).from(reportContainer).save();
         };
 
-        // Configurar el botón para cerrar el modal
         const closeButton = document.getElementById('close-report');
         closeButton.onclick = () => {
             reportView.classList.add('hidden');
@@ -337,15 +355,21 @@ async function generateReport(communityName) {
 }
 
 
-
-
-
-// Configurar la pestaña predeterminada y cargar datos
 window.onload = function () {
-    const defaultTab = document.querySelector('nav a:first-child');
-    showTab('validacion', defaultTab);
+    // Configurar eventos delegados para la lista de comunidades
+    document.getElementById('comunidades-request-list').addEventListener('click', (event) => {
+      const target = event.target;
+  
+      if (target.matches('button[data-action="reject"]')) {
+        const communityId = target.dataset.id;
+        console.log(`Rechazar comunidad con ID: ${communityId}`);
+        rejectCommunity(communityId); // Llama a la función de rechazo
+      }
+    });
+  
+    // Configuración adicional para otras secciones de la página
     fetchCommunitiesRequest();
-};
+  };
 
 const menuToggle = document.getElementById('menuToggle');
 if (menuToggle) {
@@ -539,7 +563,7 @@ async function renderChart3() {
 // Ejemplo de uso en una gráfica
 async function renderChart4() {
 
-    
+
     const data = await fetchChartData('getProgressByCommunity');
 
     if (data) {
