@@ -6,7 +6,9 @@ import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { ActiveUser } from '@app/iam/decorators/active-user.decorator';
 import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Community Join Requests')
 @Controller('community-join-request/')
 export class CommunityJoinRequestController {
   constructor(private readonly communityJoinRequestService: CommunityJoinRequestService) { }
@@ -17,6 +19,7 @@ export class CommunityJoinRequestController {
     return this.communityJoinRequestService.findAll();
   }
 
+  @ApiOperation({ summary: 'Get all pending requests by community' })
   @Auth(AuthType.None)
   @Get(':idCommunity')
   async findByCommunitYPending(@Param('idCommunity') idCommunity: string): Promise<CommunityJoinRequestEntity[]> {
