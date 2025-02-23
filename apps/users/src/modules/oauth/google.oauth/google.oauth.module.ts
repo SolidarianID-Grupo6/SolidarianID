@@ -2,9 +2,9 @@ import { forwardRef, Module } from '@nestjs/common';
 import { GoogleOauthService } from './google.oauth.service';
 import { GoogleOauthController } from './google.oauth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../../entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from '../../users.module';
+import { UsersModule } from '../../users/users.module';
 import { IamModule } from '@app/iam';
 
 @Module({

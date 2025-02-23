@@ -8,9 +8,9 @@ import { History } from './history/entities/history.entity';
 import { IamModule } from '@app/iam';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { GoogleOauthModule } from './oauth/google.oauth/google.oauth.module';
+import { GoogleOauthModule } from '../oauth/google.oauth/google.oauth.module';
 import jwtConfig from '@app/iam/config/jwt.config';
-import { GithubOauthModule } from './oauth/github.oauth/github.oauth.module';
+import { GithubOauthModule } from '../oauth/github.oauth/github.oauth.module';
 import { Neo4jModule } from '@app/neo4j';
 import { Neo4jConfig } from '@app/neo4j/interfaces/neo4j-config.interface';
 

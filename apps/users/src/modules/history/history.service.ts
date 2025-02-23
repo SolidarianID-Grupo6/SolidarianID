@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { History } from './entities/history.entity';
-import { User } from '../entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import {
   CreateCauseStatsDto,
   CreateCommunityEventDto,
