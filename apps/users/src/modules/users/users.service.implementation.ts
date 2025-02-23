@@ -25,7 +25,7 @@ import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface'
 import { Role } from '@app/iam/authorization/enums/role.enum';
 
 @Injectable()
-export class UsersService {
+export class UsersServiceImpl {
   public constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,

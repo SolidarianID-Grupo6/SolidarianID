@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import { ClientsModule, Transport, ClientProxy } from '@nestjs/microservices';
 import { HistoryModule } from '../src/modules/history/history.module';
-import { User } from '../src/modules/users/entities/user.entity';
+import { User } from '../src/modules/users/persistence/user.entity';
 import { History } from '../src/modules/history/entities/history.entity';
 import { Repository } from 'typeorm';
 import { lastValueFrom } from 'rxjs';
