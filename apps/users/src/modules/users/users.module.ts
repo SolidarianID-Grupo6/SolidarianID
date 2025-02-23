@@ -51,8 +51,8 @@ import { UsersServiceImpl } from './users.service.implementation';
   controllers: [UsersController],
   providers: [
     {
-      useClass: UsersServiceImpl,
-      provide: UsersService,
+      useClass: UsersService,
+      provide: UsersServiceImpl,
     },
   ],
   exports: [UsersService],
