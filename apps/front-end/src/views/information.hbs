@@ -1,0 +1,62 @@
+<nav class="bg-gray-200">
+    <!-- Menú desplegable (oculto por defecto en móviles) -->
+    <div id="menuContent"
+        class="hidden flex sm:flex justify-around flex-row text-center sm:space-x-4">
+        <a href="/validation" id="tab-validacion"
+            class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300">
+            Validación
+        </a>
+        <a href="/statistics" id="tab-estadisticas"
+            class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300">
+            Estadísticas
+        </a>
+        <a href="/information" id="tab-informes"
+            class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300">
+            Informes
+        </a>
+    </div>
+</nav>
+
+<div id="informes">
+    <div class="bg-white shadow-md rounded p-4">
+        <!-- Contenido de informes -->
+        <div id="comunidades-list" class="space-y-4 mt-2">
+            <!-- Aquí se renderizan las solicitudes -->
+        </div>
+
+        <div id="report-view"
+            class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div
+                class="bg-white rounded-lg shadow-lg p-4 sm:p-6 w-full max-w-xs sm:max-w-lg lg:max-w-3xl h-[90vh] sm:h-[85vh] lg:h-[80vh] flex flex-col">
+                <!-- Título del modal -->
+                <div
+                    class="flex justify-between items-center mb-4 border-b border-gray-300 pb-2">
+                    <h2
+                        class="text-2xl font-bold mb-4 text-gray-800">Informe
+                        de la Comunidad</h2>
+                    <button id="close-report"
+                        class="text-red-500 font-bold text-lg">&times;</button>
+                </div>
+
+                <!-- Contenedor con sombra para el contenido -->
+                <div
+                    class="mx-auto p-4 sm:p-6 bg-gray-50 rounded-lg shadow-md w-full flex-grow overflow-hidden">
+                    <!-- Contenido desplazable -->
+                    <div id="report-content"
+                        class="overflow-y-auto max-h-full space-y-4">
+                        <!-- El contenido dinámico será insertado aquí -->
+                    </div>
+                </div>
+
+                <!-- Botón fijo al final -->
+                <div class="flex justify-end mt-4">
+                    <button id="download-pdf"
+                        class="bg-gray-400 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-gray-600">
+                        Descargar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
