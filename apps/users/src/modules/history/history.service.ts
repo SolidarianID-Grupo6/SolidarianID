@@ -1,8 +1,3 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { History } from './entities/history.entity';
-import { User } from '../users/persistence/user.entity';
 import {
   CreateCauseStatsDto,
   CreateCommunityEventDto,
@@ -12,102 +7,34 @@ import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto'
 import { SupportEventDto } from 'libs/events/dto/support-event.dto';
 import { CreateActionStatsDto } from 'libs/events/dto/create-action-dto';
 import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
-import { Result } from './entities/result';
+import { Either } from 'libs/base/logic/Result';
+import { UserNotFoundError } from './errors/UserNotFoundError';
+import * as Domain from './domain';
 
-@Injectable()
-export class HistoryService {
-  public constructor(
-    @InjectRepository(History)
-    private readonly historyRepository: Repository<History>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) {}
-
-  public async getHistory(
+export interface HistoryService {
+  getHistory(
     userId: string,
     limit: number,
     offset: number,
-  ): Promise<Result<History[]>> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
+  ): Promise<Either<UserNotFoundError, Domain.History[]>>;
 
-    if (!user) {
-      return Result.fail<History[]>(`User with ID ${userId} not found`);
-    }
-
-    return Result.ok<History[]>(
-      await this.historyRepository.find({
-        where: { user: user },
-        take: limit,
-        skip: offset,
-      }),
-    );
-  }
-
-  public registerCommunityCreation(
+  registerCommunityCreation(
     event: CommunityEvent,
     dto: CreateCommunityEventDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.user, dto);
-  }
+  );
 
-  public registerCommunityMembership(
+  registerCommunityMembership(
     event: CommunityEvent,
     dto: CommunityUserAddedDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.userId, dto);
-  }
+  );
 
-  public registerCauseParticipation(
-    event: CommunityEvent,
-    dto: SupportEventDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.user, dto);
-  }
+  registerCauseParticipation(event: CommunityEvent, dto: SupportEventDto);
 
-  public registerSupport(event: CommunityEvent, dto: SupportEventDto) {
-    return this.registerHistoryRecord(event, dto.user, dto);
-  }
+  registerSupport(event: CommunityEvent, dto: SupportEventDto);
 
-  public registerCauseCreation(
-    event: CommunityEvent,
-    dto: CreateCauseStatsDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.userId, dto);
-  }
+  registerCauseCreation(event: CommunityEvent, dto: CreateCauseStatsDto);
 
-  public registerActionCreation(
-    event: CommunityEvent,
-    dto: CreateActionStatsDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.user, dto);
-  }
+  registerActionCreation(event: CommunityEvent, dto: CreateActionStatsDto);
 
-  public registerDonation(event: CommunityEvent, dto: DonateEventDto) {
-    return this.registerHistoryRecord(event, dto.user, dto);
-  }
-
-  private async registerHistoryRecord(
-    event: CommunityEvent,
-    userId: string,
-    dto: any,
-  ): Promise<Result<History>> {
-    const user = await this.userRepository.findOne({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      return Result.fail<History>(`User with ID ${userId} not found`);
-    }
-
-    const history = this.historyRepository.create({
-      action: event,
-      user,
-      data: dto,
-      eventDate: new Date(),
-    });
-
-    return Result.ok<History>(await this.historyRepository.save(history));
-  }
+  registerDonation(event: CommunityEvent, dto: DonateEventDto);
 }

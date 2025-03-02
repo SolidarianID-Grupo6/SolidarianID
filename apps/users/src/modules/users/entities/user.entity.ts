@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { History } from '../../history/entities/history.entity';
+import { History } from '../../history/persistence/history.entity';
 import { Role } from '@app/iam/authorization/enums/role.enum';
 
 @Entity('users')

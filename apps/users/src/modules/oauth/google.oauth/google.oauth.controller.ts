@@ -10,12 +10,12 @@ import { Response } from 'express';
 import { Auth } from '@app/iam/authentication/decorators/auth.decorator';
 import { AuthType } from '@app/iam/authentication/enums/auth-type.enum';
 import { AuthGuard } from '@nestjs/passport';
-import { UsersService } from '../../users/users.service';
 import { Repository } from 'typeorm';
-import { User } from '../../users/persistence/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { User } from '../../users/entities/user.entity';
+import { UsersService } from '../../users/users.service';
 
 @ApiTags('OAuth')
 @Auth(AuthType.None)

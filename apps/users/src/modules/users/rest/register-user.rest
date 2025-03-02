@@ -1,5 +1,5 @@
 ### Correct registration:
-POST http://localhost:3000/users/register
+POST http://localhost:3002/register
 Content-Type: application/json
 
 {

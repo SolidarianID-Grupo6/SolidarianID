@@ -1,4 +1,14 @@
-import { Controller, Get, HttpStatus, Param, Query, Res } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Inject,
+  NotFoundException,
+  Param,
+  Query,
+  Res,
+} from '@nestjs/common';
 import { HistoryService } from './history.service';
 import { Response } from 'express';
 import { EventPattern } from '@nestjs/microservices';
@@ -19,7 +29,10 @@ import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('history')
 export class HistoryController {
-  public constructor(private readonly historyService: HistoryService) {}
+  public constructor(
+    @Inject('HistoryService')
+    private readonly historyService: HistoryService,
+  ) {}
 
   @ApiOperation({ summary: 'Get your user history' })
   @Get()
@@ -35,17 +48,15 @@ export class HistoryController {
       offset,
     );
 
-    if (!result.success) {
-      return response.status(HttpStatus.NOT_FOUND).json({
-        message: result.errorValue,
-      });
+    if (result.isLeft()) {
+      throw new NotFoundException(result.value.message);
     }
 
     if (!result.value || result.value.length === 0) {
-      return response.status(HttpStatus.NO_CONTENT).send();
+      throw new HttpException('No user history', HttpStatus.NO_CONTENT);
     }
 
-    return response.status(HttpStatus.OK).json(result.value);
+    return result.value;
   }
 
   @ApiOperation({
@@ -61,17 +72,15 @@ export class HistoryController {
     const { limit, offset } = paginationQuery;
     const result = await this.historyService.getHistory(id, limit, offset);
 
-    if (!result.success) {
-      return response.status(HttpStatus.NOT_FOUND).json({
-        message: result.errorValue,
-      });
+    if (result.isLeft()) {
+      throw new NotFoundException(result.value.message);
     }
 
     if (!result.value || result.value.length === 0) {
-      return response.status(HttpStatus.NO_CONTENT).send();
+      throw new HttpException('No user history', HttpStatus.NO_CONTENT);
     }
 
-    return response.status(HttpStatus.OK).json(result.value);
+    return result.value;
   }
 
   @EventPattern(CommunityEvent.CreateCommunity)

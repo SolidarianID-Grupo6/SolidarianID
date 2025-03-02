@@ -5,13 +5,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { User } from '../../users/persistence/user.entity';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
+import { User } from '../../users/entities/user.entity';
 
 @Entity('history')
 export class History {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'enum', enum: CommunityEvent })
   action: string;

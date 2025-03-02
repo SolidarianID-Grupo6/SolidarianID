@@ -3,17 +3,15 @@ import { HttpStatus, INestApplication } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as request from 'supertest';
 import { ClientsModule, Transport, ClientProxy } from '@nestjs/microservices';
-import { HistoryModule } from '../src/modules/history/history.module';
-import { User } from '../src/modules/users/persistence/user.entity';
-import { History } from '../src/modules/history/entities/history.entity';
 import { Repository } from 'typeorm';
 import { lastValueFrom } from 'rxjs';
 import { IamModule } from '@app/iam';
-import { UsersModule } from '../src/modules/users/users.module';
 import { Role } from '@app/iam/authorization/enums/role.enum';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import { ODS_ENUM } from 'libs/enums/ods.enum';
 import { HashingService } from '@app/iam/hashing/hashing.service';
+import { HistoryModule } from '../src/modules/history/history.module';
+import { UsersModule } from '../src/modules/users/users.module';
 
 describe('History (e2e)', () => {
   let app: INestApplication;

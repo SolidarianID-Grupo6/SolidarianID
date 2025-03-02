@@ -1,11 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../../users/persistence/user.entity';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from '../../users/users.module';
 import { IamModule } from '@app/iam';
 import { GithubOauthService } from './github.oauth.service';
 import { GithubOauthController } from './github.oauth.controller';
+import { User } from '../../users/entities/user.entity';
+import { UsersModule } from '../../users/users.module';
 
 @Module({
   imports: [
