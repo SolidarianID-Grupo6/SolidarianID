@@ -1,0 +1,56 @@
+<nav class="bg-gray-200">
+    <!-- Menú desplegable (oculto por defecto en móviles) -->
+    <div id="menuContent"
+        class="hidden flex sm:flex justify-around flex-row text-center sm:space-x-4">
+        <a href="/validation" id="tab-validacion"
+            class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300">
+            Validación
+        </a>
+        <a href="/statistics" id="tab-estadisticas"
+            class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300">
+            Estadísticas
+        </a>
+        <a href="/information" id="tab-informes"
+            class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:border-blue-500 hover:text-shadow transition-all duration-300">
+            Informes
+        </a>
+    </div>
+</nav>
+
+<div id="validacion" class="tabcontent">
+      <div class="bg-white shadow-md rounded p-4">
+        <div id="comunidades-request-list" class="space-y-4 mt-2">
+          <!-- Aquí se renderizarán las solicitudes -->
+        </div>
+
+        <!-- Botón de Validar debajo del panel -->
+        <div class="mt-6 flex justify-end">
+          <button
+            class="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            onclick="validateSelectedCommunities()">
+            Validar Solicitudes Seleccionadas
+          </button>
+        </div>
+      </div>
+      <div id="detailsPopup" class="fixed inset-0 bg-gray-800 bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+          <!-- Título -->
+          <h2 class="text-2xl font-bold mb-4 text-gray-800 border-b pb-2">Detalles
+            de la Solicitud</h2>
+
+          <!-- Contenido dinámico -->
+          <div id="popupContent" class="space-y-4">
+            <!-- Aquí se inyecta el contenido dinámico -->
+          </div>
+
+          <!-- Botón de cierre -->
+          <div class="flex justify-end mt-6">
+            <button
+              class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+              onclick="closePopup()">
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>

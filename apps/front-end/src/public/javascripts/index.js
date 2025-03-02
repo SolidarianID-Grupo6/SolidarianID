@@ -1,4 +1,22 @@
 
+document.addEventListener('DOMContentLoaded', function() {
+    const viewName = document.body.getAttribute('data-view');
+  
+    if (viewName === 'statistics') {
+      renderChart1();
+      renderChart2();
+      renderChart3();
+      renderChart4();
+    }
+    if (viewName === 'validation') {
+      fetchCommunitiesRequest();
+    }
+    if (viewName === 'information') {
+      fetchCommunities();
+    }
+  });
+  
+
 // Función para mostrar el contenido de la pestaña seleccionada
 function showTab(tabName, element) {
     console.log(`Mostrando pestaña: ${tabName}`);
@@ -187,9 +205,6 @@ function showPopup(index) {
   </div>
 `;
 
-
-
-
     document.getElementById('popupContent').innerHTML = popupContent;
     document.getElementById('detailsPopup').classList.remove('hidden');
 }
@@ -217,7 +232,7 @@ async function validateSelectedCommunities() {
             try {
                 // Hacer la solicitud fetch para cada comunidad seleccionada
                 const response = await fetch(`http://localhost:3001/community-requests/approve/${community.id}`, {
-                    method: 'PUT', // O el método adecuado según tu API, 'POST' o 'DELETE', etc.
+                    method: 'PUT',
                 });
 
                 if (!response.ok) {
@@ -245,7 +260,7 @@ async function rejectCommunity(communityId) {
     try {
         // Hacer la solicitud fetch para rechazar la comunidad con el communityId
         const response = await fetch(`http://localhost:3001/community-requests/reject/${communityId}`, {
-            method: 'PUT', // Asumiendo que es un método PUT para rechazar la solicitud
+            method: 'PUT',
         });
 
         if (!response.ok) {
@@ -253,7 +268,6 @@ async function rejectCommunity(communityId) {
             throw new Error(`Error rechazando la solicitud de creación de comunidad: ${response.statusText}`);
         }
 
-        // Si la respuesta es exitosa, puedes agregar un mensaje o actualizar la UI si es necesario
         console.log(`Solicitud ${communityId} rechazada con éxito`);
 
     } catch (error) {
