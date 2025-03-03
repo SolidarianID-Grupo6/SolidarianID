@@ -14,7 +14,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../users/persistence/user.entity';
 import { UsersService } from '../../users/users.service';
 
 @ApiTags('OAuth')

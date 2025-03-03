@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import * as Domain from './domain';
 import * as Persistence from './persistence';
-import { User } from '../users/entities/user.entity';
+import { User } from '../users/persistence/user.entity';
 import { Repository } from 'typeorm';
 import { HistoryMapper } from './history.mapper';
 import { Either, left, right } from 'libs/base/logic/Result';

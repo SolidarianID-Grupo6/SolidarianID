@@ -4,7 +4,7 @@ import { UsersService } from './users.service';
 import { HistoryModule } from '../history/history.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './persistence/user.entity';
-import { History } from '../history/entities/history.entity';
+import { History } from '../history/persistence/history.entity';
 import { IamModule } from '@app/iam';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -51,10 +51,10 @@ import { UsersServiceImpl } from './users.service.implementation';
   controllers: [UsersController],
   providers: [
     {
-      useClass: UsersService,
-      provide: UsersServiceImpl,
+      provide: 'UsersService',
+      useClass: UsersServiceImpl,
     },
   ],
-  exports: [UsersService],
+  exports: ['UsersService'],
 })
 export class UsersModule {}

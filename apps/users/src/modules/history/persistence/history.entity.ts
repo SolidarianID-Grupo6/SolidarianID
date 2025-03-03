@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../users/persistence/user.entity';
 
 @Entity('history')
 export class History {

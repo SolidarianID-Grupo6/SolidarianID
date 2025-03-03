@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { HistoryController } from './history.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { History } from './persistence/history.entity';
-import { User } from '../users/entities/user.entity';
+import { User } from '../users/persistence/user.entity';
 import { HistoryServiceImpl } from './history.service.implementation';
 import { HistoryRepoTypeORM } from './history.repository.typeorm';
 

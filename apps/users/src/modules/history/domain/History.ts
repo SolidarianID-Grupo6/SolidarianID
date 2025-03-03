@@ -1,6 +1,6 @@
 import { AggregateRoot } from 'libs/base/domain/AggregateRoot';
 import { UniqueEntityID } from 'libs/base/domain/UniqueEntityID';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../users/persistence/user.entity';
 
 export interface HistoryProps {
   id: UniqueEntityID;
