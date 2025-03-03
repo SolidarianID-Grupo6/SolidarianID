@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import { UsersService } from './users.service';
-import { EventPattern } from '@nestjs/microservices';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
@@ -25,14 +24,15 @@ import { AccessTokenGuard } from '@app/iam/authentication/guards/access-token/ac
 import { Roles } from '@app/iam/authorization/decorators/roles.decorator';
 import { Role } from '@app/iam/authorization/enums/role.enum';
 import { FindQueryDto } from './dto/find-query.dto';
-import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto';
-import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import {
   ApiForbiddenResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { EventPattern } from '@nestjs/microservices';
+import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto';
+import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 
 @ApiTags('Users')
 @Controller()
@@ -157,5 +157,11 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
+  }
+  
+  // TODO: review if the events should be move to different class
+  @EventPattern(CommunityEvent.NewCommunityUser)
+  async handleEvent(dto: CommunityUserAddedDto) {
+    this.usersService.addUserToCommunity(dto.userId, dto.communityId);
   }
 }

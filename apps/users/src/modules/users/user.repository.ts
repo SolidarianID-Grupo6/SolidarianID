@@ -1,8 +1,8 @@
-export abstract class RepoUsers extends Repo<Domain.User> {
-  // ad hoc
-  abstract findByFirstName(firstName: string): Promise<Domain.User>;
-  abstract findAllUsers(): Promise<Domain.User[]>;
+import * as Domain from './domain';
+import { Repo } from 'libs/base/infra/Repo';
 
-  // abstract findByLastName(lastName: string): User
-  // abstract findByAge(age: number): User
+export interface RepoUsers extends Repo<Domain.User> {
+  findByFirstName(firstName: string): Promise<Domain.User>;
+  findAllUsers(): Promise<Domain.User[]>;
+
 }
