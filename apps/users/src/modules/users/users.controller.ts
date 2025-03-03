@@ -50,7 +50,7 @@ export class UsersController {
   })
   @Auth(AuthType.None)
   @HttpCode(HttpStatus.OK)
-  @Post()
+  @Post('login')
   async login(
     @Res({ passthrough: true }) response: Response,
     @Body() userLogin: LoginUserDto,
@@ -84,7 +84,7 @@ export class UsersController {
       'When a field is missing, the email is badly formated or the password is shorter than 8 characters, does not have lower case or/and upper case characters',
   })
   @Auth(AuthType.None)
-  @Post('register')
+  @Post()
   register(@Body() userRegistration: RegisterUserDto) {
     return this.usersService.register(userRegistration);
   }
@@ -101,6 +101,7 @@ export class UsersController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
+    // TODO: CHANGE FROM EXPRESS TO ABSTRACT NEXTJS REQUEST
     const newAccessToken = await this.usersService.refreshTokens({
       refreshToken: this.accessTokenGuard.extractTokenFromCookie(
         request,
@@ -115,14 +116,14 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'Get your current user profile' })
-  @Get()
+  @Get('profile')
   getProfile(@ActiveUser() user: IActiveUserData) {
     return this.usersService.getProfile(user.sub);
   }
 
   @ApiOperation({ summary: 'Get the profile of a given user by their id' })
   @Auth(AuthType.None)
-  @Get('user/:id')
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
@@ -136,16 +137,17 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'User Following' })
-  @Get('follow/:id')
+  @Post('following')
   followUser(
     @ActiveUser() user: IActiveUserData,
-    @Param('id') followedId: string,
+    // TODO: use DTO
+    @Body('targetUser') followedId: string,
   ) {
     return this.usersService.followUser(user.sub, followedId);
   }
 
   @ApiOperation({ summary: 'User searching' })
-  @Post('find')
+  @Get()
   find(@Body() query: FindQueryDto, @ActiveUser() user: IActiveUserData) {
     return this.usersService.find(query, user.sub);
   }
@@ -155,41 +157,5 @@ export class UsersController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
-  }
-
-  @ApiOperation({
-    summary: 'Add a given user to a community (only for admins)',
-  })
-  @Roles(Role.Admin)
-  @Get('addUserToCommunity/:userId/:communityId')
-  addUserToCommunity(
-    @Param('userId') userId: string,
-    @Param('communityId') communityId: string,
-  ) {
-    console.log('User added to community');
-    this.usersService.addUserToCommunity(userId, communityId);
-  }
-
-  @ApiOperation({
-    summary: 'Get the full user information (only for admins)',
-  })
-  @Roles(Role.Admin)
-  @Get('fullUserInfo/:id')
-  getFullUserInfo(@Param('id') id: string) {
-    return this.usersService.getFullUserInfo(id);
-  }
-
-  @ApiOperation({
-    summary: 'Make a user an admin (only for admins)',
-  })
-  @Roles(Role.Admin)
-  @Get('makeUserAdmin/:id')
-  makeAdmin(@Param('id') id: string) {
-    return this.usersService.makeUserAdmin(id);
-  }
-
-  @EventPattern(CommunityEvent.NewCommunityUser)
-  async handleEvent(dto: CommunityUserAddedDto) {
-    this.usersService.addUserToCommunity(dto.userId, dto.communityId);
   }
 }
