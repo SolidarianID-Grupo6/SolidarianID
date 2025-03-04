@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { History } from './persistence/history.entity';
 import { User } from '../users/persistence/user.entity';
 import { HistoryServiceImpl } from './history.service.implementation';
-import { HistoryRepoTypeORM } from './history.repository.typeorm';
+import { HistoryRepoImpl } from './history.repository.implementation';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, History])],
@@ -16,7 +16,7 @@ import { HistoryRepoTypeORM } from './history.repository.typeorm';
     },
     {
       provide: 'HistoryRepo',
-      useClass: HistoryRepoTypeORM,
+      useClass: HistoryRepoImpl,
     },
   ],
 })

@@ -17,22 +17,22 @@ export interface UsersService {
 
   getProfile(userId: string);
 
-  update(id: string, updateUserDto: UpdateUserDto)
+  update(id: string, updateUserDto: UpdateUserDto);
   
   remove(id: string);
 
-  followUser(userId: string, followedId: string)
+  followUser(userId: string, followedId: string);
 
-  find(query: FindQueryDto, activeUserId: string)
+  find(query: FindQueryDto, activeUserId: string);
 
   addUserToCommunity(
     userId: string,
     idCommunity: string,
-  ): Promise<void> 
+  ): Promise<void>;
 
-  getFullUserInfo(id: string) 
+  getFullUserInfo(id: string);
 
-  generateTokens(user: User) 
+  generateTokens(user: User);
 
-  makeUserAdmin(userId: string)
+  makeUserAdmin(userId: string);
 }

@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { RepoUsers } from './user.repository';
 
 @Injectable()
-export class RepoUsersTypeORM /*implements RepoUsers*/ {
+export class UsersRepoImpl /*implements RepoUsers*/ {
   // constructor(
   //   @InjectRepository(Persistence.User)
   //   private repo: Repository<Persistence.User>,

@@ -9,7 +9,7 @@ import { UserNotFoundError } from './errors/UserNotFoundError';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import { HistoryRepo } from './history.repository';
 
-export class HistoryRepoTypeORM implements HistoryRepo {
+export class HistoryRepoImpl implements HistoryRepo {
   public constructor(
     @InjectRepository(Persistence.History)
     private readonly historyRepository: Repository<Persistence.History>,

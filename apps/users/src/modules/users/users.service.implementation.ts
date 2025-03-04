@@ -23,9 +23,10 @@ import { Neo4jService } from '@app/neo4j';
 import { FindQueryDto } from './dto/find-query.dto';
 import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { Role } from '@app/iam/authorization/enums/role.enum';
+import { UsersService } from './users.service';
 
 @Injectable()
-export class UsersServiceImpl {
+export class UsersServiceImpl implements UsersService {
   public constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
