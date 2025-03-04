@@ -28,47 +28,50 @@ export class HistoryServiceImpl implements HistoryService {
     return this.historyRepo.findAll(userId, limit, offset);
   }
 
-  public registerCommunityCreation(
+  public async registerCommunityCreation(
     event: CommunityEvent,
     dto: CreateCommunityEventDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.user, dto);
+  ): Promise<void> {
+    this.registerHistoryRecord(event, dto.user, dto);
   }
 
-  public registerCommunityMembership(
+  public async registerCommunityMembership(
     event: CommunityEvent,
     dto: CommunityUserAddedDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.userId, dto);
+  ): Promise<void> {
+    this.registerHistoryRecord(event, dto.userId, dto);
   }
 
-  public registerCauseParticipation(
+  public async registerCauseParticipation(
     event: CommunityEvent,
     dto: SupportEventDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.user, dto);
+  ): Promise<void> {
+    this.registerHistoryRecord(event, dto.user, dto);
   }
 
-  public registerSupport(event: CommunityEvent, dto: SupportEventDto) {
-    return this.registerHistoryRecord(event, dto.user, dto);
+  public async registerSupport(
+    event: CommunityEvent,
+    dto: SupportEventDto,
+  ): Promise<void> {
+    await this.registerHistoryRecord(event, dto.user, dto);
   }
 
-  public registerCauseCreation(
+  public async registerCauseCreation(
     event: CommunityEvent,
     dto: CreateCauseStatsDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.userId, dto);
+  ): Promise<void> {
+    await this.registerHistoryRecord(event, dto.userId, dto);
   }
 
-  public registerActionCreation(
+  public async registerActionCreation(
     event: CommunityEvent,
     dto: CreateActionStatsDto,
-  ) {
-    return this.registerHistoryRecord(event, dto.user, dto);
+  ): Promise<void> {
+    await this.registerHistoryRecord(event, dto.user, dto);
   }
 
-  public registerDonation(event: CommunityEvent, dto: DonateEventDto) {
-    return this.registerHistoryRecord(event, dto.user, dto);
+  public async registerDonation(event: CommunityEvent, dto: DonateEventDto) {
+    await this.registerHistoryRecord(event, dto.user, dto);
   }
 
   private async registerHistoryRecord(

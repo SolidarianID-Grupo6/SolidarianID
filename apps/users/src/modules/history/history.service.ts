@@ -21,20 +21,20 @@ export interface HistoryService {
   registerCommunityCreation(
     event: CommunityEvent,
     dto: CreateCommunityEventDto,
-  );
+  ): Promise<void>;
 
   registerCommunityMembership(
     event: CommunityEvent,
     dto: CommunityUserAddedDto,
-  );
+  ): Promise<void>;
 
-  registerCauseParticipation(event: CommunityEvent, dto: SupportEventDto);
+  registerCauseParticipation(event: CommunityEvent, dto: SupportEventDto): Promise<void>;
 
-  registerSupport(event: CommunityEvent, dto: SupportEventDto);
+  registerSupport(event: CommunityEvent, dto: SupportEventDto): Promise<void>;
 
-  registerCauseCreation(event: CommunityEvent, dto: CreateCauseStatsDto);
+  registerCauseCreation(event: CommunityEvent, dto: CreateCauseStatsDto): Promise<void>;
 
-  registerActionCreation(event: CommunityEvent, dto: CreateActionStatsDto);
+  registerActionCreation(event: CommunityEvent, dto: CreateActionStatsDto): Promise<void>;
 
-  registerDonation(event: CommunityEvent, dto: DonateEventDto);
+  registerDonation(event: CommunityEvent, dto: DonateEventDto): Promise<void>;
 }

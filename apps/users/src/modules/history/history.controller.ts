@@ -85,7 +85,7 @@ export class HistoryController {
 
   @EventPattern(CommunityEvent.CreateCommunity)
   registerCommunityCreation(createCommunityEventDto: CreateCommunityEventDto) {
-    return this.historyService.registerCommunityCreation(
+    this.historyService.registerCommunityCreation(
       CommunityEvent.CreateCommunity,
       createCommunityEventDto,
     );
@@ -93,7 +93,7 @@ export class HistoryController {
 
   @EventPattern(CommunityEvent.NewCommunityUser)
   registerCommunityMembership(communityUserAddedDto: CommunityUserAddedDto) {
-    return this.historyService.registerCommunityMembership(
+    this.historyService.registerCommunityMembership(
       CommunityEvent.NewCommunityUser,
       communityUserAddedDto,
     );
@@ -101,7 +101,7 @@ export class HistoryController {
 
   @EventPattern(CommunityEvent.NewCause)
   registerCauseParticipation(supportEventDto: SupportEventDto) {
-    return this.historyService.registerCauseParticipation(
+    this.historyService.registerCauseParticipation(
       CommunityEvent.NewCause,
       supportEventDto,
     );
@@ -109,7 +109,7 @@ export class HistoryController {
 
   @EventPattern(CommunityEvent.NewSupport)
   registerSupport(supportEventDto: SupportEventDto) {
-    return this.historyService.registerSupport(
+    this.historyService.registerSupport(
       CommunityEvent.NewSupport,
       supportEventDto,
     );
@@ -117,7 +117,7 @@ export class HistoryController {
 
   @EventPattern(CommunityEvent.CreateCause)
   registerCauseCreation(createCauseDto: CreateCauseStatsDto) {
-    return this.historyService.registerCauseCreation(
+    this.historyService.registerCauseCreation(
       CommunityEvent.CreateCause,
       createCauseDto,
     );
@@ -125,7 +125,7 @@ export class HistoryController {
 
   @EventPattern(CommunityEvent.CreateAction)
   registerActionCreation(createActionDto: CreateActionStatsDto) {
-    return this.historyService.registerActionCreation(
+    this.historyService.registerActionCreation(
       CommunityEvent.CreateAction,
       createActionDto,
     );
@@ -133,7 +133,7 @@ export class HistoryController {
 
   @EventPattern(CommunityEvent.DonateEvent)
   registerDonation(donateEventDto: DonateEventDto) {
-    return this.historyService.registerDonation(
+    this.historyService.registerDonation(
       CommunityEvent.DonateEvent,
       donateEventDto,
     );
