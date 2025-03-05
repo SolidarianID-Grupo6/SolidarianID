@@ -1,21 +1,42 @@
 <header class="bg-white shadow-xl py-4">
-    <div class="mx-auto flex items-center justify-between px-4 sm:px-6">
-      <!-- Logo / Botón Hamburguesa -->
-      <div>
+  <div class="mx-auto flex items-center justify-between px-4 sm:px-6">
+    <!-- Logo / Botón Hamburguesa -->
+    <div>
+      <a href="/">
         <img id="menuToggle" src="/images/logo.png" alt="Logo"
           class="w-20 h-10 sm:w-24 sm:h-12 md:w-32 md:h-16 object-cover rounded-lg cursor-pointer sm:cursor-default sm:pointer-events-none">
-      </div>
-
-      <!-- Título -->
-      <div class="flex-1 text-center px-4 sm:px-6">
-        <h1 class="text-lg sm:text-xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
-          SolidarianID
-        </h1>
-      </div>
-
-      <!-- Usuario -->
-      <div class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">
-        <span class="font-semibold">Administrador</span>
-      </div>
+      </a>
     </div>
-  </header>
+
+    <!-- Título -->
+    <div class="flex-1 text-center px-4 sm:px-6">
+      <h1
+        class="text-lg sm:text-xl md:text-4xl lg:text-5xl font-extrabold text-gray-900">
+        SolidarianID
+      </h1>
+    </div>
+
+    <!-- Usuario -->
+    <div class="text-xs sm:text-sm text-gray-700 whitespace-nowrap">
+      <span class="font-semibold">Administrador</span>
+    </div>
+  </div>
+</header>
+
+<nav class="bg-gray-200">
+  <div id="menuContent"
+    class="hidden flex sm:flex justify-around flex-row text-center sm:space-x-4">
+    <a href="/validation"
+      class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:hover:text-shadow transition-all duration-300 {{#if (eq viewName 'validation')}}active{{/if}}">
+      Validación
+    </a>
+    <a href="/statistics"
+      class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:hover:text-shadow transition-all duration-300 {{#if (eq viewName 'statistics')}}active{{/if}}">
+      Estadísticas
+    </a>
+    <a href="/information"
+      class="flex-1 py-4 text-center hover:bg-blue-100 border-b-4 border-transparent hover:hover:text-shadow transition-all duration-300 {{#if (eq viewName 'information')}}active{{/if}}">
+      Informes
+    </a>
+  </div>
+</nav>

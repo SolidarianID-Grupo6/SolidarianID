@@ -6,7 +6,7 @@ export class AppController {
   @Get()
   @Render('index')
   root() {
-    return { title: 'Inicio', message: 'Bienvenido a SolidarianID' };
+    return { title: 'SolidarianID', message: 'Bienvenido a SolidarianID' };
   }
 
   @Get('validation')

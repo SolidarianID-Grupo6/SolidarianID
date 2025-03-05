@@ -1,0 +1,32 @@
+<div class="flex items-center p-2 sm:p-4 bg-gray-50 shadow-md rounded-lg sm:max-w-full max-w-lg mx-auto">
+    <!-- Checkbox para seleccionar la solicitud -->
+    <input type="checkbox" class="mr-2 sm:mr-4 self-center" id="community-{{id}}" data-index="{{@index}}">
+  
+    <!-- Contenedor dividido en tres columnas -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 flex-1">
+      <!-- Columna 1: Nombre y descripción -->
+      <div class="sm:text-left text-center">
+        <h3 class="text-base sm:text-lg font-bold">Nombre: {{name}}</h3>
+        <p class="text-xs sm:text-sm text-gray-600">Descripción: {{description}}</p>
+      </div>
+      
+      <!-- Columna 2: Fecha de solicitud -->
+      <div class="flex items-center justify-center">
+        <p class="text-xs sm:text-sm text-gray-600">Fecha de la solicitud: {{requestDateFormatted}}</p>
+      </div>
+      
+      <!-- Columna 3: Botones de acción -->
+      <div class="flex items-center justify-center sm:justify-end space-x-1 sm:space-x-2">
+        <button type="button"
+                class="text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 font-medium rounded-full text-xs sm:text-sm p-2 sm:p-2.5 text-center inline-flex items-center"
+                data-action="info" data-index="{{index}}">
+          <img src="/images/info-icon.png" alt="Info" class="w-4 h-4 sm:w-5 sm:h-5">
+        </button>
+        <button class="bg-red-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-red-600"
+                data-action="reject" data-id="{{id}}">
+          Rechazar
+        </button>
+      </div>
+    </div>
+  </div>
+  

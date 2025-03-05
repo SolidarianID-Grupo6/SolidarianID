@@ -1,52 +1,33 @@
+Handlebars.registerHelper('plusOne', function (index) {
+    return index + 1;
+});
 
-document.addEventListener('DOMContentLoaded', function() {
+Handlebars.registerHelper('calcPercentage', function (progress, goal) {
+    if (goal === 0) return '0.00';
+    return ((progress / goal) * 100).toFixed(2);
+});
+
+document.addEventListener('DOMContentLoaded', function () {
     const viewName = document.body.getAttribute('data-view');
   
-    if (viewName === 'statistics') {
-      renderChart1();
-      renderChart2();
-      renderChart3();
-      renderChart4();
-    }
-    if (viewName === 'validation') {
-      fetchCommunitiesRequest();
-    }
-    if (viewName === 'information') {
-      fetchCommunities();
-    }
-  });
-  
-
-// Función para mostrar el contenido de la pestaña seleccionada
-function showTab(tabName, element) {
-    console.log(`Mostrando pestaña: ${tabName}`);
-    const tabContents = document.querySelectorAll('.tabcontent');
-    tabContents.forEach(content => content.classList.add('hidden')); // Ocultar todos
-    document.getElementById(tabName).classList.remove('hidden'); // Mostrar el seleccionado
-
-    // Remueve la clase 'active' de todos los enlaces
-    const tabs = document.querySelectorAll('nav a');
-    tabs.forEach(tab => tab.classList.remove('active'));
-
-    // Añade la clase 'active' al enlace actual
-    element.classList.add('active');
-
-    if (tabName === 'validacion') {
-        fetchCommunitiesRequest();
-    }
-
-    if (tabName === 'estadisticas') {
+    switch (viewName) {
+      case 'statistics':
         renderChart1();
         renderChart2();
         renderChart3();
         renderChart4();
-    }
-
-    if (tabName === 'informes') {
+        break;
+      case 'validation':
+        fetchCommunitiesRequest();
+        break;
+      case 'information':
         fetchCommunities();
+        break;
+      default:
+        console.log('Vista desconocida:', viewName);
     }
-}
-
+  });
+  
 let communities = [];
 
 async function fetchCommunitiesRequest() {
@@ -85,129 +66,78 @@ async function fetchCommunities() {
     }
 }
 
-function renderCommunities(communities) {
+async function loadTemplate(url) {
+    const response = await fetch(url);
+    return await response.text();
+}
+
+async function renderCommunities(communities) {
     const list = document.getElementById('comunidades-list');
-    list.innerHTML = ''; // Limpiar contenido previo
 
-    communities.forEach((community, index) => {
-        const item = `
-  <div class="flex flex-col sm:flex-row items-center p-4 sm:p-6 bg-gray-50 shadow-md rounded-lg max-w-full mx-auto">
-    <!-- Contenedor principal dividido en dos secciones -->
-    <div class="flex-1 flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
-      <!-- Nombre de la Comunidad -->
-      <h3 class="text-base sm:text-lg font-bold text-gray-700">Comunidad:</h3>
-      <p class="text-sm sm:text-base text-gray-600">${community.name}</p>
-    </div>
+    const templateSource = await loadTemplate('/templates/community-template.html');
+    const template = Handlebars.compile(templateSource);
 
-    <!-- Botones -->
-    <div class="mt-4 sm:mt-0 flex items-center justify-center space-x-2">
-      <button 
-        class="bg-cyan-500 hover:bg-cyan-700 text-white px-3 sm:px-4 py-1 sm:py-2 rounded focus:outline-none focus:ring-2 focus:ring-cyan-400"
-        onclick="generateReport('${community.name}')">
-        Obtener informe de comunidad
-      </button>
-    </div>
-  </div>
-`;
-
-        list.innerHTML += item;
+    communities.forEach(community => {
+        const html = template(community);
+        list.innerHTML += html;
     });
 }
 
-function renderCommunitiesRequest(communities) {
+async function renderCommunitiesRequest(communities) {
     const list = document.getElementById('comunidades-request-list');
-    list.innerHTML = ''; // Limpiar contenido previo
+
+    const templateSource = await loadTemplate('/templates/community-request-template.html');
+    const template = Handlebars.compile(templateSource);
 
     communities.forEach((community, index) => {
-        const item = `
-  <div class="flex items-center p-2 sm:p-4 bg-gray-50 shadow-md rounded-lg sm:max-w-full max-w-lg mx-auto">
-    <!-- Checkbox al lado izquierdo -->
-    <input type="checkbox" class="mr-2 sm:mr-4 self-center" id="community-${community.id}" data-index="${index}">
-
-    <!-- Contenedor dividido en tres columnas -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 flex-1">
-      <!-- Columna 1: Nombre y Descripción -->
-      <div class="sm:text-left text-center">
-        <h3 class="text-base sm:text-lg font-bold">Nombre: ${community.name}</h3>
-        <p class="text-xs sm:text-sm text-gray-600">Descripción: ${community.description}</p>
-      </div>
-
-      <!-- Columna 2: Fecha -->
-      <div class="flex items-center justify-center">
-        <p class="text-xs sm:text-sm text-gray-600">Fecha de la solicitud: ${new Date(community.requestDate).toLocaleDateString()}</p>
-      </div>
-
-      <!-- Columna 3: Botones -->
-      <div class="flex items-center justify-center sm:justify-end space-x-1 sm:space-x-2">
-        <button type="button" class="text-white bg-cyan-500 hover:bg-cyan-700 focus:ring-4 font-medium rounded-full text-xs sm:text-sm p-2 sm:p-2.5 text-center inline-flex items-center me-1 sm:me-2" data-action="info" data-index="${index}">
-          <img src="/images/info-icon.png" alt="Info" class="w-4 h-4 sm:w-5 sm:h-5">
-        </button>
-        <button class="bg-red-500 text-white px-3 sm:px-4 py-1 sm:py-2 rounded hover:bg-red-600" data-action="reject" data-id="${community.id}">
-          Rechazar
-        </button>
-      </div>
-    </div>
-  </div>
-`;
-
-        list.innerHTML += item;
+        community.requestDateFormatted = new Date(community.requestDate).toLocaleDateString();
+        community.index = index; // Agrega el índice al objeto
+        const html = template(community);
+        list.innerHTML += html;
     });
 }
 
-// Delegación de eventos en el contenedor principal
-document.getElementById('comunidades-request-list').addEventListener('click', (event) => {
-    const target = event.target;
 
-    // Delegación para el botón de información
-    if (target.closest('button[data-action="info"]')) {
-        const index = target.closest('button[data-action="info"]').dataset.index;
-        console.log(`Mostrar información de la comunidad con índice: ${index}`);
-        showPopup(index); // Llama a la función existente
+const comunidadesRequestList = document.getElementById('comunidades-request-list');
+if (comunidadesRequestList) {
+    comunidadesRequestList.addEventListener('click', (event) => {
+        const target = event.target;
+
+        // Delegación para el botón de información
+        if (target.closest('button[data-action="info"]')) {
+            const index = target.closest('button[data-action="info"]').dataset.index;
+            console.log(`Mostrar información de la comunidad con índice: ${index}`);
+            showPopup(index);
+        }
+
+        // Delegación para el botón de rechazo
+        if (target.closest('button[data-action="reject"]')) {
+            const communityId = target.closest('button[data-action="reject"]').dataset.id;
+            console.log(`Rechazar comunidad con ID: ${communityId}`);
+            rejectCommunity(communityId);
+        }
+    });
+}
+
+async function showPopup(index) {
+    if (!communities || index < 0 || index >= communities.length) {
+        console.error('Índice fuera de rango o communities no definido');
+        return;
     }
 
-    // Delegación para el botón de rechazo
-    if (target.closest('button[data-action="reject"]')) {
-        const communityId = target.closest('button[data-action="reject"]').dataset.id;
-        console.log(`Rechazar comunidad con ID: ${communityId}`);
-        rejectCommunity(communityId); // Llama a la función existente
-    }
-});
-
-
-// Mostrar el popup con los detalles de la solicitud
-function showPopup(index) {
     const community = communities[index];
 
-    const popupContent = `
-  <div class="max-w-[30rem] sm:max-w-[40rem] mx-auto p-4 bg-white rounded-lg shadow-lg">
-    <div class="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-      <p class="font-bold text-gray-700">ID:</p>
-      <p class="text-gray-600 break-words">${community.id}</p>
+    community.requestDateFormatted = new Date(community.requestDate).toLocaleDateString();
 
-      <p class="font-bold text-gray-700">Nombre:</p>
-      <p class="text-gray-600">${community.name}</p>
+    const templateSource = await loadTemplate('/templates/information-community-template.html');
+    const template = Handlebars.compile(templateSource);
 
-      <p class="font-bold text-gray-700">Descripción:</p>
-      <p class="text-gray-600">${community.description || 'Sin descripción'}</p>
-
-      <p class="font-bold text-gray-700">Fecha de Solicitud:</p>
-      <p class="text-gray-600">${new Date(community.requestDate).toLocaleDateString()}</p>
-
-      <p class="font-bold text-gray-700">Estado:</p>
-      <p class="text-gray-600">${community.status}</p>
-
-      <p class="font-bold text-gray-700">Causas:</p>
-      <p class="text-gray-600">${community.causes.map(cause => `<span>${cause.title}</span>`).join(', ')}</p>
-
-      <p class="font-bold text-gray-700">Creador:</p>
-      <p class="text-gray-600">${community.creator}</p>
-    </div>
-  </div>
-`;
+    const popupContent = template(community);
 
     document.getElementById('popupContent').innerHTML = popupContent;
     document.getElementById('detailsPopup').classList.remove('hidden');
 }
+
 
 // Cerrar el popup
 function closePopup() {
@@ -215,7 +145,6 @@ function closePopup() {
 }
 
 // Función para validar las solicitudes seleccionadas
-// Crear una función async para manejar la validación
 async function validateSelectedCommunities() {
     const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked'); // Obtener los checkboxes seleccionados
 
@@ -223,14 +152,12 @@ async function validateSelectedCommunities() {
         alert('Por favor, selecciona al menos una solicitud para validar.');
         return;
     }
-    // Usamos un for...of en lugar de forEach para que funcione con await
     for (const checkbox of checkboxes) {
-        const communityId = checkbox.id.split('-')[1]; // Obtener el ID de la comunidad desde el id del checkbox
-        const community = communities.find(community => community.id == communityId); // Buscar la comunidad correspondiente en el array
+        const communityId = checkbox.id.split('-')[1];
+        const community = communities.find(community => community.id == communityId);
 
         if (community) {
             try {
-                // Hacer la solicitud fetch para cada comunidad seleccionada
                 const response = await fetch(`http://localhost:3001/community-requests/approve/${community.id}`, {
                     method: 'PUT',
                 });
@@ -240,7 +167,6 @@ async function validateSelectedCommunities() {
                     throw new Error(`Error aprobando la solicitud de creación de comunidad: ${response.statusText}`);
                 }
 
-                // Si la respuesta es exitosa, puedes agregar un mensaje o actualizar la UI si es necesario
                 console.log(`Solicitud ${community.id} aprobada con éxito`);
 
             } catch (error) {
@@ -258,7 +184,6 @@ async function rejectCommunity(communityId) {
     console.log('Rechazar solicitud con ID:', communityId);
 
     try {
-        // Hacer la solicitud fetch para rechazar la comunidad con el communityId
         const response = await fetch(`http://localhost:3001/community-requests/reject/${communityId}`, {
             method: 'PUT',
         });
@@ -279,7 +204,6 @@ async function rejectCommunity(communityId) {
 
 async function generateReport(communityName) {
     try {
-        // Realizar la solicitud al servidor
         const response = await fetch(`http://localhost:3003/information/${communityName}`, {
             method: 'GET',
         });
@@ -289,65 +213,19 @@ async function generateReport(communityName) {
             throw new Error(`Error al generar el informe: ${response.statusText}`);
         }
 
-        // Obtener datos de la comunidad
         const data = await response.json();
+        data.requestDateFormatted = new Date(data.requestDate).toLocaleDateString();
 
-        // Crear el contenido HTML para el informe
-        const reportContent = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; text-align: justify; margin: 20px;">
-        <p><strong>Nombre de la Comunidad:</strong> ${data.name}</p>
-        <p><strong>Número Total de Miembros:</strong> ${data.total_members}</p>
-        <p><strong>ODS de la Comunidad:</strong> ${[
-                ...new Set(data.causes.flatMap((cause) => cause.ods)),
-            ].join(', ')}</p>
-        
-        <h2 style="font-size: 20px; margin-top: 20px;">Causas de la Comunidad:</h2>
-        <ol style="padding-left: 20px;">
-          ${data.causes
-                .map(
-                    (cause, causeIndex) => `
-              <li style="margin-bottom: 20px;">
-                <strong>${causeIndex + 1}. Título de la Causa:</strong> ${cause.title} <br />
-                <strong>ODS Relacionados:</strong> ${cause.ods.join(', ')} <br />
-                <strong>Apoyos Totales:</strong> ${cause.total_supporters} <br />
-                ${cause.actions.length > 0
-                            ? `
-                    <h3 style="margin-top: 10px; font-size: 18px;">Acciones Relacionadas:</h3>
-                    <ol style="padding-left: 20px;">
-                      ${cause.actions
-                                .map(
-                                    (action, actionIndex) => `
-                          <li>
-                            <strong>${causeIndex + 1}.${actionIndex + 1} Acción:</strong> ${action.title} <br />
-                            <strong>Descripción:</strong> ${action.description} <br />
-                            <strong>Meta:</strong> ${action.goal} <br />
-                            <strong>Progreso:</strong> ${action.progress} (${(
-                                            (action.progress / action.goal) *
-                                            100
-                                        ).toFixed(2)}%)
-                          </li>
-                        `
-                                )
-                                .join('')}
-                    </ol>`
-                            : `<p><em>Sin acciones relacionadas.</em></p>`
-                        }
-              </li>
-            `
-                )
-                .join('')}
-        </ol>
-      </div>
-    `;
+        const templateSource = await loadTemplate('/templates/report-template.html');
+        const template = Handlebars.compile(templateSource);
+
+        const reportContent = template(data);
 
         const reportView = document.getElementById('report-view');
         const reportContainer = document.getElementById('report-content');
         reportContainer.innerHTML = reportContent;
-
-        // Mostrar el modal
         reportView.classList.remove('hidden');
 
-        // Configurar el botón para descargar el PDF
         const downloadButton = document.getElementById('download-pdf');
         downloadButton.onclick = () => {
             const options = {
@@ -368,33 +246,6 @@ async function generateReport(communityName) {
     }
 }
 
-
-window.onload = function () {
-    // Configurar eventos delegados para la lista de comunidades
-    document.getElementById('comunidades-request-list').addEventListener('click', (event) => {
-      const target = event.target;
-  
-      if (target.matches('button[data-action="reject"]')) {
-        const communityId = target.dataset.id;
-        console.log(`Rechazar comunidad con ID: ${communityId}`);
-        rejectCommunity(communityId); // Llama a la función de rechazo
-      }
-    });
-  
-    // Configuración adicional para otras secciones de la página
-    fetchCommunitiesRequest();
-  };
-
-const menuToggle = document.getElementById('menuToggle');
-if (menuToggle) {
-    menuToggle.addEventListener('click', () => {
-        const menuContent = document.getElementById('menuContent');
-        if (menuContent && window.innerWidth < 640) {
-            menuContent.classList.toggle('hidden'); // Alternar entre mostrar y ocultar el menú
-        }
-    });
-}
-
 async function fetchData(endpoint) {
     try {
         const response = await fetch(`http://localhost:3003/statistics/${endpoint}`, {
@@ -410,7 +261,7 @@ async function fetchData(endpoint) {
     }
 }
 
-// Colores predefinidos (alegres y vistosos)
+// Colores predefinidos
 const predefinedColors = [
     'rgba(255, 99, 132, 0.5)',  // Rojo vibrante
     'rgba(54, 162, 235, 0.5)',  // Azul brillante
@@ -426,12 +277,12 @@ const predefinedColors = [
 
 // Función para generar colores dinámicamente si es necesario
 const generateColors = (count) => {
-    const colors = [...predefinedColors]; // Comienza con los colores predefinidos
+    const colors = [...predefinedColors];
     while (colors.length < count) {
         const r = Math.floor(Math.random() * 255);
         const g = Math.floor(Math.random() * 255);
         const b = Math.floor(Math.random() * 255);
-        colors.push(`rgba(${r}, ${g}, ${b}, 0.5)`); // Agrega colores dinámicos con transparencia
+        colors.push(`rgba(${r}, ${g}, ${b}, 0.5)`);
     }
     return colors;
 };
@@ -631,7 +482,6 @@ async function renderChart4() {
 }
 
 // Exponer las funciones al ámbito global
-window.showTab = showTab;
 window.renderCommunities = renderCommunities;
 window.validateSelectedCommunities = validateSelectedCommunities;
 window.fetchCommunitiesRequest = fetchCommunitiesRequest;

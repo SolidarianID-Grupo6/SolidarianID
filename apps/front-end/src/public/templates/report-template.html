@@ -1,0 +1,32 @@
+<div style="font-family: Arial, sans-serif; line-height: 1.6; text-align: justify; margin: 20px;">
+    <p><strong>Nombre de la Comunidad:</strong> {{name}}</p>
+    <p><strong>Número Total de Miembros:</strong> {{total_members}}</p>
+    <p><strong>ODS de la Comunidad:</strong> {{ods}}</p>
+
+    <h2 style="font-size: 20px; margin-top: 20px;">Causas de la Comunidad:</h2>
+    <ol style="padding-left: 20px;">
+        {{#each causes as |cause parentIndex|}}
+        <li style="margin-bottom: 20px;">
+            <strong>{{plusOne parentIndex}}. Título de la Causa:</strong> {{cause.title}} <br />
+            <strong>ODS Relacionados:</strong> {{cause.ods}} <br />
+            <strong>Apoyos Totales:</strong> {{cause.total_supporters}} <br />
+            {{#if cause.actions.length}}
+            <h3 style="margin-top: 10px; font-size: 18px;">Acciones Relacionadas:</h3>
+            <ol style="padding-left: 20px;">
+                {{#each cause.actions as |action index|}}
+                <li>
+                    <strong>{{plusOne parentIndex}}.{{plusOne index}} Acción:</strong> {{action.title}} <br />
+                    <strong>Descripción:</strong> {{action.description}} <br />
+                    <strong>Meta:</strong> {{action.goal}} <br />
+                    <strong>Progreso:</strong> {{action.progress}} ({{calcPercentage action.progress action.goal}}%)
+                </li>
+                {{/each}}
+            </ol>
+            {{else}}
+            <p><em>Sin acciones relacionadas.</em></p>
+            {{/if}}
+        </li>
+        {{/each}}
+
+    </ol>
+</div>
