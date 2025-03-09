@@ -4,7 +4,9 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpException,
   HttpStatus,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -33,6 +35,9 @@ import {
 import { EventPattern } from '@nestjs/microservices';
 import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
+import { WrongPasswordError } from '../../errors/WrongPasswordError';
+import { NotFoundError } from 'rxjs';
+import { UserNotFoundError } from '../../errors/UserNotFoundError';
 
 @ApiTags('Users')
 @Controller()
@@ -55,8 +60,14 @@ export class UsersController {
     @Res({ passthrough: true }) response: Response,
     @Body() userLogin: LoginUserDto,
   ) {
-    const accessToken = await this.usersService.login(userLogin);
-    response.cookie('accessToken', accessToken, {
+    const tokensResultOrError = await this.usersService.login(userLogin);
+
+    if (tokensResultOrError.isLeft())
+    {
+      throw new HttpException('Email or password are incorrect', HttpStatus.UNAUTHORIZED);
+    }
+
+    response.cookie('accessToken', tokensResultOrError.value, {
       httpOnly: true,
       secure: true,
       sameSite: true,
@@ -158,7 +169,7 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(id);
   }
-  
+
   // TODO: review if the events should be move to different class
   @EventPattern(CommunityEvent.NewCommunityUser)
   async handleEvent(dto: CommunityUserAddedDto) {

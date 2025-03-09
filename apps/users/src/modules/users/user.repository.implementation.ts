@@ -4,20 +4,39 @@ import * as Persistence from './persistence';
 import { Repository } from 'typeorm';
 import { UserMapper } from './user.mapper';
 import { Injectable } from '@nestjs/common';
-import { RepoUsers } from './user.repository';
+import { UsersRepo } from './user.repository';
+import { Either, left, right } from 'libs/base/logic/Result';
+import { UserNotFoundError } from '../../errors/UserNotFoundError';
 
 @Injectable()
-export class UsersRepoImpl /*implements RepoUsers*/ {
-  // constructor(
-  //   @InjectRepository(Persistence.User)
-  //   private repo: Repository<Persistence.User>,
-  // ) {}
+export class UsersRepoImpl implements UsersRepo {
+  constructor(
+    @InjectRepository(Persistence.User)
+    private readonly usersRepo: Repository<Persistence.User>,
+  ) {}
+  findByFirstName(firstName: string): Promise<Domain.User> {
+    throw new Error('Method not implemented.');
+  }
+  findAllUsers(): Promise<Domain.User[]> {
+    throw new Error('Method not implemented.');
+  }
+  exists(t: Domain.User): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
+  save(t: Domain.User): Promise<Domain.User> {
+    throw new Error('Method not implemented.');
+  }
 
-  // findById(id: string): Promise<Domain.User> {
-  //   return this.repo
-  //     .findOneBy({ id: Number(id) })
-  //     .then((user) => UserMapper.toDomain(user));
-  // }
+  async findByEmail(
+    email: string,
+  ): Promise<Either<UserNotFoundError, Domain.User>> {
+    const user = await this.usersRepo.findOneBy({ email: email });
+    if (!user) {
+      return left(new UserNotFoundError());
+    }
+
+    return right(UserMapper.toDomain(user));
+  }
 
   // findByFirstName(firstName: string): Promise<Domain.User> {
   //   return this.repo

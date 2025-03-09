@@ -10,7 +10,7 @@ import { CreateActionStatsDto } from 'libs/events/dto/create-action-dto';
 import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
 import { HistoryRepo } from './history.repository';
 import { Either } from 'libs/base/logic/Result';
-import { UserNotFoundError } from './errors/UserNotFoundError';
+import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import * as Domain from './domain';
 import { HistoryService } from './history.service';
 

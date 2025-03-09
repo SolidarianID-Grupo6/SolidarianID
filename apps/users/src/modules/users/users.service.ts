@@ -4,10 +4,14 @@ import { User } from './persistence/user.entity';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { FindQueryDto } from './dto/find-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Either } from 'libs/base/logic/Result';
+import { UserNotFoundError } from '../../errors/UserNotFoundError';
+import { WrongPasswordError } from '../../errors/WrongPasswordError';
+import { AuthTokensDto } from './dto/auth-tokens.dto';
 
 export interface UsersService {
 
-  login(userLogin: LoginUserDto);
+  login(userLogin: LoginUserDto): Promise<Either<UserNotFoundError | WrongPasswordError, AuthTokensDto>>;
 
   register(userRegistration: RegisterUserDto);
 
@@ -32,7 +36,7 @@ export interface UsersService {
 
   getFullUserInfo(id: string);
 
-  generateTokens(user: User);
+  generateTokens(user: Domain.User);
 
   makeUserAdmin(userId: string);
 }

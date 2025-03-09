@@ -59,7 +59,7 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.presentation;
   }
 
-  get role(): string {
+  get role(): Role {
     return this.props.role;
   }
 

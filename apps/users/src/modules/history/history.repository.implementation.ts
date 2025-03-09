@@ -5,7 +5,7 @@ import { User } from '../users/persistence/user.entity';
 import { Repository } from 'typeorm';
 import { HistoryMapper } from './history.mapper';
 import { Either, left, right } from 'libs/base/logic/Result';
-import { UserNotFoundError } from './errors/UserNotFoundError';
+import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import { HistoryRepo } from './history.repository';
 

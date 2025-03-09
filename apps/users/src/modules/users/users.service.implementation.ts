@@ -24,12 +24,22 @@ import { FindQueryDto } from './dto/find-query.dto';
 import { IActiveUserData } from '@app/iam/interfaces/active-user-data.interface';
 import { Role } from '@app/iam/authorization/enums/role.enum';
 import { UsersService } from './users.service';
+import { UsersRepo } from './user.repository';
+import { Either, left, Result, right } from 'libs/base/logic/Result';
+import * as Domain from './domain';
+import { UserNotFoundError } from '../../errors/UserNotFoundError';
+import { AuthTokensDto } from './dto/auth-tokens.dto';
+import { WrongPasswordError } from '../../errors/WrongPasswordError';
+import { UserMapper } from './user.mapper';
 
 @Injectable()
 export class UsersServiceImpl implements UsersService {
   public constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    private readonly usersRepository: UsersRepo,
+    // TODO : Remove this when the repository is replaced.
+    @InjectRepository(User)
+    private readonly oldUsersRepository:  Repository<User>,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
@@ -38,17 +48,16 @@ export class UsersServiceImpl implements UsersService {
     private readonly neo4jService: Neo4jService,
   ) {}
 
-  public async login(userLogin: LoginUserDto) {
-    const user = await this.usersRepository.findOne({
-      where: { email: userLogin.email },
-    });
+  public async login(
+    userLogin: LoginUserDto,
+  ): Promise<Either<UserNotFoundError | WrongPasswordError, AuthTokensDto>> {
+    const userResult = await this.usersRepository.findByEmail(userLogin.email);
 
-    if (!user) {
-      throw new HttpException(
-        `User with email ${userLogin.email} does not exist`,
-        HttpStatus.NOT_FOUND,
-      );
+    if (userResult.isLeft()) {
+      return left(new UserNotFoundError);
     }
+
+    const user = userResult.value;
 
     const isPasswordValid = await this.hashingService.compare(
       userLogin.password,
@@ -56,20 +65,17 @@ export class UsersServiceImpl implements UsersService {
     );
 
     if (!isPasswordValid) {
-      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED);
+      return left(new WrongPasswordError);
     }
 
     const tokens = await this.generateTokens(user);
 
-    return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-    };
+    return right(tokens);
   }
 
   async register(userRegistration: RegisterUserDto) {
     const queryRunner =
-      this.usersRepository.manager.connection.createQueryRunner();
+      this.oldUsersRepository.manager.connection.createQueryRunner();
     await queryRunner.startTransaction();
 
     const neo4jSession = this.neo4jService.getWriteSession();
@@ -77,7 +83,7 @@ export class UsersServiceImpl implements UsersService {
 
     try {
       // Check if user already exists (email is already registered):
-      const existingUser = await this.usersRepository.findOne({
+      const existingUser = await this.oldUsersRepository.findOne({
         where: { email: userRegistration.email },
       });
 
@@ -92,7 +98,7 @@ export class UsersServiceImpl implements UsersService {
         ...userRegistration,
         password: await this.hashingService.hash(userRegistration.password),
       };
-      const newUser = this.usersRepository.create(userDto);
+      const newUser = this.oldUsersRepository.create(userDto);
       const { password, role, googleId, githubId, ...response } =
         await queryRunner.manager.save(newUser);
 
@@ -135,7 +141,7 @@ export class UsersServiceImpl implements UsersService {
         issuer: this.jwtConfiguration.issuer,
       });
 
-      const user = await this.usersRepository.findOneOrFail({
+      const user = await this.oldUsersRepository.findOneOrFail({
         where: { id: sub },
       });
       const isValid = await this.refreshTokenIdsStorage.validate(
@@ -147,7 +153,7 @@ export class UsersServiceImpl implements UsersService {
       } else {
         throw new Error('Refresh token is invalid');
       }
-      const tokens = await this.generateTokens(user);
+      const tokens = await this.generateTokens(UserMapper.toDomain(user));
 
       return {
         accessToken: tokens.accessToken,
@@ -193,7 +199,7 @@ export class UsersServiceImpl implements UsersService {
   }
 
   public async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.usersRepository.preload({
+    const user = await this.oldUsersRepository.preload({
       id: id,
       ...updateUserDto,
     });
@@ -202,12 +208,12 @@ export class UsersServiceImpl implements UsersService {
       throw new HttpException(`User #${id} not found`, HttpStatus.NOT_FOUND);
     }
 
-    return this.usersRepository.save(user);
+    return this.oldUsersRepository.save(user);
   }
 
   async remove(id: string) {
     const queryRunner =
-      this.usersRepository.manager.connection.createQueryRunner();
+      this.oldUsersRepository.manager.connection.createQueryRunner();
     await queryRunner.startTransaction();
 
     const neo4jSession = this.neo4jService.getWriteSession();
@@ -331,7 +337,7 @@ export class UsersServiceImpl implements UsersService {
   }
 
   async getFullUserInfo(id: string) {
-    const user = await this.usersRepository.findOne({
+    const user = await this.oldUsersRepository.findOne({
       where: { id },
       relations: ['history'], // Requests cascading the whole relation objects of the user.
     });
@@ -343,31 +349,28 @@ export class UsersServiceImpl implements UsersService {
     return user;
   }
 
-  public async generateTokens(user: User) {
+  public async generateTokens(user: Domain.User) : Promise<AuthTokensDto> {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<IActiveUserData>(
-        user.id,
+        user.id.toString(),
         this.jwtConfiguration.accessTokenTtl,
         {
-          sub: user.id,
+          sub: user.id.toString(),
           email: user.email,
           role: user.role,
         },
       ),
-      this.signToken(user.id, this.jwtConfiguration.refreshTokenTtl, {
+      this.signToken(user.id.toString(), this.jwtConfiguration.refreshTokenTtl, {
         refreshTokenId,
       }),
     ]);
-    await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
-    return {
-      accessToken,
-      refreshToken,
-    };
+    await this.refreshTokenIdsStorage.insert(user.id.toString(), refreshTokenId);
+    return { accessToken, refreshToken };
   }
 
   public async makeUserAdmin(userId: string) {
-    const user = await this.usersRepository.findOneOrFail({
+    const user = await this.oldUsersRepository.findOneOrFail({
       where: { id: userId },
     });
 
@@ -379,7 +382,7 @@ export class UsersServiceImpl implements UsersService {
     }
 
     user.role = Role.Admin;
-    await this.usersRepository.save(user);
+    await this.oldUsersRepository.save(user);
 
     // Invalidate old tokens
     await this.refreshTokenIdsStorage.invalidate(user.id);
@@ -406,7 +409,7 @@ export class UsersServiceImpl implements UsersService {
   }
 
   private async getUserById(id: string) {
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.oldUsersRepository.findOne({ where: { id } });
 
     if (!user) {
       throw new HttpException(`User #${id} not found`, HttpStatus.NOT_FOUND);

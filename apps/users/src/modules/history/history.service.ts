@@ -8,7 +8,7 @@ import { SupportEventDto } from 'libs/events/dto/support-event.dto';
 import { CreateActionStatsDto } from 'libs/events/dto/create-action-dto';
 import { DonateEventDto } from 'libs/events/dto/donate-event-dto';
 import { Either } from 'libs/base/logic/Result';
-import { UserNotFoundError } from './errors/UserNotFoundError';
+import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import * as Domain from './domain';
 
 export interface HistoryService {
