@@ -38,6 +38,8 @@ import { CommunityEvent } from 'libs/events/enums/community.events.enum';
 import { WrongPasswordError } from '../../errors/WrongPasswordError';
 import { NotFoundError } from 'rxjs';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
+import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
+import { RegisterUserDtoResponse } from './dto/register-user.dto.response';
 
 @ApiTags('Users')
 @Controller()
@@ -62,11 +64,14 @@ export class UsersController {
   ) {
     const tokensResultOrError = await this.usersService.login(userLogin);
 
-    if (tokensResultOrError.isLeft())
-    {
-      throw new HttpException('Email or password are incorrect', HttpStatus.UNAUTHORIZED);
+    if (tokensResultOrError.isLeft()) {
+      throw new HttpException(
+        tokensResultOrError.value.message,
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
+    // TODO: Ver si se puede enviar por método de NEST JS en vez de por EXPRESS
     response.cookie('accessToken', tokensResultOrError.value, {
       httpOnly: true,
       secure: true,
@@ -96,8 +101,19 @@ export class UsersController {
   })
   @Auth(AuthType.None)
   @Post()
-  register(@Body() userRegistration: RegisterUserDto) {
-    return this.usersService.register(userRegistration);
+  register(@Body() userRegistration: RegisterUserDto): RegisterUserDtoResponse {
+    const userOrError = this.usersService.register(userRegistration);
+
+    if (userOrError.isLeft()) {
+      switch (userOrError.value.constructor) {
+        case UserAlreadyExistsError:
+          throw new HttpException('User already exists', HttpStatus.CONFLICT);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+
+    return userOrError.value;
   }
 
   @ApiOperation({ summary: 'Refresh the authorization token' })

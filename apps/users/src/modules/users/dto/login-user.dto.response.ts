@@ -1,4 +1,4 @@
-export class AuthTokensDto {
+export class LoginUserDtoResponse {
   accessToken: string;
   refreshToken: string;
 }   
