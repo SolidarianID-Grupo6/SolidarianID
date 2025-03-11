@@ -35,7 +35,7 @@ import {
 import { EventPattern } from '@nestjs/microservices';
 import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
-import { WrongPasswordError } from '../../errors/WrongPasswordError';
+import { AuthenticationError } from '../../errors/AuthenticationError';
 import { NotFoundError } from 'rxjs';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
@@ -65,10 +65,12 @@ export class UsersController {
     const tokensResultOrError = await this.usersService.login(userLogin);
 
     if (tokensResultOrError.isLeft()) {
-      throw new HttpException(
-        tokensResultOrError.value.message,
-        HttpStatus.UNAUTHORIZED,
-      );
+      switch (tokensResultOrError.value.constructor) {
+        case AuthenticationError:
+          throw new HttpException(tokensResultOrError.value.message, HttpStatus.UNAUTHORIZED);
+        default:
+          throw new InternalServerErrorException();
+      }
     }
 
     // TODO: Ver si se puede enviar por método de NEST JS en vez de por EXPRESS
@@ -107,7 +109,7 @@ export class UsersController {
     if (userOrError.isLeft()) {
       switch (userOrError.value.constructor) {
         case UserAlreadyExistsError:
-          throw new HttpException('User already exists', HttpStatus.CONFLICT);
+          throw new HttpException(userOrError.value.message, HttpStatus.CONFLICT);
         default:
           throw new InternalServerErrorException();
       }

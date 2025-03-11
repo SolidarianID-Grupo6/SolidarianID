@@ -29,7 +29,7 @@ import { Either, left, Result, right } from 'libs/base/logic/Result';
 import * as Domain from './domain';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import { LoginUserDtoResponse as LoginUserDtoResponse } from './dto/login-user.dto.response';
-import { WrongPasswordError } from '../../errors/WrongPasswordError';
+import { AuthenticationError } from '../../errors/AuthenticationError';
 import { UserMapper } from './user.mapper';
 import { UniqueEntityID } from 'libs/base/domain/UniqueEntityID';
 import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
@@ -53,11 +53,11 @@ export class UsersServiceImpl implements UsersService {
 
   public async login(
     userLogin: LoginUserDto,
-  ): Promise<Either<UserNotFoundError | WrongPasswordError, LoginUserDtoResponse>> {
+  ): Promise<Either<AuthenticationError, LoginUserDtoResponse>> {
     const userResult = await this.usersRepository.findByEmail(userLogin.email);
     
     if (userResult.isLeft()) {
-      return left(new UserNotFoundError);
+      return left(new AuthenticationError);
     }
 
     const user = userResult.value;
@@ -68,7 +68,7 @@ export class UsersServiceImpl implements UsersService {
     );
 
     if (!isPasswordValid) {
-      return left(new WrongPasswordError);
+      return left(new AuthenticationError);
     }
 
     const tokens = await this.generateTokens(user);
