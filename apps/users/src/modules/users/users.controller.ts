@@ -35,9 +35,11 @@ import {
 import { EventPattern } from '@nestjs/microservices';
 import { CommunityUserAddedDto } from 'libs/events/dto/community-user-added.dto';
 import { CommunityEvent } from 'libs/events/enums/community.events.enum';
-import { WrongPasswordError } from '../../errors/WrongPasswordError';
+import { AuthenticationError } from '../../errors/AuthenticationError';
 import { NotFoundError } from 'rxjs';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
+import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
+import { RegisterUserDtoResponse } from './dto/register-user.dto.response';
 
 @ApiTags('Users')
 @Controller()
@@ -62,7 +64,8 @@ export class UsersController {
   ) {
     const tokensResultOrError = await this.usersService.login(userLogin);
 
-    if (tokensResultOrError.isLeft()) {
+    if (tokensResultOrError.isLeft())
+    {
       throw new HttpException('Email or password are incorrect', HttpStatus.UNAUTHORIZED);
     }
 
@@ -95,8 +98,19 @@ export class UsersController {
   })
   @Auth(AuthType.None)
   @Post()
-  register(@Body() userRegistration: RegisterUserDto) {
-    return this.usersService.register(userRegistration);
+  register(@Body() userRegistration: RegisterUserDto): RegisterUserDtoResponse {
+    const userOrError = this.usersService.register(userRegistration);
+
+    if (userOrError.isLeft()) {
+      switch (userOrError.value.constructor) {
+        case UserAlreadyExistsError:
+          throw new HttpException(userOrError.value.message, HttpStatus.CONFLICT);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+
+    return userOrError.value;
   }
 
   @ApiOperation({ summary: 'Refresh the authorization token' })

@@ -6,12 +6,12 @@ import { FindQueryDto } from './dto/find-query.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Either } from 'libs/base/logic/Result';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
-import { WrongPasswordError } from '../../errors/WrongPasswordError';
-import { AuthTokensDto } from './dto/auth-tokens.dto';
+import { AuthenticationError } from '../../errors/AuthenticationError';
+import { LoginUserDtoResponse } from './dto/login-user.dto.response';
 
 export interface UsersService {
 
-  login(userLogin: LoginUserDto): Promise<Either<UserNotFoundError | WrongPasswordError, AuthTokensDto>>;
+  login(userLogin: LoginUserDto): Promise<Either<AuthenticationError, LoginUserDtoResponse>>;
 
   register(userRegistration: RegisterUserDto);
 

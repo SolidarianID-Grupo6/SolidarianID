@@ -28,9 +28,12 @@ import { UsersRepo } from './user.repository';
 import { Either, left, Result, right } from 'libs/base/logic/Result';
 import * as Domain from './domain';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
-import { AuthTokensDto } from './dto/auth-tokens.dto';
-import { WrongPasswordError } from '../../errors/WrongPasswordError';
+import { LoginUserDtoResponse as LoginUserDtoResponse } from './dto/login-user.dto.response';
+import { AuthenticationError } from '../../errors/AuthenticationError';
 import { UserMapper } from './user.mapper';
+import { UniqueEntityID } from 'libs/base/domain/UniqueEntityID';
+import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
+import { RegisterUserDtoResponse } from './dto/register-user.dto.response';
 
 @Injectable()
 export class UsersServiceImpl implements UsersService {
@@ -39,7 +42,7 @@ export class UsersServiceImpl implements UsersService {
     private readonly usersRepository: UsersRepo,
     // TODO : Remove this when the repository is replaced.
     @InjectRepository(User)
-    private readonly oldUsersRepository:  Repository<User>,
+    private readonly oldUsersRepository: Repository<User>,
     private readonly hashingService: HashingService,
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
@@ -50,11 +53,11 @@ export class UsersServiceImpl implements UsersService {
 
   public async login(
     userLogin: LoginUserDto,
-  ): Promise<Either<UserNotFoundError | WrongPasswordError, AuthTokensDto>> {
+  ): Promise<Either<AuthenticationError, LoginUserDtoResponse>> {
     const userResult = await this.usersRepository.findByEmail(userLogin.email);
-
+    
     if (userResult.isLeft()) {
-      return left(new UserNotFoundError);
+      return left(new AuthenticationError);
     }
 
     const user = userResult.value;
@@ -65,7 +68,7 @@ export class UsersServiceImpl implements UsersService {
     );
 
     if (!isPasswordValid) {
-      return left(new WrongPasswordError);
+      return left(new AuthenticationError);
     }
 
     const tokens = await this.generateTokens(user);
@@ -73,62 +76,34 @@ export class UsersServiceImpl implements UsersService {
     return right(tokens);
   }
 
-  async register(userRegistration: RegisterUserDto) {
-    const queryRunner =
-      this.oldUsersRepository.manager.connection.createQueryRunner();
-    await queryRunner.startTransaction();
+  public async register(userRegistration: RegisterUserDto): Promise<Either<UserAlreadyExistsError, RegisterUserDtoResponse>> {
+    const hashedPassword = await this.hashingService.hash(userRegistration.password);
+    const user = Domain.User.create({
+      id: new UniqueEntityID(),
+      name: userRegistration.name,
+      surnames: userRegistration.surnames,
+      email: userRegistration.email,
+      isEmailPublic: userRegistration.isEmailPublic,
+      password: hashedPassword,
+      birthdate: userRegistration.birthdate,
+      isBirthdatePublic: userRegistration.isBirthdatePublic,
+      presentation: userRegistration.presentation || '',
+      role: Role.Registered,
+      googleId: '',
+      githubId: '',
+      history: [],
+    });
+  
+    const resultOrError = await this.usersRepository.saveUser(user);
 
-    const neo4jSession = this.neo4jService.getWriteSession();
-    const neo4jTransaction = neo4jSession.beginTransaction();
-
-    try {
-      // Check if user already exists (email is already registered):
-      const existingUser = await this.oldUsersRepository.findOne({
-        where: { email: userRegistration.email },
-      });
-
-      if (existingUser) {
-        throw new HttpException(
-          `User with email ${userRegistration.email} already exists`,
-          HttpStatus.CONFLICT,
-        );
-      }
-
-      const userDto = {
-        ...userRegistration,
-        password: await this.hashingService.hash(userRegistration.password),
-      };
-      const newUser = this.oldUsersRepository.create(userDto);
-      const { password, role, googleId, githubId, ...response } =
-        await queryRunner.manager.save(newUser);
-
-      // Add user to Neo4j
-      const cypher = `
-      MERGE (u:User {id: $userId})
-      ON CREATE SET u.name = $userName, u.surnames = $userSurnames
-        `;
-      const params = {
-        userId: response.id,
-        userName: response.name,
-        userSurnames: response.surnames,
-      };
-      await neo4jTransaction.run(cypher, params);
-
-      // Commit both transactions
-      await queryRunner.commitTransaction();
-      await neo4jTransaction.commit();
-
-      return response;
-    } catch (error) {
-      // Rollback both transactions
-      await queryRunner.rollbackTransaction();
-      await neo4jTransaction.rollback();
-      throw error;
-    } finally {
-      // Release resources
-      await queryRunner.release();
-      await neo4jSession.close();
+    if (resultOrError.isLeft())
+    {
+        return left(resultOrError.value);
     }
+
+    const dtoResponse = RegisterUserDtoResponse.fromDomain(resultOrError.value);
+    
+    return right(dtoResponse);
   }
 
   public async refreshTokens(refreshTokenDto: RefreshTokenDto) {
@@ -249,28 +224,24 @@ export class UsersServiceImpl implements UsersService {
     }
   }
 
-  // async followUser(userId: string, followedId: string) {
-  //   // Verify followedId exists:
-  //   if (await this.getUserById(followedId)) {
-  //     // Add relationship in Neo4j
-  //     this.neo4jService.write(
-  //       `
-  //     MATCH (u:User {id: $userId})
-  //     MATCH (f:User {id: $followedId})
-  //     MERGE (u)-[:FOLLOWS]->(f)
-  //   `,
-  //       { userId, followedId },
-  //     );
-  //   } else {
-  //     throw new HttpException(
-  //       `User #${followedId} not found`,
-  //       HttpStatus.NOT_FOUND,
-  //     );
-  //   }
-  // }
-
-  public async followUser(userId: string, followedId: string): Promise<Either<UserNotFoundError, void>> {
-    return this.usersRepository.followUser(userId, followedId);
+  async followUser(userId: string, followedId: string) {
+    // Verify followedId exists:
+    if (await this.getUserById(followedId)) {
+      // Add relationship in Neo4j
+      this.neo4jService.write(
+        `
+      MATCH (u:User {id: $userId})
+      MATCH (f:User {id: $followedId})
+      MERGE (u)-[:FOLLOWS]->(f)
+    `,
+        { userId, followedId },
+      );
+    } else {
+      throw new HttpException(
+        `User #${followedId} not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 
   async find(query: FindQueryDto, activeUserId: string) {
@@ -353,7 +324,7 @@ export class UsersServiceImpl implements UsersService {
     return user;
   }
 
-  public async generateTokens(user: Domain.User) : Promise<AuthTokensDto> {
+  public async generateTokens(user: Domain.User) : Promise<LoginUserDtoResponse> {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<IActiveUserData>(
