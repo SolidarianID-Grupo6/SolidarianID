@@ -7,12 +7,14 @@ import { Injectable } from '@nestjs/common';
 import { UsersRepo } from './user.repository';
 import { Either, left, right } from 'libs/base/logic/Result';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
+import { Neo4jService } from '@app/neo4j';
 
 @Injectable()
 export class UsersRepoImpl implements UsersRepo {
   constructor(
     @InjectRepository(Persistence.User)
     private readonly usersRepo: Repository<Persistence.User>,
+    private readonly neo4jService: Neo4jService,
   ) {}
   findByFirstName(firstName: string): Promise<Domain.User> {
     throw new Error('Method not implemented.');
@@ -36,6 +38,35 @@ export class UsersRepoImpl implements UsersRepo {
     }
 
     return right(UserMapper.toDomain(user));
+  }
+
+  async findById(userId: string): Promise<Either<UserNotFoundError, Domain.User>> {
+    const user = await this.usersRepo.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return left(new UserNotFoundError());
+    }
+
+    return right(UserMapper.toDomain(user));
+  }
+
+  async followUser(userId: string, followedId: string): Promise<Either<UserNotFoundError, void>> {
+    const user = await this.usersRepo.findOne({ where: { id: followedId } });
+
+    if (!user) {
+      return left(new UserNotFoundError());
+    }
+
+    await this.neo4jService.write(
+      `
+      MATCH (u:User {id: $userId})
+      MATCH (f:User {id: $followedId})
+      MERGE (u)-[:FOLLOWS]->(f)
+    `,
+      { userId, followedId },
+    );
+
+    return right(undefined);
   }
 
   // findByFirstName(firstName: string): Promise<Domain.User> {

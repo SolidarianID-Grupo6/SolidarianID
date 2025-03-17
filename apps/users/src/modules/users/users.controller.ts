@@ -45,7 +45,7 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
     private readonly accessTokenGuard: AccessTokenGuard,
-  ) {}
+  ) { }
 
   @ApiOperation({ summary: 'User login' })
   @ApiResponse({ status: HttpStatus.OK, description: 'Correct authentication' })
@@ -62,8 +62,7 @@ export class UsersController {
   ) {
     const tokensResultOrError = await this.usersService.login(userLogin);
 
-    if (tokensResultOrError.isLeft())
-    {
+    if (tokensResultOrError.isLeft()) {
       throw new HttpException('Email or password are incorrect', HttpStatus.UNAUTHORIZED);
     }
 
@@ -149,12 +148,22 @@ export class UsersController {
 
   @ApiOperation({ summary: 'User Following' })
   @Post('following')
-  followUser(
+  async followUser(
     @ActiveUser() user: IActiveUserData,
-    // TODO: use DTO
+    @Res({ passthrough: true }) response: Response,
     @Body('targetUser') followedId: string,
   ) {
-    return this.usersService.followUser(user.sub, followedId);
+    const tokensResultOrError = await this.usersService.followUser(user.sub, followedId);
+
+    if (tokensResultOrError.isLeft()) {
+      throw new HttpException('Email or password are incorrect', HttpStatus.UNAUTHORIZED);
+    }
+
+    response.cookie('accessToken', tokensResultOrError.value, {
+      httpOnly: true,
+      secure: true,
+      sameSite: true,
+    });
   }
 
   @ApiOperation({ summary: 'User searching' })
