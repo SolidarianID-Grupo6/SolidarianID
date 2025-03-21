@@ -224,24 +224,8 @@ export class UsersServiceImpl implements UsersService {
     }
   }
 
-  async followUser(userId: string, followedId: string) {
-    // Verify followedId exists:
-    if (await this.getUserById(followedId)) {
-      // Add relationship in Neo4j
-      this.neo4jService.write(
-        `
-      MATCH (u:User {id: $userId})
-      MATCH (f:User {id: $followedId})
-      MERGE (u)-[:FOLLOWS]->(f)
-    `,
-        { userId, followedId },
-      );
-    } else {
-      throw new HttpException(
-        `User #${followedId} not found`,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+  public async followUser(userId: string, followedId: string): Promise<Either<UserNotFoundError, void>> {
+    return this.usersRepository.followUser(userId, followedId);
   }
 
   async find(query: FindQueryDto, activeUserId: string) {

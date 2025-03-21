@@ -9,5 +9,6 @@ export interface UsersRepo extends Repo<Domain.User> {
   findByFirstName(firstName: string): Promise<Domain.User>;
   findByEmail(firstName: string): Promise<Either<UserNotFoundError, Domain.User>>;
   findAllUsers(): Promise<Domain.User[]>;
-
+  findById(userId: string): Promise<Either<UserNotFoundError, Domain.User>>;
+  followUser(userId: string, followedId: string): Promise<Either<UserNotFoundError, void>>;
 }
