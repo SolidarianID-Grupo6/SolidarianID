@@ -8,6 +8,7 @@ import { Either } from 'libs/base/logic/Result';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import { AuthenticationError } from '../../errors/AuthenticationError';
 import { LoginUserDtoResponse } from './dto/login-user.dto.response';
+import * as Domain from './domain';
 
 export interface UsersService {
 
@@ -17,26 +18,33 @@ export interface UsersService {
 
   refreshTokens(refreshTokenDto: RefreshTokenDto);
 
-  findOne(id: string);
+  findOne(id: string): Promise<Either<UserNotFoundError, Domain.User>>;
 
   getProfile(userId: string);
 
-  update(id: string, updateUserDto: UpdateUserDto);
-  
-  remove(id: string);
 
-  followUser(userId: string, followedId: string);
+  update(id: string, updateUserDto: UpdateUserDto): Promise<any>;
 
-  find(query: FindQueryDto, activeUserId: string);
+
+  remove(id: string): Promise<any>;
+
+
+  followUser(userId: string, followedId: string): Promise<any>;
+
+
+  find(query: FindQueryDto, activeUserId: string): Promise<any>;
 
   addUserToCommunity(
     userId: string,
     idCommunity: string,
   ): Promise<void>;
 
-  getFullUserInfo(id: string);
 
-  generateTokens(user: Domain.User);
+  getFullUserInfo(id: string): Promise<any>;
 
-  makeUserAdmin(userId: string);
+
+  generateTokens(user: User): Promise<any>;
+
+
+  makeUserAdmin(userId: string): Promise<any>;
 }

@@ -64,8 +64,7 @@ export class UsersController {
   ) {
     const tokensResultOrError = await this.usersService.login(userLogin);
 
-    if (tokensResultOrError.isLeft())
-    {
+    if (tokensResultOrError.isLeft()) {
       throw new HttpException('Email or password are incorrect', HttpStatus.UNAUTHORIZED);
     }
 
@@ -148,8 +147,20 @@ export class UsersController {
   @ApiOperation({ summary: 'Get the profile of a given user by their id' })
   @Auth(AuthType.None)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const userResult = await this.usersService.findOne(id);
+
+    if (userResult.isLeft()) {
+      const error = userResult.value;
+
+      if (error instanceof UserNotFoundError) {
+        throw new HttpException(`User with ID ${id} not found`, HttpStatus.NOT_FOUND);
+      }
+
+      throw new InternalServerErrorException('An error occurred while retrieving the user');
+    }
+
+    return userResult.value;
   }
 
   @ApiOperation({

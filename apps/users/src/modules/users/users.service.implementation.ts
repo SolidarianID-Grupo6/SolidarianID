@@ -49,13 +49,13 @@ export class UsersServiceImpl implements UsersService {
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
     private readonly neo4jService: Neo4jService,
-  ) {}
+  ) { }
 
   public async login(
     userLogin: LoginUserDto,
   ): Promise<Either<AuthenticationError, LoginUserDtoResponse>> {
     const userResult = await this.usersRepository.findByEmail(userLogin.email);
-    
+
     if (userResult.isLeft()) {
       return left(new AuthenticationError);
     }
@@ -93,16 +93,15 @@ export class UsersServiceImpl implements UsersService {
       githubId: '',
       history: [],
     });
-  
+
     const resultOrError = await this.usersRepository.saveUser(user);
 
-    if (resultOrError.isLeft())
-    {
-        return left(resultOrError.value);
+    if (resultOrError.isLeft()) {
+      return left(resultOrError.value);
     }
 
     const dtoResponse = RegisterUserDtoResponse.fromDomain(resultOrError.value);
-    
+
     return right(dtoResponse);
   }
 
@@ -141,30 +140,24 @@ export class UsersServiceImpl implements UsersService {
     }
   }
 
-  async findOne(id: string) {
-    const user = await this.getUserById(id);
+  async findOne(id: string): Promise<Either<UserNotFoundError, Domain.User>> {
+    const userResult = await this.getUserById(id);
 
-    const {
-      email,
-      password,
-      birthdate,
-      role,
-      googleId,
-      githubId,
-      history,
-      isEmailPublic,
-      isBirthdatePublic,
-      ...response
-    } = user;
 
-    const emailResponse = user.isEmailPublic ? user.email : null;
-    const birthdateResponse = user.isBirthdatePublic ? user.birthdate : null;
+    if (userResult.isLeft()) {
+      return left(userResult.value);
+    }
 
-    return {
-      email: emailResponse,
-      birthdate: birthdateResponse,
-      ...response,
-    };
+    const user = userResult.value;
+
+    const modifiedUser = Domain.User.create({
+      ...user.props,
+      email: user.isEmailPublic ? user.email : null,
+      birthdate: user.isBirthdatePublic ? user.birthdate : null
+    });
+
+    return right(modifiedUser);
+
   }
 
   async getProfile(userId: string) {
@@ -308,7 +301,7 @@ export class UsersServiceImpl implements UsersService {
     return user;
   }
 
-  public async generateTokens(user: Domain.User) : Promise<LoginUserDtoResponse> {
+  public async generateTokens(user: Domain.User): Promise<LoginUserDtoResponse> {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<IActiveUserData>(
@@ -367,13 +360,13 @@ export class UsersServiceImpl implements UsersService {
     );
   }
 
-  private async getUserById(id: string) {
-    const user = await this.oldUsersRepository.findOne({ where: { id } });
+  private async getUserById(id: string): Promise<Either<UserNotFoundError, Domain.User>> {
+    const userResult = await this.usersRepository.findById(id);
 
-    if (!user) {
-      throw new HttpException(`User #${id} not found`, HttpStatus.NOT_FOUND);
+    if (userResult.isLeft()) {
+      return left(new UserNotFoundError(id));
     }
 
-    return user;
+    return right(userResult.value);
   }
 }
