@@ -164,17 +164,34 @@ export class UsersServiceImpl implements UsersService {
     return this.getUserById(userId);
   }
 
-  public async update(id: string, updateUserDto: UpdateUserDto) {
-    const user = await this.oldUsersRepository.preload({
-      id: id,
-      ...updateUserDto,
-    });
+  public async update(id: string, updateUserDto: UpdateUserDto): Promise<Either<UserNotFoundError, Domain.User>> {
+    const userResult = await this.getUserById(id);
 
-    if (!user) {
-      throw new HttpException(`User #${id} not found`, HttpStatus.NOT_FOUND);
+    if (userResult.isLeft()) {
+      return left(userResult.value);
     }
 
-    return this.oldUsersRepository.save(user);
+    const existingUser = userResult.value;
+
+    const updatedUser = Domain.User.create({
+      ...existingUser.props,
+      name: updateUserDto.name ?? existingUser.name,
+      surnames: updateUserDto.surnames ?? existingUser.surnames,
+      email: updateUserDto.email ?? existingUser.email,
+      isEmailPublic: updateUserDto.isEmailPublic ?? existingUser.isEmailPublic,
+      birthdate: updateUserDto.birthdate ?? existingUser.birthdate,
+      isBirthdatePublic: updateUserDto.isBirthdatePublic ?? existingUser.isBirthdatePublic,
+      presentation: updateUserDto.presentation ?? existingUser.presentation,
+    });
+
+    // Guardamos el usuario actualizado usando el repositorio de dominio
+    const saveResult = await this.usersRepository.updateUser(id, updatedUser);
+
+    if (saveResult.isLeft()) {
+      return left(saveResult.value);
+    }
+
+    return right(saveResult.value);
   }
 
   async remove(id: string) {

@@ -7,6 +7,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UsersRepo } from './user.repository';
 import { Either, left, right } from 'libs/base/logic/Result';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersRepoImpl implements UsersRepo {
@@ -14,7 +15,7 @@ export class UsersRepoImpl implements UsersRepo {
     @InjectRepository(Persistence.User)
     private readonly usersRepo: Repository<Persistence.User>,
     private readonly neo4jService: Neo4jService,
-  ) {}
+  ) { }
   save(t: Domain.User): Promise<Domain.User> {
     throw new Error('Method not implemented.');
   }
@@ -49,7 +50,7 @@ export class UsersRepoImpl implements UsersRepo {
       const persistenceUser = this.usersRepo.create(UserMapper.toPersistence(user);
 
       const createdUser = await queryRunner.manager.save(persistenceUser);
-      
+
       // Add user to Neo4j
       const cypher = `
         MERGE (u:User {id: $userId})
@@ -71,7 +72,7 @@ export class UsersRepoImpl implements UsersRepo {
       // Rollback both transactions
       await queryRunner.rollbackTransaction();
       await neo4jTransaction.rollback();
-      
+
       return left(new UnknownError);
     } finally {
       // Release resources
@@ -99,6 +100,23 @@ export class UsersRepoImpl implements UsersRepo {
     }
 
     return right(UserMapper.toDomain(user));
+  }
+
+  async updateUser(userId: string, updateUser: UpdateUserDto): Promise<Either<UserNotFoundError, Domain.User>> {
+    const existingUser = await this.usersRepo.findOne({ where: { id: userId } });
+
+    if (!existingUser) {
+      return left(new UserNotFoundError());
+    }
+
+    const updatedUserData = {
+      ...existingUser,
+      ...updateUser,
+    };
+
+    const savedUser = await this.usersRepo.save(updatedUserData);
+
+    return right(UserMapper.toDomain(savedUser));
   }
 
   async followUser(userId: string, followedId: string): Promise<Either<UserNotFoundError, void>> {

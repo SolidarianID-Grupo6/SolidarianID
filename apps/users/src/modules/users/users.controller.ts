@@ -173,7 +173,15 @@ export class UsersController {
     summary: 'Update your user profile or hide/unhide public data',
   })
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const userResult = await this.usersService.update(id, updateUserDto);
+
+    const error = userResult.value;
+
+    if (error instanceof UserNotFoundError) {
+      throw new HttpException(`User with ID ${id} not found`, HttpStatus.NOT_FOUND);
+    }
+
     return this.usersService.update(id, updateUserDto);
   }
 
