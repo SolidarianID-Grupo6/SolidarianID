@@ -8,6 +8,9 @@ import { UsersRepo } from './user.repository';
 import { Either, left, right } from 'libs/base/logic/Result';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Neo4jService } from '@app/neo4j';
+import { UnknownError } from '../../errors/UnknownError';
+import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
 
 @Injectable()
 export class UsersRepoImpl implements UsersRepo {
@@ -31,7 +34,6 @@ export class UsersRepoImpl implements UsersRepo {
   public async saveUser(
     user: Domain.User,
   ): Promise<Either<UserAlreadyExistsError | UnknownError, Domain.User>> {
-
     const existingUser = await this.usersRepo.findOne({
       where: { email: user.email },
     });
@@ -47,7 +49,9 @@ export class UsersRepoImpl implements UsersRepo {
     const neo4jTransaction = neo4jSession.beginTransaction();
 
     try {
-      const persistenceUser = this.usersRepo.create(UserMapper.toPersistence(user);
+      const persistenceUser = this.usersRepo.create(
+        UserMapper.toPersistence(user),
+      );
 
       const createdUser = await queryRunner.manager.save(persistenceUser);
 
@@ -73,14 +77,15 @@ export class UsersRepoImpl implements UsersRepo {
       await queryRunner.rollbackTransaction();
       await neo4jTransaction.rollback();
 
-      return left(new UnknownError);
-    } finally {
+
+      return left(new UnknownError());
+    }
+    finally {
       // Release resources
       await queryRunner.release();
       await neo4jSession.close();
     }
   }
-
   async findByEmail(
     email: string,
   ): Promise<Either<UserNotFoundError, Domain.User>> {
@@ -137,6 +142,7 @@ export class UsersRepoImpl implements UsersRepo {
 
     return right(undefined);
   }
+
 
   // findByFirstName(firstName: string): Promise<Domain.User> {
   //   return this.repo

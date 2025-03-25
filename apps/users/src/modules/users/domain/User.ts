@@ -63,6 +63,10 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.role;
   }
 
+  set role(newRole: Role) {
+    this.props.role = newRole;
+  }
+
   get googleId(): string {
     return this.props.googleId;
   }

@@ -123,7 +123,7 @@ export class UsersServiceImpl implements UsersService {
         refreshTokenId,
       );
       if (isValid) {
-        await this.refreshTokenIdsStorage.invalidate(user.id);
+        await this.refreshTokenIdsStorage.invalidate(user.id.toString());
       } else {
         throw new Error('Refresh token is invalid');
       }
@@ -336,29 +336,89 @@ export class UsersServiceImpl implements UsersService {
     return { accessToken, refreshToken };
   }
 
-  public async makeUserAdmin(userId: string) {
-    const user = await this.oldUsersRepository.findOneOrFail({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new HttpException(
-        `User #${userId} not found`,
-        HttpStatus.NOT_FOUND,
-      );
+  /*
+  public async makeUserAdmin(userId: string): Promise<Either<UserNotFoundError, { userId: string; role: Role }>> {
+    const userResult = await this.usersRepository.findById(userId);
+  
+    if (userResult.isLeft()) {
+      return left(new UserNotFoundError(`User #${userId} not found`));
     }
+  
+    const user = userResult.value;
 
-    user.role = Role.Admin;
-    await this.oldUsersRepository.save(user);
+ // Crear un nuevo objeto con todas las propiedades requeridas
+ const updatedUser: User = {
+  ...user, // Copy all existing properties
+  id: user.id.toString(), // Ensure required properties are explicitly included
+  name: user.name,
+  surnames: user.surnames,
+  email: user.email,
+  password: user.password,
+  birthdate: user.birthdate,
+  isEmailPublic: user.isEmailPublic,
+  isBirthdatePublic: user.isBirthdatePublic,
+  presentation: user.presentation,
+  googleId: user.googleId,
+  githubId: user.githubId,
+  history: user.history,
+  role: Role.Admin, // Update the role
+};
 
-    // Invalidate old tokens
-    await this.refreshTokenIdsStorage.invalidate(user.id);
+// Guardar el usuario actualizado en el repositorio
+const domainUser = UserMapper.toDomain(updatedUser);
+await this.usersRepository.save(domainUser);
 
-    return {
-      userId: user.id,
-      role: user.role,
-    };
+// Invalidar los tokens antiguos
+await this.refreshTokenIdsStorage.invalidate(user.id);
+
+// Retornar el resultado exitoso
+return right({ userId: user.id, role: updatedUser.role });
+}
+
+*/
+
+public async makeUserAdmin(userId: string): Promise<Either<UserNotFoundError, { userId: string; role: Role }>> {
+  const userResult = await this.usersRepository.findById(userId);
+
+  if (userResult.isLeft()) {
+    return left(new UserNotFoundError(`User #${userId} not found`));
   }
+
+  const user = userResult.value;
+
+  // Crear un nuevo objeto con todas las propiedades requeridas
+ /*  const updatedUser: User = {
+    ...user, // Copy all existing properties
+    id: user.id.toString(), // Ensure required properties are explicitly included
+   name: user.name,
+    surnames: user.surnames,
+    email: user.email,
+    password: user.password,
+    birthdate: user.birthdate,
+    isEmailPublic: user.isEmailPublic,
+    isBirthdatePublic: user.isBirthdatePublic,
+    presentation: user.presentation,
+    googleId: user.googleId,
+    githubId: user.githubId,
+    history: user.history,
+    
+    role: Role.Admin, // Update the role
+  };
+*/
+
+user.role = Role.Admin;
+
+  // Guardar el usuario actualizado en el repositorio
+ 
+  await this.usersRepository.save(user);
+
+  // Invalidar los tokens antiguos
+  await this.refreshTokenIdsStorage.invalidate(user.id.toString());
+
+  // Retornar el resultado exitoso
+  return right({ userId: user.id.toString(), role: user.role });
+
+}
 
   private async signToken<T>(userId: string, expiresIn: number, payload?: T) {
     return await this.jwtService.signAsync(
