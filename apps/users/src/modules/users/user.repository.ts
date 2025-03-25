@@ -5,6 +5,7 @@ import { Repo } from 'libs/base/infra/Repo';
 import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
 import { UnknownError } from '../../errors/UnknownError';
 import { RefreshTokenNotValidError } from '../../errors/RefreshTokenNotValidError';
+import { FindQueryDto } from './dto/find-query.dto';
 
 export interface UsersRepo extends Repo<Domain.User> {
   findByFirstName(firstName: string): Promise<Domain.User>;
@@ -32,4 +33,5 @@ export interface UsersRepo extends Repo<Domain.User> {
   >;
 
   saveNewToken(userId: string, refreshTokenId: string): Promise<void>;
+  findUsers(query: FindQueryDto, activeUserId: string): Promise<Domain.User[]>;
 }

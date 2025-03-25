@@ -13,6 +13,7 @@ import { UnknownError } from '../../errors/UnknownError';
 import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
 import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
 import { RefreshTokenNotValidError } from '../../errors/RefreshTokenNotValidError';
+import { FindQueryDto } from './dto/find-query.dto';
 
 @Injectable()
 export class UsersRepoImpl implements UsersRepo {
@@ -21,7 +22,7 @@ export class UsersRepoImpl implements UsersRepo {
     private readonly usersRepo: Repository<Persistence.User>,
     private readonly neo4jService: Neo4jService,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
-  ) {}
+  ) { }
   save(t: Domain.User): Promise<Domain.User> {
     throw new Error('Method not implemented.');
   }
@@ -101,9 +102,9 @@ export class UsersRepoImpl implements UsersRepo {
     if (!isValid) {
       return left(new RefreshTokenNotValidError());
     }
-  
+
     await this.refreshTokenIdsStorage.invalidate(userId);
-  
+
     return right(UserMapper.toDomain(user));
   }
 
@@ -205,9 +206,65 @@ export class UsersRepoImpl implements UsersRepo {
       await neo4jSession.close();
     }
   }
-  
+
   public async saveNewToken(userId: string, refreshTokenId: string): Promise<void> {
     await this.refreshTokenIdsStorage.insert(userId, refreshTokenId);
+  }
+
+  public async findUsers(query: FindQueryDto, activeUserId: string): Promise<Domain.User[]> {
+    const {
+      userQuery,
+      communityQuery,
+      friendshipDepth,
+      limit = 10,
+      offset = 0,
+    } = query;
+
+    let userMatch = '';
+    let communityMatch = '';
+    let relationshipMatch = '';
+
+    if (userQuery) {
+      userMatch = `
+      (u:User)
+      WHERE toLower(u.id) CONTAINS toLower($userQuery) OR toLower(u.name) CONTAINS toLower($userQuery) OR toLower(u.surnames) CONTAINS toLower($userQuery)
+    `;
+    } else {
+      userMatch = '(u:User)';
+    }
+
+    if (communityQuery) {
+      communityMatch = `
+      (c:Community)
+      WHERE toLower(c.id) CONTAINS toLower($communityQuery) OR toLower(c.name) CONTAINS toLower($communityQuery)
+        `;
+    }
+
+    if (friendshipDepth > 0) {
+      relationshipMatch = `
+      OPTIONAL MATCH (a:User {id: $activeUserId})-[:FOLLOWS*0..${friendshipDepth}]->(u)
+        `;
+    }
+
+    const cypher = `
+    MATCH ${userMatch ?? '(u:User)'}
+    ${communityMatch ? `MATCH ${communityMatch}` : ''}
+    ${relationshipMatch}
+    RETURN DISTINCT u.name AS name, u.surnames AS surnames, u.id AS id
+    SKIP toInteger($offset)
+    LIMIT toInteger($limit)
+  `;
+
+    const params = { userQuery, communityQuery, offset, limit };
+
+    const result = await this.neo4jService.read(cypher, params);
+    return result.records.map((record) => {
+      const user = new Persistence.User();
+      user.id = record.get('id');
+      user.name = record.get('name');
+      user.surnames = record.get('surnames');
+      return UserMapper.toDomain(user);
+    });
   }
 
   // findByFirstName(firstName: string): Promise<Domain.User> {

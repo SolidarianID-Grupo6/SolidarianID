@@ -229,58 +229,8 @@ export class UsersServiceImpl implements UsersService {
     return this.usersRepository.followUser(userId, followedId);
   }
 
-  async find(query: FindQueryDto, activeUserId: string) {
-    const {
-      userQuery,
-      communityQuery,
-      friendshipDepth,
-      limit = 10,
-      offset = 0,
-    } = query;
-
-    let userMatch = '';
-    let communityMatch = '';
-    let relationshipMatch = '';
-
-    if (userQuery) {
-      userMatch = `
-      (u:User)
-      WHERE toLower(u.id) CONTAINS toLower($userQuery) OR toLower(u.name) CONTAINS toLower($userQuery) OR toLower(u.surnames) CONTAINS toLower($userQuery)
-    `;
-    } else {
-      userMatch = '(u:User)';
-    }
-
-    if (communityQuery) {
-      communityMatch = `
-      (c:Community)
-      WHERE toLower(c.id) CONTAINS toLower($communityQuery) OR toLower(c.name) CONTAINS toLower($communityQuery)
-        `;
-    }
-
-    if (friendshipDepth > 0) {
-      relationshipMatch = `
-      OPTIONAL MATCH (a:User {id: $activeUserId})-[:FOLLOWS*0..${friendshipDepth}]->(u)
-        `;
-    }
-
-    const cypher = `
-    MATCH ${userMatch ?? '(u:User)'}
-    ${communityMatch ? `MATCH ${communityMatch}` : ''}
-    ${relationshipMatch}
-    RETURN DISTINCT u.name AS name, u.surnames AS surnames, u.id AS id
-    SKIP toInteger($offset)
-    LIMIT toInteger($limit)
-  `;
-
-    const params = { userQuery, communityQuery, offset, limit };
-
-    const result = await this.neo4jService.read(cypher, params);
-    return result.records.map((record) => ({
-      name: record.get('name'),
-      surnames: record.get('surnames'),
-      id: record.get('id'),
-    }));
+  async find(query: FindQueryDto, activeUserId: string): Promise<Domain.User[]> {
+    return this.usersRepository.findUsers(query, activeUserId);
   }
 
   public async addUserToCommunity(

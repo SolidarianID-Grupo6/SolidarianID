@@ -220,7 +220,7 @@ export class UsersController {
 
   @ApiOperation({ summary: 'User searching' })
   @Get()
-  find(@Body() query: FindQueryDto, @ActiveUser() user: IActiveUserData) {
+  async find(@Body() query: FindQueryDto, @ActiveUser() user: IActiveUserData) {
     return this.usersService.find(query, user.sub);
   }
 
