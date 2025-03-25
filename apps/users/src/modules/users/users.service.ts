@@ -20,7 +20,7 @@ export interface UsersService {
 
   findOne(id: string): Promise<Either<UserNotFoundError, Domain.User>>;
 
-  getProfile(userId: string);
+  getProfile(userId: string): Promise<Either<UserNotFoundError, Domain.User>>;
 
 
   update(id: string, updateUserDto: UpdateUserDto): Promise<any>;

@@ -160,10 +160,8 @@ export class UsersServiceImpl implements UsersService {
 
   }
 
-  async getProfile(userId: string) {
-    const { password, role, googleId, githubId, history, ...response } =
-      await this.getUserById(userId);
-    return response;
+  public async getProfile(userId: string): Promise<Either<UserNotFoundError, Domain.User>> {
+    return this.getUserById(userId);
   }
 
   public async update(id: string, updateUserDto: UpdateUserDto) {

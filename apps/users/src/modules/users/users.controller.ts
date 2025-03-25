@@ -140,8 +140,14 @@ export class UsersController {
 
   @ApiOperation({ summary: 'Get your current user profile' })
   @Get('profile')
-  getProfile(@ActiveUser() user: IActiveUserData) {
-    return this.usersService.getProfile(user.sub);
+  async getProfile(@ActiveUser() user: IActiveUserData) {
+    const userResultOrError = await this.usersService.getProfile(user.sub);
+
+    if (userResultOrError.isLeft()) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return userResultOrError.value;
   }
 
   @ApiOperation({ summary: 'Get the profile of a given user by their id' })
