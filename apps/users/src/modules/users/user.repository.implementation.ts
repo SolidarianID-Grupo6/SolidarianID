@@ -11,6 +11,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Neo4jService } from '@app/neo4j';
 import { UnknownError } from '../../errors/UnknownError';
 import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
+import { RefreshTokenIdsStorage } from '@app/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
+import { RefreshTokenNotValidError } from '../../errors/RefreshTokenNotValidError';
 
 @Injectable()
 export class UsersRepoImpl implements UsersRepo {
@@ -18,7 +20,8 @@ export class UsersRepoImpl implements UsersRepo {
     @InjectRepository(Persistence.User)
     private readonly usersRepo: Repository<Persistence.User>,
     private readonly neo4jService: Neo4jService,
-  ) { }
+    private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+  ) {}
   save(t: Domain.User): Promise<Domain.User> {
     throw new Error('Method not implemented.');
   }
@@ -84,6 +87,26 @@ export class UsersRepoImpl implements UsersRepo {
       await neo4jSession.close();
     }
   }
+
+  public async validateRefreshToken(
+    userId: string,
+    refreshTokenId: string,
+  ): Promise<Either<UserNotFoundError | RefreshTokenNotValidError, Domain.User>> {
+    const user = await this.usersRepo.findOne({ where: { id: userId } });
+    if (!user) {
+      return left(new UserNotFoundError());
+    }
+
+    const isValid = await this.refreshTokenIdsStorage.validate(userId, refreshTokenId);
+    if (!isValid) {
+      return left(new RefreshTokenNotValidError());
+    }
+  
+    await this.refreshTokenIdsStorage.invalidate(userId);
+  
+    return right(UserMapper.toDomain(user));
+  }
+
   async findByEmail(
     email: string,
   ): Promise<Either<UserNotFoundError, Domain.User>> {
@@ -181,6 +204,10 @@ export class UsersRepoImpl implements UsersRepo {
       await queryRunner.release();
       await neo4jSession.close();
     }
+  }
+  
+  public async saveNewToken(userId: string, refreshTokenId: string): Promise<void> {
+    await this.refreshTokenIdsStorage.insert(userId, refreshTokenId);
   }
 
   // findByFirstName(firstName: string): Promise<Domain.User> {

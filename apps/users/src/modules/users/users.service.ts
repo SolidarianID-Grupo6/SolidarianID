@@ -9,42 +9,45 @@ import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import { AuthenticationError } from '../../errors/AuthenticationError';
 import { LoginUserDtoResponse } from './dto/login-user.dto.response';
 import * as Domain from './domain';
+import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
+import { RegisterUserDtoResponse } from './dto/register-user.dto.response';
 
 export interface UsersService {
+  login(
+    userLogin: LoginUserDto,
+  ): Promise<Either<AuthenticationError, LoginUserDtoResponse>>;
 
-  login(userLogin: LoginUserDto): Promise<Either<AuthenticationError, LoginUserDtoResponse>>;
+  register(
+    userRegistration: RegisterUserDto,
+  ): Promise<Either<UserAlreadyExistsError, RegisterUserDtoResponse>>;
 
-  register(userRegistration: RegisterUserDto);
-
-  refreshTokens(refreshTokenDto: RefreshTokenDto);
+  refreshTokens(
+    refreshTokenDto: RefreshTokenDto,
+  ): Promise<
+    Either<AuthenticationError, { accessToken: string; refreshToken: string }>
+  >;
 
   findOne(id: string): Promise<Either<UserNotFoundError, Domain.User>>;
 
   getProfile(userId: string): Promise<Either<UserNotFoundError, Domain.User>>;
 
+  update(id: string, updateUserDto: UpdateUserDto);
+
+  remove(id: string);
 
   update(id: string, updateUserDto: UpdateUserDto): Promise<any>;
 
-
   remove(id: string): Promise<Either<UserNotFoundError, void>>;
-
 
   followUser(userId: string, followedId: string): Promise<any>;
 
-
   find(query: FindQueryDto, activeUserId: string): Promise<any>;
 
-  addUserToCommunity(
-    userId: string,
-    idCommunity: string,
-  ): Promise<void>;
-
+  addUserToCommunity(userId: string, idCommunity: string): Promise<void>;
 
   getFullUserInfo(id: string): Promise<any>;
 
-
-  generateTokens(user: User): Promise<any>;
-
+  generateTokens(user: Domain.User): Promise<LoginUserDtoResponse>;
 
   makeUserAdmin(userId: string): Promise<any>;
 }

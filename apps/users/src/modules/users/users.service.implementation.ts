@@ -57,7 +57,7 @@ export class UsersServiceImpl implements UsersService {
     const userResult = await this.usersRepository.findByEmail(userLogin.email);
 
     if (userResult.isLeft()) {
-      return left(new AuthenticationError);
+      return left(new AuthenticationError());
     }
 
     const user = userResult.value;
@@ -68,7 +68,7 @@ export class UsersServiceImpl implements UsersService {
     );
 
     if (!isPasswordValid) {
-      return left(new AuthenticationError);
+      return left(new AuthenticationError());
     }
 
     const tokens = await this.generateTokens(user);
@@ -76,8 +76,12 @@ export class UsersServiceImpl implements UsersService {
     return right(tokens);
   }
 
-  public async register(userRegistration: RegisterUserDto): Promise<Either<UserAlreadyExistsError, RegisterUserDtoResponse>> {
-    const hashedPassword = await this.hashingService.hash(userRegistration.password);
+  public async register(
+    userRegistration: RegisterUserDto,
+  ): Promise<Either<UserAlreadyExistsError, RegisterUserDtoResponse>> {
+    const hashedPassword = await this.hashingService.hash(
+      userRegistration.password,
+    );
     const user = Domain.User.create({
       id: new UniqueEntityID(),
       name: userRegistration.name,
@@ -105,39 +109,24 @@ export class UsersServiceImpl implements UsersService {
     return right(dtoResponse);
   }
 
-  public async refreshTokens(refreshTokenDto: RefreshTokenDto) {
-    try {
-      const { sub, refreshTokenId } = await this.jwtService.verifyAsync<
-        Pick<IActiveUserData, 'sub'> & { refreshTokenId: string }
-      >(refreshTokenDto.refreshToken, {
-        secret: this.jwtConfiguration.secret,
-        audience: this.jwtConfiguration.audience,
-        issuer: this.jwtConfiguration.issuer,
-      });
-
-      const user = await this.oldUsersRepository.findOneOrFail({
-        where: { id: sub },
-      });
-      const isValid = await this.refreshTokenIdsStorage.validate(
-        user.id,
-        refreshTokenId,
-      );
-      if (isValid) {
-        await this.refreshTokenIdsStorage.invalidate(user.id.toString());
-      } else {
-        throw new Error('Refresh token is invalid');
-      }
-      const tokens = await this.generateTokens(UserMapper.toDomain(user));
-
-      return {
-        accessToken: tokens.accessToken,
-        refreshToken: tokens.refreshToken,
-      };
-    } catch (err) {
-      if (err instanceof InvalidatedRefreshTokenError)
-        throw new UnauthorizedException('Refresh token has expired');
-      throw new UnauthorizedException();
+  public async refreshTokens(
+    refreshTokenDto: RefreshTokenDto,
+  ): Promise<Either<AuthenticationError, LoginUserDtoResponse>> {
+    const decodedTokenOrError = await this.validateAndDecodeRefreshToken(refreshTokenDto.refreshToken);
+    if (decodedTokenOrError.isLeft()) {
+      return left(new AuthenticationError());
     }
+    const { sub: userId, refreshTokenId } = decodedTokenOrError.value;
+  
+    const userOrError = await this.usersRepository.validateRefreshToken(userId, refreshTokenId);
+    if (userOrError.isLeft()) {
+      return left(userOrError.value); 
+    }
+    const user = userOrError.value;
+  
+    const tokens = await this.generateTokens(user);
+  
+    return right(tokens);
   }
 
   async findOne(id: string): Promise<Either<UserNotFoundError, Domain.User>> {
@@ -320,7 +309,9 @@ export class UsersServiceImpl implements UsersService {
     return user;
   }
 
-  public async generateTokens(user: Domain.User): Promise<LoginUserDtoResponse> {
+  public async generateTokens(
+    user: Domain.User,
+  ): Promise<LoginUserDtoResponse> {
     const refreshTokenId = randomUUID();
     const [accessToken, refreshToken] = await Promise.all([
       this.signToken<IActiveUserData>(
@@ -332,11 +323,18 @@ export class UsersServiceImpl implements UsersService {
           role: user.role,
         },
       ),
-      this.signToken(user.id.toString(), this.jwtConfiguration.refreshTokenTtl, {
-        refreshTokenId,
-      }),
+      this.signToken(
+        user.id.toString(),
+        this.jwtConfiguration.refreshTokenTtl,
+        {
+          refreshTokenId,
+        },
+      ),
     ]);
-    await this.refreshTokenIdsStorage.insert(user.id.toString(), refreshTokenId);
+    await this.usersRepository.saveNewToken(
+      user.id.toString(),
+      refreshTokenId,
+    );
     return { accessToken, refreshToken };
   }
 
@@ -447,5 +445,22 @@ user.role = Role.Admin;
     }
 
     return right(userResult.value);
+  }
+
+  private async validateAndDecodeRefreshToken(
+    refreshToken: string,
+  ): Promise<Either<AuthenticationError, { sub: string; refreshTokenId: string }>> {
+    try {
+      const decoded = await this.jwtService.verifyAsync<
+        Pick<IActiveUserData, 'sub'> & { refreshTokenId: string }
+      >(refreshToken, {
+        secret: this.jwtConfiguration.secret,
+        audience: this.jwtConfiguration.audience,
+        issuer: this.jwtConfiguration.issuer,
+      });
+      return right(decoded);
+    } catch {
+      return left(new AuthenticationError());
+    }
   }
 }

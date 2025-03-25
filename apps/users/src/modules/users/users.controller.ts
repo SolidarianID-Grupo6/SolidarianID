@@ -40,6 +40,7 @@ import { NotFoundError } from 'rxjs';
 import { UserNotFoundError } from '../../errors/UserNotFoundError';
 import { UserAlreadyExistsError } from '../../errors/UserAlreadyExistsError';
 import { RegisterUserDtoResponse } from './dto/register-user.dto.response';
+import { RefreshTokenNotValidError } from '../../errors/RefreshTokenNotValidError';
 
 @ApiTags('Users')
 @Controller()
@@ -131,6 +132,18 @@ export class UsersController {
         'refreshToken',
       ),
     });
+
+    if (newAccessToken.isLeft()) {
+      switch (newAccessToken.value.constructor) {
+        case UserNotFoundError:
+          throw new HttpException(newAccessToken.value.message, HttpStatus.NOT_FOUND);
+        case RefreshTokenNotValidError:
+          throw new HttpException(newAccessToken.value.message, HttpStatus.FORBIDDEN);
+        default:
+          throw new InternalServerErrorException();
+      }
+    }
+
     response.cookie('accessToken', newAccessToken, {
       httpOnly: true,
       secure: true,
