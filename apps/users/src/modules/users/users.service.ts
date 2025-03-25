@@ -26,7 +26,7 @@ export interface UsersService {
   update(id: string, updateUserDto: UpdateUserDto): Promise<any>;
 
 
-  remove(id: string): Promise<any>;
+  remove(id: string): Promise<Either<UserNotFoundError, void>>;
 
 
   followUser(userId: string, followedId: string): Promise<any>;

@@ -194,42 +194,46 @@ export class UsersServiceImpl implements UsersService {
     return right(saveResult.value);
   }
 
-  async remove(id: string) {
-    const queryRunner =
-      this.oldUsersRepository.manager.connection.createQueryRunner();
-    await queryRunner.startTransaction();
+  // public async remove(id: string): Promise<Either<UserNotFoundError, void>> {
+  //   const queryRunner =
+  //     this.oldUsersRepository.manager.connection.createQueryRunner();
+  //   await queryRunner.startTransaction();
 
-    const neo4jSession = this.neo4jService.getWriteSession();
-    const neo4jTransaction = neo4jSession.beginTransaction();
+  //   const neo4jSession = this.neo4jService.getWriteSession();
+  //   const neo4jTransaction = neo4jSession.beginTransaction();
 
-    try {
-      // Verify user exists
-      const user = await this.getUserById(id);
+  //   try {
+  //     // Verify user exists
+  //     const user = await this.getUserById(id);
 
-      // Remove user from PostgreSQL
-      await queryRunner.manager.remove(User, user);
+  //     // Remove user from PostgreSQL
+  //     await queryRunner.manager.remove(User, user);
 
-      // Remove user and relationships from Neo4j
-      const cypher = `
-        MATCH (u:User {id: $userId})
-        DETACH DELETE u
-      `;
-      const params = { userId: id };
-      await neo4jTransaction.run(cypher, params);
+  //     // Remove user and relationships from Neo4j
+  //     const cypher = `
+  //       MATCH (u:User {id: $userId})
+  //       DETACH DELETE u
+  //     `;
+  //     const params = { userId: id };
+  //     await neo4jTransaction.run(cypher, params);
 
-      // Commit both transactions
-      await queryRunner.commitTransaction();
-      await neo4jTransaction.commit();
-    } catch (error) {
-      // Rollback both transactions
-      await queryRunner.rollbackTransaction();
-      await neo4jTransaction.rollback();
-      throw error;
-    } finally {
-      // Release resources
-      await queryRunner.release();
-      await neo4jSession.close();
-    }
+  //     // Commit both transactions
+  //     await queryRunner.commitTransaction();
+  //     await neo4jTransaction.commit();
+  //   } catch (error) {
+  //     // Rollback both transactions
+  //     await queryRunner.rollbackTransaction();
+  //     await neo4jTransaction.rollback();
+  //     throw error;
+  //   } finally {
+  //     // Release resources
+  //     await queryRunner.release();
+  //     await neo4jSession.close();
+  //   }
+  // }
+
+  public async remove(id: string): Promise<Either<UserNotFoundError, void>> {
+    return this.usersRepository.removeUser(id);
   }
 
   public async followUser(userId: string, followedId: string): Promise<Either<UserNotFoundError, void>> {

@@ -12,7 +12,6 @@ export interface UsersRepo extends Repo<Domain.User> {
   findById(userId: string): Promise<Either<UserNotFoundError, Domain.User>>;
   followUser(userId: string, followedId: string): Promise<Either<UserNotFoundError, void>>;
   updateUser(userId: string, updateUserDto: any): Promise<Either<UserNotFoundError, Domain.User>>;
-
   saveUser(user: Domain.User): Promise<Either<UserAlreadyExistsError | UnknownError, Domain.User>>;
-
+  removeUser(userId: string): Promise<Either<UserNotFoundError, void>>;
 }

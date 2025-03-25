@@ -77,10 +77,8 @@ export class UsersRepoImpl implements UsersRepo {
       await queryRunner.rollbackTransaction();
       await neo4jTransaction.rollback();
 
-
-      return left(new UnknownError());
-    }
-    finally {
+      return left(new UnknownError);
+    } finally {
       // Release resources
       await queryRunner.release();
       await neo4jSession.close();
@@ -143,6 +141,47 @@ export class UsersRepoImpl implements UsersRepo {
     return right(undefined);
   }
 
+  async removeUser(userId: string): Promise<Either<UserNotFoundError, void>> {
+    const user = await this.usersRepo.findOne({ where: { id: userId } });
+
+    if (!user) {
+      return left(new UserNotFoundError());
+    }
+
+    const queryRunner = this.usersRepo.manager.connection.createQueryRunner();
+    await queryRunner.startTransaction();
+
+    const neo4jSession = this.neo4jService.getWriteSession();
+    const neo4jTransaction = neo4jSession.beginTransaction();
+
+    try {
+      // Remove user from PostgreSQL
+      await queryRunner.manager.remove(Persistence.User, user);
+
+      // Remove user and relationships from Neo4j
+      const cypher = `
+        MATCH (u:User {id: $userId})
+        DETACH DELETE u
+      `;
+      const params = { userId: userId };
+      await neo4jTransaction.run(cypher, params);
+
+      // Commit both transactions
+      await queryRunner.commitTransaction();
+      await neo4jTransaction.commit();
+
+      return right(undefined);
+    } catch (error) {
+      // Rollback both transactions
+      await queryRunner.rollbackTransaction();
+      await neo4jTransaction.rollback();
+      throw error;
+    } finally {
+      // Release resources
+      await queryRunner.release();
+      await neo4jSession.close();
+    }
+  }
 
   // findByFirstName(firstName: string): Promise<Domain.User> {
   //   return this.repo

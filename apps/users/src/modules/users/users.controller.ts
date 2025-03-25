@@ -214,8 +214,15 @@ export class UsersController {
   @ApiOperation({ summary: 'Account deletion' })
   @Roles(Role.Admin)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id: string) {
+    const result = await this.usersService.remove(id);
+
+    if (result.isLeft()) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    return;
   }
 
   // TODO: review if the events should be move to different class
