@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login, logout } from '../storage/userSlice';
 import { Container, Card, Button, Form, InputGroup } from 'react-bootstrap';
-import { FaUser, FaLock } from 'react-icons/fa'; // Importar los iconos
+import { FaUser, FaLock } from 'react-icons/fa';
+import styles from './Login.module.css';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -27,22 +28,7 @@ function Login() {
 
   return (
     <>
-      {/* 🔹 Fondo Fijo */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundImage: "url('/images/1.jpeg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          zIndex: -1,
-          opacity: 0.7,
-        }}
-      ></div>
+      <div className={styles.background} aria-hidden="true"></div>
       <Container
         className="d-flex flex-column justify-content-center align-items-center"
         style={{ height: '80vh' }}

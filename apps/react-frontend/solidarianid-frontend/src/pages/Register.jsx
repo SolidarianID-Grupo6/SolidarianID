@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Card, Button, Form, Row, Col } from 'react-bootstrap';
+import styles from './Register.module.css';
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -13,31 +14,22 @@ function Register() {
     presentation: '',
   });
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log('Form data:', formData);
+  };
+
   return (
     <>
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundImage: "url('/images/2.jpeg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          zIndex: -1,
-          opacity: 0.7,
-        }}
-      ></div>
-      <Container className="my-5">
+      <div className={styles.background} aria-hidden="true"></div>
+      <Container className="my-5 ${styles.content}">
         <div className="text-center mb-4">
           <h1 className="fw-bold">Registro</h1>
         </div>
 
         <Card className="shadow-lg mx-auto" style={{ maxWidth: '40rem' }}>
           <Card.Body>
-            <Form>
+            <Form onSubmit={handleSubmit}>
               <Row>
                 {/* Columna Izquierda */}
                 <Col md={6}>
@@ -130,10 +122,7 @@ function Register() {
                       data-bs-placement="top"
                       title="Al marcar esta opción, tu correo será visible para otros usuarios."
                     />
-
                   </Form.Group>
-
-                  
 
                   <Form.Group className="mb-3" controlId="checkBirthdatePublic">
                     <Form.Check

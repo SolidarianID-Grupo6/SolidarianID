@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Container, Card, Button, Spinner, Alert } from 'react-bootstrap';
 import { communitiesRequest } from '../services/api';
 import CommunityCardRequest from '../components/CommunityCardRequest';
+import styles from './ValidateCommunities.module.css';
 
 function ValidateCommunities() {
   const [communities, setCommunities] = useState([]);
@@ -15,7 +16,7 @@ function ValidateCommunities() {
       } catch (error) {
         console.error('Error al obtener comunidades:', error);
       } finally {
-        setLoading(false); // Desactiva el spinner cuando la API responde
+        setLoading(false);
       }
     };
 
@@ -28,21 +29,7 @@ function ValidateCommunities() {
 
   return (
     <>
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundImage: "url('/images/4.jpeg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          zIndex: -1,
-          opacity: 0.7,
-        }}
-      ></div>
+      <div className={styles.background} aria-hidden="true"></div>
       <Container className="my-5">
         <div className="text-center mb-4">
           <h1 className="fw-bold">Validar comunidades</h1>

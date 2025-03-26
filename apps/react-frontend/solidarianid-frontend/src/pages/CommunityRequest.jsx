@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Card, Button, Form, Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
+import styles from './CommunityRequest.module.css';
 
 // Enum de ODS
 const ODS_ENUM = [
@@ -59,49 +60,36 @@ function CommunityRequest() {
     setSelectedOds(selectedOptions);
   };
 
+  // "Select" de React para que se parezca al estilo de Bootstrap 
   const customStyles = {
     control: (provided) => ({
       ...provided,
-      borderRadius: '0.375rem', // Agrega el mismo borde redondeado que Bootstrap
-      borderColor: '#ced4da', // El color del borde de Bootstrap
-      boxShadow: 'none', // Elimina el borde azul de enfoque por defecto
-      padding: '0.375rem 0.75rem', // El mismo padding de Bootstrap
+      borderRadius: '0.375rem', 
+      borderColor: '#ced4da', 
+      boxShadow: 'none', 
+      padding: '0.375rem 0.75rem', 
     }),
     multiValue: (provided) => ({
       ...provided,
-      backgroundColor: '#e9ecef', // El fondo gris para los elementos seleccionados
+      backgroundColor: '#e9ecef',
       borderRadius: '0.375rem',
     }),
     multiValueLabel: (provided) => ({
       ...provided,
-      color: '#495057', // Color de texto similar al de Bootstrap
+      color: '#495057', 
     }),
     multiValueRemove: (provided) => ({
       ...provided,
-      color: '#495057', // Color del icono de eliminar
+      color: '#495057', 
       ':hover': {
-        backgroundColor: '#dee2e6', // El color de fondo en hover
+        backgroundColor: '#dee2e6', 
       },
     }),
   };
 
   return (
     <>
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          backgroundImage: "url('/images/4.jpeg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          zIndex: -1,
-          opacity: 0.7,
-        }}
-      ></div>
+      <div className={styles.background} aria-hidden="true"></div>
       <Container className="my-5">
         <div className="text-center mb-4">
           <h1 className="fw-bold">Crear nueva comunidad</h1>

@@ -1,4 +1,5 @@
 
+// Obtención de solicitudes de comunidades para aceptar o rechazar
 export const communitiesRequest = async () => {
     try {
         const response = await fetch('http://localhost:3001/community-requests');
